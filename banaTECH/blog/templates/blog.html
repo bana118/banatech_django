@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "base.html" %}
 {% block title%}
 記事一覧
 {% endblock %}
@@ -6,7 +6,7 @@
 {% block load %}
 {% endblock %}
 
-{% block body %}
+{% block content %}
 <div class="container">
 <button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
 <button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>

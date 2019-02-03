@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "base.html" %}
 {% block title%}
 管理者確認
 {% endblock %}
@@ -6,7 +6,7 @@
 {% block load %}
 {% endblock %}
 
-{% block body %}
+{% block contet %}
 <div class="container">
   <form id="adminForm" method="POST" action="/blog/post">
     <div class="form-group">
