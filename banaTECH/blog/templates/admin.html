@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block title%}
+管理者確認
+{% endblock %}
+
+{% block load %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <form id="adminForm" method="POST" action="/blog/post">
+    <div class="form-group">
+      <label for="name">ユーザー名</label>
+      <input type="text" class="form-control" name="name" id="name">
+      <label for="password">パスワード</label>
+      <input type="password" class="form-control" name="password" id="password">
+    </div>
+    {% csrf_token %}
+    <input name="admin" id="admin" class="btn btn-primary" type="submit" value="投稿画面へ">
+  </form>
+</div>
+{% endblock %}

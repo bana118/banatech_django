@@ -7,4 +7,22 @@
 {% endblock %}
 
 {% block body %}
+<div class="container">
+<button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
+<button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">記事一覧</h4>
+            <p class="card-text">学んだことをぼちぼち書いていきます。
+            <a href="https://qiita.com/bana-titech">Qiita</a>
+            に書いたものとほぼ同じ。
+            </p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="/1">tk-inter,PILを使って関数呼び出しからGUI上に画像を表示</li>
+            <li class="list-group-item">Item 2</li>
+            <li class="list-group-item">Item 3</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
