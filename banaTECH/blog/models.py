@@ -1,9 +1,10 @@
 from django.db import models
-from django.db.models import CharField, DateTimeField
+from django.db.models import CharField, FileField, DateTimeField
 from django.utils import timezone
 
 # Create your models here.
 
-def blog(model):
+class Article(models.Model):
     title = CharField(max_length=128)
-    regist_date = DateTimeField(default=timezone.now)
+    article = models.FileField(upload_to="article/")
+    post_date = DateTimeField(default=timezone.now)

@@ -1,1 +1,14 @@
-post
+{% extends "base.html" %}
+{% block title%}
+記事投稿
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form id="postForm" method="POST" action="/blog/posted" enctype="multipart/form-data">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">投稿</button>
+    </form>
+</div>
+{% endblock %}
