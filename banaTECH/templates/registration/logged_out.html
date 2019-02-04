@@ -2,6 +2,11 @@
 
 {% block title %}Logout{% endblock %}
 
+{% block load %}
+{% load static %}
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <h1>Logged Out</h1>
 <p>Thanks for spending some quality time with the Web site today.</p>

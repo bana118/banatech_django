@@ -7,5 +7,39 @@
 <div class="container">
     <h1>{{ article.title }}</h1>
     <h2>{{ article.post_date }}</h2>
+    <div id="markdown_content" src="{{article.article.url}}"></div>
 </div>
+<script>
+    marked.setOptions({
+        breaks: true,
+        highlight: function (code, lang) {
+            return hljs.highlightAuto(code, [lang]).value
+        },
+        sanitize: true
+    });
+    $(document).ready(function () {
+        var target = $("#markdown_content");
+        var renderer = new marked.Renderer()
+        renderer.code = function (code, language) {
+            return '<pre' + '><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
+        };
+        marked.setOptions({
+            renderer: renderer,
+            sanitize: true,
+            breaks: true
+        });
+
+        $.ajax({
+                url: target[0].attributes["src"].value
+            })
+            .then(
+                function (data) {
+                    target.append(marked(data));
+                },
+                function () {
+                    target.append("This content failed to load.");
+                }
+            );
+    });
+</script>
 {% endblock %}
