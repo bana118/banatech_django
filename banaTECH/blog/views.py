@@ -6,7 +6,8 @@ from .forms import ArticleForm
 # Create your views here.
 
 def blog(request):
-    return render(request, "blog.html")
+    articles = Article.objects.all()
+    return render(request, "blog.html",{"articles":articles})
 
 @login_required
 def post(request):
@@ -19,3 +20,7 @@ def posted(request):
     if form.is_valid():
         form.save()
         return render(request, "blog.html")
+
+def view(request, article_id):
+    article = Article.objects.filter(id=article_id)[0]
+    return render(request, "view.html", {"article": article})

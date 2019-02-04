@@ -16,9 +16,9 @@
             </p>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item"><a href="/1">tk-inter,PILを使って関数呼び出しからGUI上に画像を表示</li>
-            <li class="list-group-item">Item 2</li>
-            <li class="list-group-item">Item 3</li>
+            {% for article in  articles %}
+            <li class="list-group-item"><a href="/blog/{{article.pk}}">{{ article.title }}</a></li>
+            {% endfor %}
         </ul>
     </div>
 </div>

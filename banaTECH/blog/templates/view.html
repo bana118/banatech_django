@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title%}
+{{ article.title }}--banaTECH--
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ article.title }}</h1>
+    <h2>{{ article.post_date }}</h2>
+</div>
+{% endblock %}
