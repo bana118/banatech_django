@@ -7,9 +7,12 @@
 <div class="container">
     <h1>{{ article.title }}</h1>
     <h2>{{ article.post_date }}</h2>
-    {% for  category in categories %}
-    <p>{{ category.name }}</p>
+    <p>
+    カテゴリー：
+    {% for category in  categories%}
+    <a class="btn btn-primary" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
     {% endfor %}
+    </p>
     <div id="markdown_content" src="{{article.article.url}}"></div>
 </div>
 <script>
