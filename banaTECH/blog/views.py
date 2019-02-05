@@ -18,6 +18,8 @@ def post(request):
 def posted(request):
     form = ArticleForm(request.POST, request.FILES)
     if form.is_valid():
+        article = form.save(commit=False)
+        print(article.category_split_space)
         form.save()
         return render(request, "blog.html")
 

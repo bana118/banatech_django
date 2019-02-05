@@ -1,22 +1,29 @@
 from django.db import models
-from django.db.models import CharField, FileField, DateTimeField, IntegerField
+from django.db.models import CharField, FileField, DateTimeField, ForeignKey
+from django.db.models import SET_NULL
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 import os.path
 
 # Create your models here.
+
+class Category(models.Model):
+    name = CharField(max_length=128)
+
 def md_file_path(instance, filename):
     fn, ext = os.path.splitext(filename)
     return "article/{id}/{id}{ext}".format(id=instance.pk, ext=ext)
 class Article(models.Model):
     title = CharField(max_length=128)
-    article = models.FileField(upload_to=md_file_path)
+    article = FileField(upload_to=md_file_path)
     post_date = DateTimeField(default=timezone.now)
+    #スペース区切りのカテゴリー
+    category_split_space = CharField(max_length=128)
+    category = ForeignKey(Category, null=True, on_delete=SET_NULL)
 
-
+#articleの保存ディレクトリ名にprimary keyを使うため
 _UNSAVED_FILEFIELD = 'unsaved_filefield'
-
 @receiver(pre_save, sender=Article)
 def skip_saving_file(sender, instance, **kwargs):
     if not instance.pk and not hasattr(instance, _UNSAVED_FILEFIELD):
@@ -29,6 +36,5 @@ def save_file(sender, instance, created, **kwargs):
         instance.article = getattr(instance, _UNSAVED_FILEFIELD)
         instance.save()
         instance.__dict__.pop(_UNSAVED_FILEFIELD)
-
 
 
