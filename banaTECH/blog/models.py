@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import CharField, FileField, DateTimeField, ForeignKey
-from django.db.models import SET_NULL
+from django.db.models import CharField, FileField, DateTimeField, ManyToManyField
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
@@ -20,7 +19,7 @@ class Article(models.Model):
     post_date = DateTimeField(default=timezone.now)
     #スペース区切りのカテゴリー
     category_split_space = CharField(max_length=128)
-    category = ForeignKey(Category, null=True, on_delete=SET_NULL)
+    category = ManyToManyField(Category)
 
 #articleの保存ディレクトリ名にprimary keyを使うため
 _UNSAVED_FILEFIELD = 'unsaved_filefield'

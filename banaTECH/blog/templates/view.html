@@ -7,6 +7,9 @@
 <div class="container">
     <h1>{{ article.title }}</h1>
     <h2>{{ article.post_date }}</h2>
+    {% for  category in categories %}
+    <p>{{ category.name }}</p>
+    {% endfor %}
     <div id="markdown_content" src="{{article.article.url}}"></div>
 </div>
 <script>
