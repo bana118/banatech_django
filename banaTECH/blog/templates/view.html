@@ -16,18 +16,17 @@
     <div id="markdown_content" src="{{article.article.url}}"></div>
 </div>
 <script>
-    marked.setOptions({
-        breaks: true,
-        highlight: function (code, lang) {
-            return hljs.highlightAuto(code, [lang]).value
-        },
-        sanitize: true
-    });
     $(document).ready(function () {
         var target = $("#markdown_content");
         var renderer = new marked.Renderer()
         renderer.code = function (code, language) {
-            return '<pre' + '><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
+            if(language.indexOf(":") != -1){
+                var lang = language.split(":")[0];
+                var fileName = language.split(":")[1].trim();
+                return '<pre>' + '<div class="card text-white bg-info" style="display: inline-block;"> <div class="card-body p-0" style="display: inline-block;">' + fileName + ' ' + '</div></div>' + '<code class="hljs">' + hljs.highlightAuto(code, [lang]).value + '</code></pre>';
+            }else{
+                return '<pre' + '><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
+            }
         };
         marked.setOptions({
             renderer: renderer,
