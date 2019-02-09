@@ -28,6 +28,10 @@
                 return '<pre' + '><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
             }
         };
+        renderer.image = function (href, title, text) {
+            var fileName = href.split("/").pop();
+            return '<img src="/media/article/{{ article.id }}/image/'+ fileName +'" alt="'+ text +'">';
+        }
         marked.setOptions({
             renderer: renderer,
             sanitize: true,
