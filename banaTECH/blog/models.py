@@ -16,7 +16,6 @@ def md_file_path(instance, filename):
 class Article(models.Model):
     title = CharField(max_length=128)
     article = FileField(upload_to=md_file_path)
-    image = ImageField(upload_to=image_file_path)
     post_date = DateTimeField(default=timezone.now)
     #スペース区切りのカテゴリー
     category_split_space = CharField(max_length=128)
