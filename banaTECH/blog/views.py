@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Article, Category
 from .forms import ArticleForm
-
+import banaTECH.settings as settings
+import os
 # Create your views here.
 
 def blog(request):
@@ -20,6 +21,11 @@ def posted(request):
     categories = Category.objects.all()
     if form.is_valid():
         article = form.save()
+        os.makedirs(settings.BASE_DIR + "/media/article/" + str(article.id) + "/image")
+        for image in request.FILES.getlist("image"):
+            with open(settings.BASE_DIR + "/media/article/" + str(article.id) + "/image/" + image.name, "wb+") as destination:
+                for chunk in image.chunks():
+                    destination.write(chunk)
         category_list = article.category_split_space.split()
         for c in category_list:
             #新規カテゴリーを作成

@@ -25,22 +25,17 @@ class Article(models.Model):
     category_split_space = CharField(max_length=128)
     category = ManyToManyField(Category)
 
-#article, imageの保存ディレクトリ名にprimary keyを使うため
+#articleの保存ディレクトリ名にprimary keyを使うため
 _UNSAVED_FILEFIELD = 'unsaved_filefield'
-_UNSAVED_IMAGEFIELD = 'unsaved_imagefield'
 @receiver(pre_save, sender=Article)
 def skip_saving_file(sender, instance, **kwargs):
-    if not instance.pk and not hasattr(instance, _UNSAVED_FILEFIELD) and not hasattr(instance, _UNSAVED_IMAGEFIELD):
+    if not instance.pk and not hasattr(instance, _UNSAVED_FILEFIELD):
         setattr(instance, _UNSAVED_FILEFIELD, instance.article)
-        setattr(instance, _UNSAVED_IMAGEFIELD, instance.image)
         instance.article = None
-        instance.image = None
 
 @receiver(post_save, sender=Article)
 def save_file(sender, instance, created, **kwargs):
-    if created and hasattr(instance, _UNSAVED_FILEFIELD) and hasattr(instance, _UNSAVED_IMAGEFIELD):
+    if created and hasattr(instance, _UNSAVED_FILEFIELD):
         instance.article = getattr(instance, _UNSAVED_FILEFIELD)
-        instance.image = getattr(instance, _UNSAVED_IMAGEFIELD)
         instance.save()
         instance.__dict__.pop(_UNSAVED_FILEFIELD)
-        instance.__dict__.pop(_UNSAVED_IMAGEFIELD)
