@@ -8,7 +8,7 @@ import os
 
 def blog(request):
     articles = Article.objects.all()
-    return render(request, "blog.html",{"articles":articles})
+    return render(request, "blog.html", {"articles":articles})
 
 @login_required
 def post(request):
@@ -36,9 +36,13 @@ def posted(request):
             else:
                 category = categories.filter(name=c)[0]
                 article.category.add(category)
-        return render(request, "blog.html")
+        articles = Article.objects.all()
+        return render(request, "blog.html", {"articles", articles})
 
 def view(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
     categories = article.category.all()
     return render(request, "view.html", {"article": article, "categories": categories})
+
+def search_category(request, category):
+    return render(request, "search_category.html", {"category": category})
