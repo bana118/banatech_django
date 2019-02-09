@@ -10,9 +10,6 @@ import os.path
 class Category(models.Model):
     name = CharField(max_length=128)
 
-def image_file_path(instance, filename):
-    return "article/{id}/image/{fn}".format(id=instance.pk, fn=filename)
-
 def md_file_path(instance, filename):
     fn, ext = os.path.splitext(filename)
     return "article/{id}/{id}{ext}".format(id=instance.pk, ext=ext)
