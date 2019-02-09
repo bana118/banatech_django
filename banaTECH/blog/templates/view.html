@@ -9,7 +9,7 @@
     <h2>{{ article.post_date }}</h2>
     <p>
     カテゴリー：
-    {% for category in  categories%}
+    {% for category in  article.category.all%}
     <a class="btn btn-primary" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
     {% endfor %}
     </p>

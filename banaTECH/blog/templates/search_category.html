@@ -1,1 +1,32 @@
-{{category}}
+{% extends "base.html" %}
+{% block title%}
+カテゴリー：{{ category }}の記事
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
+    <button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">カテゴリー：{{ category }}の検索結果</h4>
+            <p class="card-text">学んだことをぼちぼち書いていきます。
+                <a href="https://qiita.com/bana-titech">Qiita</a>
+                に書いたものとほぼ同じ。
+            </p>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for article in articles %}
+            <li class="list-group-item">
+                <a href="/blog/{{article.pk}}">{{ article.title }}</a>
+                <br>
+                {% for category in article.category.all %}
+                <a class="btn btn-primary p-1" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

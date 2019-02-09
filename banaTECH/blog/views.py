@@ -36,13 +36,15 @@ def posted(request):
             else:
                 category = categories.filter(name=c)[0]
                 article.category.add(category)
+        article.save()
         articles = Article.objects.all()
-        return render(request, "blog.html", {"articles", articles})
+        return render(request, "blog.html", {"articles": articles})
 
 def view(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
     categories = article.category.all()
-    return render(request, "view.html", {"article": article, "categories": categories})
+    return render(request, "view.html", {"article": article})
 
 def search_category(request, category):
-    return render(request, "search_category.html", {"category": category})
+    articles = Article.objects.filter(category__name=category)
+    return render(request, "search_category.html", {"category": category, "articles": articles})
