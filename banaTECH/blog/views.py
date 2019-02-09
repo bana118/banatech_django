@@ -19,9 +19,8 @@ def posted(request):
     form = ArticleForm(request.POST, request.FILES)
     categories = Category.objects.all()
     if form.is_valid():
-        article = form.save(commit=False)
+        article = form.save()
         category_list = article.category_split_space.split()
-        form.save()
         for c in category_list:
             #新規カテゴリーを作成
             if len(categories.filter(name=c)) == 0:

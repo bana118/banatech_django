@@ -30,7 +30,7 @@
         };
         renderer.image = function (href, title, text) {
             var fileName = href.split("/").pop();
-            return '<img src="/media/article/{{ article.id }}/image/'+ fileName +'" alt="'+ text +'">';
+            return '<img src="/media/article/{{ article.id }}/image/'+ fileName +'" alt="'+ text +'" class="img-fluid">';
         }
         marked.setOptions({
             renderer: renderer,
