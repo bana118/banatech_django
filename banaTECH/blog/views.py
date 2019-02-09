@@ -11,8 +11,8 @@ def blog(request):
 
 @login_required
 def post(request):
-    form = ArticleForm()
-    return render(request, "post.html", {"form": form})
+    articleForm = ArticleForm()
+    return render(request, "post.html", {"articleForm": articleForm})
 
 @login_required
 def posted(request):

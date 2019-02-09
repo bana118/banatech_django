@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import CharField, FileField, DateTimeField, ManyToManyField
+from django.db.models import CharField, FileField, DateTimeField, ManyToManyField, ImageField
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
@@ -10,30 +10,37 @@ import os.path
 class Category(models.Model):
     name = CharField(max_length=128)
 
+def image_file_path(instance, filename):
+    return "article/{id}/image/{fn}".format(id=instance.pk, fn=filename)
+
 def md_file_path(instance, filename):
     fn, ext = os.path.splitext(filename)
     return "article/{id}/{id}{ext}".format(id=instance.pk, ext=ext)
 class Article(models.Model):
     title = CharField(max_length=128)
     article = FileField(upload_to=md_file_path)
+    image = ImageField(upload_to=image_file_path)
     post_date = DateTimeField(default=timezone.now)
     #スペース区切りのカテゴリー
     category_split_space = CharField(max_length=128)
     category = ManyToManyField(Category)
 
-#articleの保存ディレクトリ名にprimary keyを使うため
+#article, imageの保存ディレクトリ名にprimary keyを使うため
 _UNSAVED_FILEFIELD = 'unsaved_filefield'
+_UNSAVED_IMAGEFIELD = 'unsaved_imagefield'
 @receiver(pre_save, sender=Article)
 def skip_saving_file(sender, instance, **kwargs):
-    if not instance.pk and not hasattr(instance, _UNSAVED_FILEFIELD):
+    if not instance.pk and not hasattr(instance, _UNSAVED_FILEFIELD) and not hasattr(instance, _UNSAVED_IMAGEFIELD):
         setattr(instance, _UNSAVED_FILEFIELD, instance.article)
+        setattr(instance, _UNSAVED_IMAGEFIELD, instance.image)
         instance.article = None
+        instance.image = None
 
 @receiver(post_save, sender=Article)
 def save_file(sender, instance, created, **kwargs):
-    if created and hasattr(instance, _UNSAVED_FILEFIELD):
+    if created and hasattr(instance, _UNSAVED_FILEFIELD) and hasattr(instance, _UNSAVED_IMAGEFIELD):
         instance.article = getattr(instance, _UNSAVED_FILEFIELD)
+        instance.image = getattr(instance, _UNSAVED_IMAGEFIELD)
         instance.save()
         instance.__dict__.pop(_UNSAVED_FILEFIELD)
-
-
+        instance.__dict__.pop(_UNSAVED_IMAGEFIELD)
