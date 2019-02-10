@@ -1,6 +1,5 @@
 ﻿#必要なパッケージ
-
 Django == 2.1.4
 
 #blog
-markdown2 == 2.3.7
+Pillow == 5.2.0

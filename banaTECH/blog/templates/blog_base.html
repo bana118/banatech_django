@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title%}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
+            <button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>
+        </div>
+        <div class="col-sm">
+            <form class="form-inline mt-2 mt-md-0 float-right" method="POST" action="/blog/search">
+                <input class="form-control mr-sm-2" type="text" name="search" placeholder="記事の検索" aria-label="Search">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        {% block cardbody%}
+        {% endblock %}
+        <ul class="list-group list-group-flush">
+            {% for article in articles %}
+            <li class="list-group-item">
+                <a href="/blog/{{article.pk}}">{{ article.title }}</a>
+                <br>
+                {% for category in article.category.all %}
+                <a class="btn btn-primary p-1" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
