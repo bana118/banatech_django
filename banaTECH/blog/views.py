@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Article, Category
 from .forms import ArticleForm
 import banaTECH.settings as settings
@@ -48,3 +49,10 @@ def view(request, article_id):
 def search_category(request, category):
     articles = Article.objects.filter(category__name=category)
     return render(request, "search_category.html", {"category": category, "articles": articles})
+
+def search(request):
+    search = request.POST["search"]
+    articles = Article.objects.filter(
+        Q(category__name__icontains=search) | Q(title__icontains=search)
+    ).distinct()
+    return render(request, "search.html", {"search": search, "articles": articles})

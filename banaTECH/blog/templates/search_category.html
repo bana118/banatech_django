@@ -5,14 +5,24 @@
 
 {% block content %}
 <div class="container">
-    <button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
-    <button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>
+    <div class="row">
+        <div class="col-sm">
+            <button type="button" class="btn btn-primary" onclick="location.href='/blog/post'">投稿(管理者用)</button>
+            <button type="button" class="btn btn-primary" onclick="location.href='/accounts/logout'">ログアウト(管理者用)</button>
+        </div>
+        <div class="col-sm">
+            <form class="form-inline mt-2 mt-md-0 float-right" method="POST" action="/blog/search">
+                <input class="form-control mr-sm-2" type="text" name="search" placeholder="記事の検索" aria-label="Search">
+                {% csrf_token %}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">カテゴリー：{{ category }}の検索結果</h4>
-            <p class="card-text">学んだことをぼちぼち書いていきます。
-                <a href="https://qiita.com/bana-titech">Qiita</a>
-                に書いたものとほぼ同じ。
+            <p class="card-text">
+                <a href="/blog">全表示</a>
             </p>
         </div>
         <ul class="list-group list-group-flush">
