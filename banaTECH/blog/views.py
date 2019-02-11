@@ -75,4 +75,4 @@ def view_md(request, article_id):
     mdFile = open(mdPath, encoding="UTF-8")
     md = mdFile.read()
     mdFile.close()
-    return HttpResponse(md)
+    return HttpResponse(md, content_type="text/plain; charset=utf-8")
