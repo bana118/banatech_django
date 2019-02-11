@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse
 from .models import Article, Category
 from .forms import ArticleForm
 import banaTECH.settings as settings
@@ -68,3 +69,10 @@ def delete(request, article_id):
         article.delete()
     articles = Article.objects.all()
     return render(request, "blog.html", {"articles": articles})
+
+def view_md(request, article_id):
+    mdPath = settings.BASE_DIR + "/media/article/" + str(article_id) + "/" + str(article_id) + ".md"
+    mdFile = open(mdPath, encoding="UTF-8")
+    md = mdFile.read()
+    mdFile.close()
+    return HttpResponse(md)
