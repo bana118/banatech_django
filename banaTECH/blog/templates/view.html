@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container">
     <h1>{{ article.title }}</h1>
-    <h2>{{ article.post_date }}</h2>
+    <h4>{{ article.post_date }}</h4>
     <p>
     カテゴリー：
     {% for category in  article.category.all%}
@@ -14,7 +14,8 @@
     {% endfor %}
     </p>
     <div id="markdown_content" src="{{article.article.url}}"></div>
-    
+    <br>
+    <a href="/blog/delete/{{ article.id }}" onclick="return confirm('本当に削除しますか？')">記事削除(管理者用)</a>
 </div>
 <script>
     $(document).ready(function () {

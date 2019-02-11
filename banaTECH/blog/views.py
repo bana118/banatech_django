@@ -5,6 +5,7 @@ from .models import Article, Category
 from .forms import ArticleForm
 import banaTECH.settings as settings
 import os
+import shutil
 # Create your views here.
 
 def blog(request):
@@ -56,3 +57,14 @@ def search(request):
         Q(category__name__icontains=search) | Q(title__icontains=search)
     ).distinct()
     return render(request, "search.html", {"search": search, "articles": articles})
+
+@login_required
+def delete(request, article_id):
+    article = Article.objects.filter(id=article_id)[0]
+    deletePath = settings.BASE_DIR + "/media/article/" + str(article_id)
+    if os.path.exists(deletePath):
+        shutil.rmtree(deletePath)
+    if not article is None:
+        article.delete()
+    articles = Article.objects.all()
+    return render(request, "blog.html", {"articles": articles})
