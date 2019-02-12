@@ -4,11 +4,12 @@ CSSFrameworks
 {% endblock %}
 
 {% block head %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.5/dist/vue.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div id="app">
+    <!--<div id="app">
         <ul class="tab">
             <li v-for="item in list" @click="changeTab(item.id)" @keyup.enter="changeTab(item.id)" :class="{active:active(item.id)}"
                 tabindex="0">[[ item.label ]]</li>
@@ -20,8 +21,8 @@ CSSFrameworks
                 </section>
             </transition>
         </div>
-    </div>
-    <!--<div id="app">
+    </div>-->
+    <div id="app">
         <ul class="nav nav-tabs nav-stacked">
             <li class="nav-item">
                 <a href="#" class="nav-link active">Active</a>
@@ -33,7 +34,7 @@ CSSFrameworks
                 <a href="#" class="nav-link">Disabled</a>
             </li>
         </ul>
-    </div>-->
+    </div>
 </div>
 <script>
     new Vue({
