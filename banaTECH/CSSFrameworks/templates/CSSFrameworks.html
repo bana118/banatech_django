@@ -1,1 +1,68 @@
-test
+{% extends "base.html" %}
+{% block title%}
+CSSFrameworks
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div id="app">
+        <ul class="tab">
+            <li v-for="item in list" @click="changeTab(item.id)" @keyup.enter="changeTab(item.id)" :class="{active:active(item.id)}"
+                tabindex="0">[[ item.label ]]</li>
+        </ul>
+        <div class="content-vue">
+            <transition>
+                <section v-for="item in list" :key="item.id" v-if="active(item.id)">
+                    <p>[[ item.content]]</p>
+                </section>
+            </transition>
+        </div>
+    </div>
+    <!--<div id="app">
+        <ul class="nav nav-tabs nav-stacked">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">Active</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Link</a>
+            </li>
+            <li class="nav-item disabled">
+                <a href="#" class="nav-link">Disabled</a>
+            </li>
+        </ul>
+    </div>-->
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data: {
+            current: 1,
+            list: [{
+                id: 1,
+                label: 'tab1',
+                content: 'content1'
+            }, {
+                id: 2,
+                label: 'tab2',
+                content: 'content2'
+            }, {
+                id: 3,
+                label: 'tab3',
+                content: 'content3'
+            }]
+        },
+        methods: {
+            active: function (id) {
+                return this.current == id
+            },
+            changeTab: function (id) {
+                this.current = id
+            }
+        }
+    })
+</script>
+{% endblock %}
