@@ -4,7 +4,6 @@ CSSFrameworks
 {% endblock %}
 
 {% block head %}
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.5/dist/vue.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -23,41 +22,28 @@ CSSFrameworks
         </div>
     </div>-->
     <div id="app">
-        <ul class="nav nav-tabs nav-stacked">
-            <li v-for="item in list" class="nav-item">
-                <a href="#!" class="nav-link" v-bind:class="{ active: active(item.id)}"@click="changeTab(item.id)" @keyup.enter="changeTab(item.id)">[[ item.label ]]</a>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#tab1" class="nav-link active" data-toggle="tab">tab1</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab2" class="nav-link" data-toggle="tab">tab2</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab3" class="nav-link" data-toggle="tab">tab3</a>
             </li>
         </ul>
+        <div class="tab-content">
+            <div id="tab1" class="tab-pane active">
+                tab1
+            </div>
+            <div id="tab2" class="tab-pane">
+                tab2
+            </div>
+            <div id="tab3" class="tab-pane">
+                tab3
+            </div>
+        </div>
     </div>
 </div>
-<script>
-    new Vue({
-        el: '#app',
-        delimiters: ['[[', ']]'],
-        data: {
-            current: 1,
-            list: [{
-                id: 1,
-                label: 'tab1',
-                content: 'content1'
-            }, {
-                id: 2,
-                label: 'tab2',
-                content: 'content2'
-            }, {
-                id: 3,
-                label: 'tab3',
-                content: 'content3'
-            }]
-        },
-        methods: {
-            active: function (id) {
-                return this.current == id
-            },
-            changeTab: function (id) {
-                this.current = id
-            }
-        }
-    })
-</script>
 {% endblock %}
