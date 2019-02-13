@@ -24,14 +24,8 @@ CSSFrameworks
     </div>-->
     <div id="app">
         <ul class="nav nav-tabs nav-stacked">
-            <li class="nav-item">
-                <a href="#" class="nav-link active">Active</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Link</a>
-            </li>
-            <li class="nav-item disabled">
-                <a href="#" class="nav-link">Disabled</a>
+            <li v-for="item in list" class="nav-item">
+                <a href="#!" class="nav-link" v-bind:class="{ active: active(item.id)}"@click="changeTab(item.id)" @keyup.enter="changeTab(item.id)">[[ item.label ]]</a>
             </li>
         </ul>
     </div>
