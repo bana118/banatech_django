@@ -8,23 +8,10 @@ CSSFrameworks
 
 {% block content %}
 <div class="container">
-    <!--<div id="app">
-        <ul class="tab">
-            <li v-for="item in list" @click="changeTab(item.id)" @keyup.enter="changeTab(item.id)" :class="{active:active(item.id)}"
-                tabindex="0">[[ item.label ]]</li>
-        </ul>
-        <div class="content-vue">
-            <transition>
-                <section v-for="item in list" :key="item.id" v-if="active(item.id)">
-                    <p>[[ item.content]]</p>
-                </section>
-            </transition>
-        </div>
-    </div>-->
     <div id="app">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a href="#tab1" class="nav-link active" data-toggle="tab">tab1</a>
+                <a href="#tab1" class="nav-link active" data-toggle="tab">Bootstrap</a>
             </li>
             <li class="nav-item">
                 <a href="#tab2" class="nav-link" data-toggle="tab">tab2</a>
@@ -35,7 +22,13 @@ CSSFrameworks
         </ul>
         <div class="tab-content">
             <div id="tab1" class="tab-pane active">
-                tab1
+                <h1>Bootstrap</h1>
+                <a href="https://getbootstrap.com/">https://getbootstrap.com/</a>
+                <h3>特徴</h3>
+                <p>
+                    ここに特徴を書く
+                </p>
+                <h3>ボタン</h3>
             </div>
             <div id="tab2" class="tab-pane">
                 tab2
