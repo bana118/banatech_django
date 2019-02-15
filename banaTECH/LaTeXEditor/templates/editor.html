@@ -1,1 +1,49 @@
-test
+{% extends "base.html" %}
+{% block title%}
+LaTeXEditor
+{% endblock %}
+
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
+<link rel="stylesheet" href="{% static 'CSS/jquery-linedtextarea.css' %}">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ext-language_tools.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<!--静的なコードをハイライトするなら-->
+<!--<script>hljs.initHighlightingOnLoad();</script>-->
+<script src="https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/latex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/latex.component.js"></script>
+<script src="{% static 'JavaScript/jquery-linedtextarea.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <div id="editor" style="height: 100vh;">
+            </div>
+        </div>
+        <div class="col-sm">
+            <latex-js>
+            </latex-js>
+        </div>
+    </div>
+</div>
+<script>
+    const editor = ace.edit('editor');
+    editor.setTheme('ace/theme/monokai');
+    editor.setFontSize(14);
+    editor.getSession().setMode('ace/mode/latex');
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setTabSize(2);
+    editor.$blockScrolling = Infinity;
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+</script>
+{% endblock %}

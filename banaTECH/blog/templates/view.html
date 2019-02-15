@@ -3,15 +3,22 @@
 {{ article.title }}--banaTECH--
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<!--静的なコードをハイライトするなら-->
+<!--<script>hljs.initHighlightingOnLoad();</script>-->
+{% endblock %}
 {% block content %}
 <div class="container">
     <h1>{{ article.title }}</h1>
     <h4>{{ article.post_date }}</h4>
     <p>
-    カテゴリー：
-    {% for category in  article.category.all%}
-    <a class="btn btn-primary" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
-    {% endfor %}
+        カテゴリー：
+        {% for category in article.category.all%}
+        <a class="btn btn-primary" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
+        {% endfor %}
     </p>
     <a href="/blog/view_md/{{ article.id }}">markdownファイル</a>
     <div id="markdown_content" src="{{article.article.url}}"></div>
@@ -23,17 +30,22 @@
         var target = $("#markdown_content");
         var renderer = new marked.Renderer()
         renderer.code = function (code, language) {
-            if(language.indexOf(":") != -1){
+            if (language.indexOf(":") != -1) {
                 var lang = language.split(":")[0];
                 var fileName = language.split(":")[1].trim();
-                return '<pre>' + '<div class="card text-white bg-info" style="display: inline-block;"> <div class="card-body p-0" style="display: inline-block;">' + fileName + ' ' + '</div></div>' + '<code class="hljs">' + hljs.highlightAuto(code, [lang]).value + '</code></pre>';
-            }else{
+                return '<pre>' +
+                    '<div class="card text-white bg-info" style="display: inline-block;"> <div class="card-body p-0" style="display: inline-block;">' +
+                    fileName + ' ' + '</div></div>' + '<code class="hljs">' + hljs.highlightAuto(code, [
+                        lang
+                    ]).value + '</code></pre>';
+            } else {
                 return '<pre' + '><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
             }
         };
         renderer.image = function (href, title, text) {
             var fileName = href.split("/").pop();
-            return '<img src="/media/article/{{ article.id }}/image/'+ fileName +'" alt="'+ text +'" class="img-fluid">';
+            return '<img src="/media/article/{{ article.id }}/image/' + fileName + '" alt="' + text +
+                '" class="img-fluid">';
         }
         marked.setOptions({
             renderer: renderer,
