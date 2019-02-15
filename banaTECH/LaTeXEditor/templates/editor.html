@@ -21,8 +21,7 @@ LaTeXEditor
         </div>
         <div class="col-sm">
             <div id="output">
-                <div id="latex">
-                </div>
+                <!--LaTeXのパース結果出力場所-->
             </div>
         </div>
     </div>
@@ -32,7 +31,7 @@ LaTeXEditor
         editor.setFontSize(14);
         editor.getSession().setMode('ace/mode/latex');
         editor.getSession().setUseWrapMode(true);
-        editor.getSession().setTabSize(2);
+        editor.getSession().setTabSize(4);
         editor.$blockScrolling = Infinity;
         editor.setOptions({
             enableBasicAutocompletion: true,
@@ -43,14 +42,6 @@ LaTeXEditor
             var generator = new latexjs.HtmlGenerator({
                 hyphenate: false
             });
-            /*generator = latexjs.parse(editor.getValue(), {
-                generator: generator
-            });
-            while (output.firstChild) {
-                output.removeChild(output.firstChild);
-            }
-            output.appendChild(generator.stylesAndScripts("https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/"));
-            output.appendChild(generator.domFragment());*/
             try {
                 generator = latexjs.parse(editor.getValue(), {
                     generator: generator
@@ -62,7 +53,12 @@ LaTeXEditor
                     "https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/"));
                 output.appendChild(generator.domFragment());
             } catch (e) {
-                $("#output").text(e);
+                /*LaTeXのパースエラー*/
+                $("#output").replaceWith('<div id="output"> <p>' + e.name + '</p><p>line ' + e.location["start"]
+                    ["line"] + ' (column ' + e.location["start"]["column"] + '): ' + e.message +
+                    '</p></div>');
+                console.log(typeof (e.location["end"]["column"]));
+                console.error(e);
             }
         });
     </script>
