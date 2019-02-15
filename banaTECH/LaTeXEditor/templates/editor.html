@@ -27,8 +27,8 @@ LaTeXEditor
             </div>
         </div>
         <div class="col-sm">
-            <latex-js>
-            </latex-js>
+            <div id="output">
+            </div>
         </div>
     </div>
 </div>
@@ -44,6 +44,19 @@ LaTeXEditor
         enableBasicAutocompletion: true,
         enableSnippets: true,
         enableLiveAutocompletion: true
+    });
+    editor.getSession().on('change', function () {
+        var generator = new latexjs.HtmlGenerator({
+            hyphenate: false
+        });
+        generator = latexjs.parse(editor.getValue(), {
+            generator: generator
+        });
+        while (output.firstChild) {
+            output.removeChild(output.firstChild);
+        }
+        output.appendChild(generator.stylesAndScripts("https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/"));
+        output.appendChild(generator.domFragment());
     });
 </script>
 {% endblock %}
