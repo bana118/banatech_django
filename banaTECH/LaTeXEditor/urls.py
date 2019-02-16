@@ -3,4 +3,5 @@ import LaTeXEditor.views as latex
 
 urlpatterns = [
     path('', latex.editor),
+    path('saveTex', latex.saveTex),
 ]

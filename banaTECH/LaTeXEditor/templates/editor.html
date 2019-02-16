@@ -66,12 +66,34 @@ LaTeXEditor
                 console.error(e);
             }
         });
+
+        var postForm = function (url, data) {
+            var $form = $('<form/>', {
+                'action': url,
+                'method': 'post',
+                'id' : 'tempForm'
+            });
+            for (var key in data) {
+                $form.append($('<input/>', {
+                    'type': 'hidden',
+                    'name': key,
+                    'value': data[key]
+                }));
+            }
+            $form.append('{% csrf_token %}');
+            $form.appendTo(document.body);
+            $form.submit();
+        };
+
         function saveTex() {
-
+            var tex = editor.getValue();
+            postForm("/LaTeXEditor/saveTex", {
+                "tex": tex
+            });
+            $("#tempForm").remove();
         }
-
         function saveToPDF() {
-            
+
         }
     </script>
     {% endblock %}
