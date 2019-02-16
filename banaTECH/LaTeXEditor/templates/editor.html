@@ -16,12 +16,18 @@ LaTeXEditor
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm">
+            <button type="button" class="btn btn-primary" onclick="saveTex();">Save(.tex)</button>
             <div id="editor" style="height: 100vh;">
             </div>
         </div>
         <div class="col-sm">
-            <div id="output">
-                <!--LaTeXのパース結果出力場所-->
+            <button type="button" class="btn btn-primary" onclick="exportToPDF();">Export(.pdf)</button>
+            <div class="card" style="height: 100vh;overflow: auto;">
+                <div class="card-body">
+                    <div id="output">
+                        <!--LaTeXのパース結果出力場所-->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -57,9 +63,15 @@ LaTeXEditor
                 $("#output").replaceWith('<div id="output"> <p>' + e.name + '</p><p>line ' + e.location["start"]
                     ["line"] + ' (column ' + e.location["start"]["column"] + '): ' + e.message +
                     '</p></div>');
-                console.log(typeof (e.location["end"]["column"]));
                 console.error(e);
             }
         });
+        function saveTex() {
+
+        }
+
+        function saveToPDF() {
+            
+        }
     </script>
     {% endblock %}
