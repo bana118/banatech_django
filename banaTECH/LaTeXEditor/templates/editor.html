@@ -69,7 +69,7 @@ LaTeXEditor
             var $form = $('<form/>', {
                 'action': url,
                 'method': 'post',
-                'id' : 'tempForm'
+                'id': 'tempForm'
             });
             for (var key in data) {
                 $form.append($('<input/>', {
@@ -81,6 +81,7 @@ LaTeXEditor
             $form.append('{% csrf_token %}');
             $form.appendTo(document.body);
             $form.submit();
+            $("#tempForm").remove();
         };
 
         function saveTex() {
@@ -88,10 +89,13 @@ LaTeXEditor
             postForm("/LaTeXEditor/saveTex", {
                 "tex": tex
             });
-            $("#tempForm").remove();
         }
-        function saveToPDF() {
 
+        function exportToPDF() {
+            var tex = editor.getValue();
+            postForm("/LaTeXEditor/exportToPDF", {
+                "tex": tex
+            });
         }
     </script>
     {% endblock %}
