@@ -17,12 +17,18 @@ LaTeXEditor
     <div class="row">
         <div class="col-sm">
             <button type="button" class="btn btn-primary" onclick="saveTex();">Save(.tex)</button>
+            <a href="#!" onclick="undo();">
+                <i class="fas fa-undo fa-lg fa-fw"></i>
+            </a>
+            <a href="#!" onclick="redo();">
+                <i class="fas fa-redo fa-lg fa-fw"></i>
+            </a>
             <div id="editor" style="height: 100vh;">
             </div>
         </div>
         <div class="col-sm">
             <button type="button" class="btn btn-primary" onclick="exportToPDF();">Export(.pdf)</button>
-            <div class="card" style="height: 100vh;overflow: auto;">
+            <div class="card" style="height: 100vh; overflow: auto;">
                 <div class="card-body">
                     <div id="output">
                         <!--LaTeXのパース結果出力場所-->
@@ -57,11 +63,17 @@ LaTeXEditor
                     "https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/"));
                 output.appendChild(generator.domFragment());
             } catch (e) {
-                /*LaTeXのパースエラー*/
-                $("#output").replaceWith('<div id="output"> <p>' + e.name + '</p><p>line ' + e.location["start"]
-                    ["line"] + ' (column ' + e.location["start"]["column"] + '): ' + e.message +
-                    '</p></div>');
-                console.error(e);
+                if (e.name == "SyntaxError") {
+                    /*LaTeXのパースエラー*/
+                    $("#output").replaceWith('<div id="output"> <p>' + e.name + '</p><p>line ' + e.location[
+                            "start"]
+                        ["line"] + ' (column ' + e.location["start"]["column"] + '): ' + e.message +
+                        '</p></div>');
+                    console.error(e);
+                } else {
+                    $("#output").replaceWith('<div id="output"> <p>unexpected error' + '</p></div>');
+                    console.error(e);
+                }
             }
         });
 
@@ -96,6 +108,14 @@ LaTeXEditor
             postForm("/LaTeXEditor/exportToPDF", {
                 "tex": tex
             });
+        }
+
+        function undo() {
+            editor.undo();
+        }
+
+        function redo() {
+            editor.redo();
         }
     </script>
     {% endblock %}

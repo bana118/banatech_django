@@ -4,3 +4,5 @@ Django == 2.1.4
 #blog
 Pillow == 5.2.0
 
+#LaTeXEditor
+latex == 0.7.0
