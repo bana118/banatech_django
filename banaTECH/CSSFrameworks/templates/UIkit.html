@@ -129,3 +129,556 @@
     </div>
 </div>
 <br>
+<h3>Article</h3>
+<p>class="uk-article"で指定。記事などのデザイン</p>
+<div class="uk-example">
+    <article class="uk-article">
+        <h1 class="uk-article-title"><a class="uk-link-reset" href="">Heading</a></h1>
+        <p class="uk-article-meta">Written by <a href="#!">Super User</a> on 12 April 2012. Posted in <a href="#">Blog</a></p>
+        <p class="uk-text-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum.</p>
+        <div class="uk-grid-small uk-child-width-auto" uk-grid>
+            <div>
+                <a class="uk-button uk-button-text" href="#!">Read more</a>
+            </div>
+            <div>
+                <a class="uk-button uk-button-text" href="#!">5 Comments</a>
+            </div>
+        </div>
+    </article>
+</div>
+<br>
+<h3>Background</h3>
+<p>class="uk-background-primary"などで指定。背景のデザイン。色のほかに画像も指定できる</p>
+<div class="uk-example">
+    <div class="uk-child-width-1-2@s uk-text-center" uk-grid>
+        <div>
+            <div class="uk-background-default uk-padding uk-panel">
+                <p class="uk-h4">Default</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-background-muted uk-padding uk-panel">
+                <p class="uk-h4">Muted</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-background-primary uk-light uk-padding uk-panel">
+                <p class="uk-h4">Primary</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-background-secondary uk-light uk-padding uk-panel">
+                <p class="uk-h4">Secondary</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Badge</h3>
+<p>class="uk-badge"で指定。丸いラベルのデザイン。</p>
+<div class="uk-example">
+    <span class="uk-badge">1</span>
+    <span class="uk-badge">100</span>
+</div>
+<br>
+<h3>Breadcrumb</h3>
+<p>class="uk-breadcrumb"で指定。/区切りのリスト</p>
+<div class="uk-example">
+    <ul class="uk-breadcrumb">
+        <li><a href="#!">Item</a></li>
+        <li><a href="#!">Item</a></li>
+        <li class="uk-disabled"><a>Disabled</a></li>
+        <li><span>Active</span></li>
+    </ul>
+</div>
+<br>
+<h3>Button</h3>
+<p>class="uk-button"で指定。様々なボタンのデザイン。</p>
+<div class="uk-example">
+    <p uk-margin>
+        <button class="uk-button uk-button-default">Default</button>
+        <button class="uk-button uk-button-primary">Primary</button>
+        <button class="uk-button uk-button-secondary">Secondary</button>
+        <button class="uk-button uk-button-danger">Danger</button>
+        <button class="uk-button uk-button-text">Text</button>
+        <button class="uk-button uk-button-link">Link</button>
+    </p>
+    <div class="uk-button-group">
+        <button class="uk-button uk-button-default">Dropdown</button>
+        <div class="uk-inline">
+            <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+            <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+                <ul class="uk-nav uk-dropdown-nav">
+                    <li class="uk-active"><a href="#">Active</a></li>
+                    <li><a href="#">Item</a></li>
+                    <li class="uk-nav-header">Header</li>
+                    <li><a href="#">Item</a></li>
+                    <li><a href="#">Item</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li><a href="#">Item</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Card</h3>
+<p>class="uk-card"で指定。様々なカードのデザイン。</p>
+<div class="uk-example">
+    <div class="uk-child-width-1-3@m uk-grid-small uk-grid-match" uk-grid>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                <h3 class="uk-card-title">Default</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-primary uk-card-body">
+                <h3 class="uk-card-title">Primary</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-secondary uk-card-body">
+                <h3 class="uk-card-title">Secondary</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-hover uk-card-body">
+                <h3 class="uk-card-title">Hover</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Close</h3>
+<p>class="uk-alert-close"などで指定。アラートなどに閉じるボタンをつける</p>
+<div class="uk-example">
+    <div uk-alert>
+        <button class="uk-alert-close" type="button" uk-close></button>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+    </div>
+    <div class="uk-inline">
+        <button class="uk-button uk-button-default" type="button">Click</button>
+        <div uk-drop="mode: click">
+            <div class="uk-card uk-card-body uk-card-default">
+                <button class="uk-drop-close" type="button" uk-close></button>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            </div>
+        </div>
+    </div>
+    <a class="uk-button uk-button-default" href="#modal" uk-toggle>Open modal</a>
+    <div id="modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Headline</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.</p>
+            <p class="uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                <button class="uk-button uk-button-primary" type="button">Save</button>
+            </p>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Column</h3>
+<p>class="uk-column-*"で指定。ページを分割する</p>
+<div class="uk-example">
+    <div class="uk-column-1-2">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+            laborum.</p>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident. Duis aute irure dolor in reprehenderit in voluptate velit
+            esse cillum dolore.</p>
+    </div>
+</div>
+<br>
+<h3>Countdown</h3>
+<p>class="uk-countdown"で指定。簡単なカウントダウンタイマーを設置</p>
+<div class="uk-countdown">
+    <div class="uk-grid-small uk-child-width-auto" uk-grid uk-countdown="date: 2019-02-25T08:10:06+00:00">
+        <div>
+            <div class="uk-countdown-number uk-countdown-days"></div>
+            <div class="uk-countdown-label uk-margin-small uk-text-center uk-visible@s">Days</div>
+        </div>
+        <div class="uk-countdown-separator">:</div>
+        <div>
+            <div class="uk-countdown-number uk-countdown-hours"></div>
+            <div class="uk-countdown-label uk-margin-small uk-text-center uk-visible@s">Hours</div>
+        </div>
+        <div class="uk-countdown-separator">:</div>
+        <div>
+            <div class="uk-countdown-number uk-countdown-minutes"></div>
+            <div class="uk-countdown-label uk-margin-small uk-text-center uk-visible@s">Minutes</div>
+        </div>
+        <div class="uk-countdown-separator">:</div>
+        <div>
+            <div class="uk-countdown-number uk-countdown-seconds"></div>
+            <div class="uk-countdown-label uk-margin-small uk-text-center uk-visible@s">Seconds</div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Description List</h3>
+<p>class="uk-description-list"で指定。文章を並べるデザイン。</p>
+<div class="uk-example">
+    <dl class="uk-description-list uk-description-list-divider">
+        <dt>Description term</dt>
+        <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
+        <dt>Description term</dt>
+        <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.</dd>
+        <dt>Description term</dt>
+        <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.</dd>
+    </dl>
+</div>
+<br>
+<h3>Driver</h3>
+<p>&lt;hr&gt;で区切り線を挿入できる。classを指定することで小さくしたり、縦にすることもできる。</p>
+<div class="uk-example">
+    <hr>
+    <hr class="uk-divider-vertical">
+    <hr class="uk-divider-small">
+</div>
+<br>
+<h3>Dotnav</h3>
+<p>class="uk-dotnav"で指定。ドット上のリンクのデザイン。</p>
+<div class="uk-example">
+    <ul class="uk-dotnav">
+        <li class="uk-active"><a href="#!">Item 1</a></li>
+        <li><a href="#!">Item 2</a></li>
+        <li><a href="#!">Item 3</a></li>
+        <li><a href="#!">Item 4</a></li>
+        <li><a href="#!">Item 5</a></li>
+    </ul>
+</div>
+<br>
+<h3>Drop</h3>
+<p>uk-dropで指定。ホバーやクリックでコンテンツを表示する</p>
+<div class="uk-example">
+    <div class="uk-inline">
+        <button class="uk-button uk-button-default" type="button">Hover</button>
+        <div uk-drop>
+            <div class="uk-card uk-card-body uk-card-default">Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt.</div>
+        </div>
+    </div>
+    <div class="uk-inline">
+        <button class="uk-button uk-button-default" type="button">Click</button>
+        <div uk-drop="mode: click">
+            <div class="uk-card uk-card-body uk-card-default">Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt.</div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Dropdown</h3>
+<p>uk-dropdownで指定。ドロップダウンのデザイン。</p>
+<div class="uk-example">
+    <button class="uk-button uk-button-default" type="button">Hover</button>
+    <div class="uk-width-large" uk-dropdown>
+        <div class="uk-dropdown-grid uk-child-width-1-2@m" uk-grid>
+            <div>
+                <ul class="uk-nav uk-dropdown-nav">
+                    <li class="uk-active"><a href="#!">Active</a></li>
+                    <li><a href="#!">Item</a></li>
+                    <li class="uk-nav-header">Header</li>
+                    <li><a href="#!">Item</a></li>
+                    <li><a href="#!">Item</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li><a href="#!">Item</a></li>
+                </ul>
+            </div>
+            <div>
+                <ul class="uk-nav uk-dropdown-nav">
+                    <li class="uk-active"><a href="#!">Active</a></li>
+                    <li><a href="#!">Item</a></li>
+                    <li class="uk-nav-header">Header</li>
+                    <li><a href="#!">Item</a></li>
+                    <li><a href="#!">Item</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li><a href="#!">Item</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Filter</h3>
+<p>uk-filterで指定。条件を満たす要素のみを表示させる。ソートさせることもできる</p>
+<div class="uk-example">
+    <div uk-filter="target: .js-filter">
+
+        <div class="uk-grid-small uk-grid-divider uk-child-width-auto" uk-grid>
+            <div>
+                <ul class="uk-subnav uk-subnav-pill" uk-margin>
+                    <li class="uk-active" uk-filter-control><a href="#">All</a></li>
+                </ul>
+            </div>
+            <div>
+                <ul class="uk-subnav uk-subnav-pill" uk-margin>
+                    <li uk-filter-control="filter: [data-color='white']; group: data-color"><a href="#">White</a></li>
+                    <li uk-filter-control="filter: [data-color='blue']; group: data-color"><a href="#">Blue</a></li>
+                    <li uk-filter-control="filter: [data-color='black']; group: data-color"><a href="#">Black</a></li>
+                </ul>
+            </div>
+            <div>
+                <ul class="uk-subnav uk-subnav-pill" uk-margin>
+                    <li uk-filter-control="filter: [data-size='small']; group: size"><a href="#">Small</a></li>
+                    <li uk-filter-control="filter: [data-size='medium']; group: size"><a href="#">Medium</a></li>
+                    <li uk-filter-control="filter: [data-size='large']; group: size"><a href="#">Large</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <ul class="js-filter uk-child-width-1-2 uk-child-width-1-3@m uk-text-center" uk-grid="masonry: true">
+            <li data-color="white" data-size="large">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <canvas width="600" height="800"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="blue" data-size="small">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <canvas width="600" height="400"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="white" data-size="medium">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <canvas width="600" height="600"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="white" data-size="small">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <canvas width="600" height="400"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="black" data-size="medium">
+                <div class="uk-card uk-card-secondary uk-card-body">
+                    <canvas width="600" height="600"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="black" data-size="small">
+                <div class="uk-card uk-card-secondary uk-card-body">
+                    <canvas width="600" height="400"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="blue" data-size="medium">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <canvas width="600" height="600"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="black" data-size="large">
+                <div class="uk-card uk-card-secondary uk-card-body">
+                    <canvas width="600" height="800"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="blue" data-size="large">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <canvas width="600" height="800"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="white" data-size="large">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <canvas width="600" height="800"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="blue" data-size="medium">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <canvas width="600" height="600"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+            <li data-color="black" data-size="small">
+                <div class="uk-card uk-card-secondary uk-card-body">
+                    <canvas width="600" height="400"></canvas>
+                    <div class="uk-position-center">Item</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<br>
+<h3>Flex</h3>
+<p>class="uk-flex"で指定。コンテンツによって大きさや位置を自動で変えてくれるフレックスボックスのデザイン。</p>
+<div class="uk-example">
+    <div class="uk-flex">
+        <div class="uk-card uk-card-default uk-card-body">Item 1</div>
+        <div class="uk-card uk-card-default uk-card-body uk-margin-left">Item 2</div>
+        <div class="uk-card uk-card-default uk-card-body uk-margin-left">Item 3</div>
+    </div>
+</div>
+<br>
+<h3>Form</h3>
+<p>class="uk-select"などで指定。フォームに使う様々なパーツのデザイン</p>
+<div class="uk-example">
+    <form>
+        <fieldset class="uk-fieldset">
+            <legend class="uk-legend">Legend</legend>
+            <div class="uk-margin">
+                <input class="uk-input" type="text" placeholder="Input">
+            </div>
+            <div class="uk-margin">
+                <select class="uk-select">
+                    <option>Option 01</option>
+                    <option>Option 02</option>
+                </select>
+            </div>
+            <div class="uk-margin">
+                <textarea class="uk-textarea" rows="5" placeholder="Textarea"></textarea>
+            </div>
+            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                <label><input class="uk-radio" type="radio" name="radio2" checked> A</label>
+                <label><input class="uk-radio" type="radio" name="radio2"> B</label>
+            </div>
+            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                <label><input class="uk-checkbox" type="checkbox" checked> A</label>
+                <label><input class="uk-checkbox" type="checkbox"> B</label>
+            </div>
+            <div class="uk-margin">
+                <input class="uk-range" type="range" value="2" min="0" max="10" step="0.1">
+            </div>
+        </fieldset>
+    </form>
+</div>
+<br>
+<h3>Icon</h3>
+<p>uk-iconで指定。様々なアイコンのデザイン。以下は一例</p>
+<div class="uk-example">
+    <a href="#!" class="uk-icon-link uk-margin-small-right" uk-icon="copy"></a>
+    <a href="#!" class="uk-icon-link uk-margin-small-right" uk-icon="file-edit"></a>
+    <a href="#!" class="uk-icon-link" uk-icon="trash"></a>
+    <a href="#!" class="uk-icon-button uk-margin-small-right" uk-icon="twitter"></a>
+    <a href="#!" class="uk-icon-button  uk-margin-small-right" uk-icon="facebook"></a>
+    <a href="#!" class="uk-icon-button" uk-icon="google-plus"></a>
+</div>
+<br>
+<h3>Label</h3>
+<p>class="uk-label"で指定。四角いラベルのデザイン。</p>
+<div class="uk-example">
+    <span class="uk-label">Default</span>
+    <span class="uk-label uk-label-success">Success</span>
+    <span class="uk-label uk-label-warning">Warning</span>
+    <span class="uk-label uk-label-danger">Danger</span>
+</div>
+<br>
+<h3>Nav</h3>
+<p>class="uk-nav-default"などで指定。リンクをまとめたナビゲーションのデザイン。</p>
+<div class="uk-example">
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-2@s">
+        <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
+            <li class="uk-active"><a href="#">Active</a></li>
+            <li class="uk-parent">
+                <a href="#!">Parent</a>
+                <ul class="uk-nav-sub">
+                    <li><a href="#!">Sub item</a></li>
+                    <li><a href="#!">Sub item</a></li>
+                </ul>
+            </li>
+            <li class="uk-parent">
+                <a href="#!">Parent</a>
+                <ul class="uk-nav-sub">
+                    <li><a href="#!">Sub item</a></li>
+                    <li><a href="#!">Sub item</a></li>
+                </ul>
+            </li>
+            <li class="uk-nav-header">Header</li>
+            <li><a href="#!"><span class="uk-margin-small-right" uk-icon="icon: table"></span> Item</a></li>
+            <li><a href="#!"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span> Item</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="#!"><span class="uk-margin-small-right" uk-icon="icon: trash"></span> Item</a></li>
+        </ul>
+    </div>
+</div>
+<br>
+<h3>Navbar</h3>
+<p>class="uk-navbar-*"で指定。ページ上部に置くナビゲーションバーのデザイン。</p>
+<div class="uk-example">
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+                <li class="uk-active"><a href="#!">Active</a></li>
+                <li>
+                    <a href="#!">Parent</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#!">Active</a></li>
+                            <li><a href="#!">Item</a></li>
+                            <li class="uk-nav-header">Header</li>
+                            <li><a href="#!">Item</a></li>
+                            <li><a href="#!">Item</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="#!">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="#!">Item</a></li>
+            </ul>
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#!">Parent</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#!">Active</a></li>
+                            <li><a href="#!">Item</a></li>
+                            <li class="uk-nav-header">Header</li>
+                            <li><a href="#!">Item</a></li>
+                            <li><a href="#!">Item</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="#!">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<br>
+<h3>Notification</h3>
+<p>onclick="UIkit.notificationで指定。一定時間で消えるポップアップウィンドウを表示させるデザイン。</p>
+<div class="uk-example">
+    <p uk-margin>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Top Left...', pos: 'top-left'})">Top
+            Left</button>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Top Center...', pos: 'top-center'})">Top
+            Center</button>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Top Right...', pos: 'top-right'})">Top
+            Right</button>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Bottom Left...', pos: 'bottom-left'})">Bottom
+            Left</button>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Bottom Center...', pos: 'bottom-center'})">Bottom
+            Center</button>
+        <button class="uk-button uk-button-default" type="button" onclick="UIkit.notification({message: 'Bottom Right...', pos: 'bottom-right'})">Bottom
+            Right</button>
+    </p>
+</div>
+<br>
