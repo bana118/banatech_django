@@ -10,12 +10,10 @@ CSSFrameworks
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
 
-<!-- Materialize CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<!-- Icon -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<!-- Materialize JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- Semantic-UI CSS -->
+<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+<!-- Semantic-UI JS -->
+<script src="semantic/dist/semantic.min.js"></script>
 
 {% endblock %}
 
@@ -36,7 +34,7 @@ CSSFrameworks
             <a href="#tab2" class="nav-link" data-toggle="tab">UIkit</a>
         </li>
         <li class="nav-item">
-            <a href="#tab3" class="nav-link" data-toggle="tab">Materialize</a>
+            <a href="#tab3" class="nav-link" data-toggle="tab">Semantic UI</a>
         </li>
     </ul>
     <div class="tab-content">
@@ -47,7 +45,7 @@ CSSFrameworks
             {% include "UIkit.html" %}
         </div>
         <div id="tab3" class="tab-pane">
-            {% include "Materialize".html" %}
+            {% include "Semantic-UI.html" %}
         </div>
     </div>
 </div>
