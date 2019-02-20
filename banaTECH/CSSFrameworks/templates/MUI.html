@@ -1,0 +1,357 @@
+<h1>MUI</h1>
+<a href="https://www.muicss.com/">https://www.muicss.com/</a>
+<h3>特徴</h3>
+<p>
+    Googleが提唱するマテリアルデザインをフォローするフレームワーク。軽量だが機能も少ない。
+    クラス名などがmui-*で統一されており、既存のクラス名との競合が避けられる。
+</p>
+<br>
+<h3>CDN</h3>
+<p>バージョンは公式ドキュメントを要チェック。</p>
+<p>CSS</p>
+<p>
+    &lt;link href="https://cdn.muicss.com/mui-0.9.41/css/mui.min.css" rel="stylesheet" type="text/css" /&gt;
+</p>
+<p>JavaScript</p>
+<p>
+    &lt;script src="https://cdn.muicss.com/mui-0.9.41/js/mui.min.js"&gt;&lt;/script&gt;
+</p>
+<br>
+<h3>Appbar</h3>
+<p>class="mui-appbarで指定。閲覧機器によって大きさが自動で調整されるバー。</p>
+<div class="mui-example">
+    <div class="mui-appbar">
+        <table width="100%">
+            <tr style="vertical-align:middle;">
+                <td class="mui--appbar-height">Left Side</td>
+                <td class="mui--appbar-height" align="right">Right Side</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br>
+<h3>Buttons</h3>
+<p>class="mui-button"で指定。様々なデザインのボタン。</p>
+<div class="mui-example">
+    <div>
+        <button class="mui-btn">Button</button>
+        <button class="mui-btn mui-btn--primary">Button</button>
+        <button class="mui-btn mui-btn--danger">Button</button>
+        <button class="mui-btn mui-btn--accent">Button</button>
+    </div>
+    <div>
+        <button class="mui-btn" disabled>Button</button>
+        <button class="mui-btn mui-btn--primary" disabled>Button</button>
+        <button class="mui-btn mui-btn--danger" disabled>Button</button>
+        <button class="mui-btn mui-btn--accent" disabled>Button</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--flat">Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--primary">Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--danger">Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--accent">Button</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--flat" disabled>Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--primary" disabled>Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--danger" disabled>Button</button>
+        <button class="mui-btn mui-btn--flat mui-btn--accent" disabled>Button</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--raised">Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--primary">Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--danger">Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--accent">Button</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--raised" disabled>Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--primary" disabled>Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--danger" disabled>Button</button>
+        <button class="mui-btn mui-btn--raised mui-btn--accent" disabled>Button</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--fab">+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--primary">+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--danger">+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--accent">+</button>
+    </div>
+    <div>
+        <button class="mui-btn mui-btn--fab" disabled>+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--primary" disabled>+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--danger" disabled>+</button>
+        <button class="mui-btn mui-btn--fab mui-btn--accent" disabled>+</button>
+    </div>
+</div>
+<br>
+<h3>Dividers</h3>
+<p>class="mui-divider"で指定。要素を区切る線。</p>
+<div class="mui-example">
+    <div>
+        Content 1
+    </div>
+    <div class="mui-divider"></div>
+    <div>
+        Content 2
+    </div>
+    <br>
+    <span>Content1</span>
+    <span class="mui--divider-left">&nbsp;Content2</span>
+</div>
+<br>
+<h3>Dropdowns</h3>
+<p>class="mui-dropdown"で指定。ボタンなどにドロップダウン機能を付加できる。</p>
+<div class="mui-example">
+    <div class="mui-dropdown">
+        <button class="mui-btn mui-btn--primary" data-mui-toggle="dropdown">
+            Dropdown
+            <span class="mui-caret"></span>
+        </button>
+        <ul class="mui-dropdown__menu">
+            <li><a href="#!">Option 1</a></li>
+            <li><a href="#!">Option 2</a></li>
+            <li><a href="#!">Option 3</a></li>
+            <li><a href="#!">Option 4</a></li>
+        </ul>
+    </div>
+</div>
+<br>
+<h3>Forms</h3>
+<p>class="mui-form"で指定。フォームのデザイン。</p>
+<div class="mui-example">
+    <form class="mui-form">
+        <legend>Title</legend>
+        <div class="mui-textfield">
+            <input type="text" placeholder="Input 1">
+        </div>
+        <div class="mui-textfield">
+            <input type="text" placeholder="Input 2">
+        </div>
+        <div class="mui-textfield">
+            <textarea placeholder="Textarea"></textarea>
+        </div>
+        <div class="mui-select">
+            <select>
+                <optgroup label="Group 1">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                </optgroup>
+                <optgroup label="Group 2">
+                    <option>Option 3</option>
+                    <option>Option 4</option>
+                </optgroup>
+            </select>
+            <label>Optgroups Example</label>
+        </div>
+        <div class="mui-textfield mui-textfield--float-label">
+            <input type="email" value="Validation error">
+            <label>Email Address</label>
+        </div>
+        <div class="mui-checkbox">
+            <label>
+                <input type="checkbox" value="" checked>
+                Option one
+            </label>
+        </div>
+        <div class="mui-checkbox">
+            <label>
+                <input type="checkbox" value="">
+                Option two
+            </label>
+        </div>
+        <div class="mui-checkbox">
+            <label>
+                <input type="checkbox" value="" disabled>
+                Option three is disabled
+            </label>
+        </div>
+        <div class="mui-radio">
+            <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                Option one
+            </label>
+        </div>
+        <div class="mui-radio">
+            <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                Option two
+            </label>
+        </div>
+        <div class="mui-radio">
+            <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+                Option three is disabled
+            </label>
+        </div>
+        <button type="submit" class="mui-btn mui-btn--raised">Submit</button>
+    </form>
+</div>
+<br>
+<h3>Grid</h3>
+<p>class="mui-row"およびclass="mui-col-md-*"で指定。ページを行と列で区切る。</p>
+<div class="mui-example">
+    <div class="mui-container-fluid">
+        <div class="mui-row">
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+            <div class="mui-col-md-1">md-1</div>
+        </div>
+        <div class="mui-row">
+            <div class="mui-col-md-8">md-8</div>
+            <div class="mui-col-md-4">md-4</div>
+        </div>
+        <div class="mui-row">
+            <div class="mui-col-md-4">md-4</div>
+            <div class="mui-col-md-4">md-4</div>
+            <div class="mui-col-md-4">md-4</div>
+        </div>
+        <div class="mui-row">
+            <div class="mui-col-md-6">md-6</div>
+            <div class="mui-col-md-6">md-6</div>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Overlay</h3>
+<p>JavaScriptによる設定が必要。画面上を別の画面で覆う。</p>
+<div class="mui-example">
+    <script>
+        function activateModal() {
+            // initialize modal element
+            var modalEl = document.createElement('div');
+            modalEl.style.width = '400px';
+            modalEl.style.height = '300px';
+            modalEl.style.margin = '100px auto';
+            modalEl.style.backgroundColor = '#fff';
+
+            // show modal
+            mui.overlay('on', modalEl);
+        }
+    </script>
+    <button class="mui-btn mui-btn--primary" onclick="activateModal()">Activate modal</button>
+</div>
+<br>
+<h3>Panels</h3>
+<p>class="mui-panel"で指定。ページ上にパネルを置く。</p>
+<div class="mui-example">
+    <div class="mui-panel">
+        content
+    </div>
+</div>
+<br>
+<h3>Tables</h3>
+<p>class="mui-table"で指定。表のデザイン。</p>
+<div class="mui-example">
+    <table class="mui-table">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Cell 1-1</td>
+                <td>Cell 1-2</td>
+            </tr>
+            <tr>
+                <td>Cell 2-1</td>
+                <td>Cell 2-2</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<h3>Tab</h3>
+<p>class="mui-tabs__bar"で指定。タブで要素の表示を切り替える。</p>
+<div class="mui-example">
+    <ul class="mui-tabs__bar">
+        <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-default-1">Tab-1</a></li>
+        <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Tab-2</a></li>
+        <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Tab-3</a></li>
+    </ul>
+    <div class="mui-tabs__pane mui--is-active" id="pane-default-1">Pane-1</div>
+    <div class="mui-tabs__pane" id="pane-default-2">Pane-2</div>
+    <div class="mui-tabs__pane" id="pane-default-3">Pane-3</div>
+</div>
+<br>
+<h3>Typography</h3>
+<p>class="mui--text-*"で指定。様々な文字のフォント。</p>
+<div class="mui-example">
+    <div class="mui--text-display4">Display4</div>
+    <div class="mui--text-display3">Display3</div>
+    <div class="mui--text-display2">Display2</div>
+    <div class="mui--text-display1">Display1</div>
+    <div class="mui--text-headline">Headline</div>
+    <div class="mui--text-title">Title</div>
+    <div class="mui--text-subhead">Subhead</div>
+    <div class="mui--text-body2">Body2</div>
+    <div class="mui--text-body1">Body1</div>
+    <div class="mui--text-caption">Caption</div>
+    <div class="mui--text-menu">Menu</div>
+    <div class="mui--text-button">Button</div>
+    <div class="mui--text-dark">dark</div>
+    <div class="mui--text-dark-secondary">dark-secondary</div>
+    <div class="mui--text-dark-hint">dark-hint</div>
+    <br>
+    <div style="background-color:#444;">
+        <div class="mui--text-light">light</div>
+        <div class="mui--text-light-secondary">light-secondary</div>
+        <div class="mui--text-light-hint">light-hint</div>
+    </div>
+    <br>
+    <div class="mui--text-accent">accent</div>
+    <div class="mui--text-accent-secondary">accent-secondary</div>
+    <div class="mui--text-accent-hint">accent-hint</div>
+    <br>
+    <div class="mui--text-black">black</div>
+    <div class="mui--text-white" style="background-color: #444;">white</div>
+    <div class="mui--text-danger">danger</div>
+    <div class="mui--text-dark-secondary mui--text-display4">Display4</div>
+    <div class="mui--text-dark-secondary mui--text-display3">Display3</div>
+    <div class="mui--text-dark-secondary mui--text-display2">Display2</div>
+    <div class="mui--text-dark-secondary mui--text-display1">Display1</div>
+    <div class="mui--text-dark mui--text-headline">Headline</div>
+    <div class="mui--text-dark mui--text-title">Title</div>
+    <div class="mui--text-dark mui--text-subhead">Subhead</div>
+    <div class="mui--text-dark mui--text-body2">Body2</div>
+    <div class="mui--text-dark mui--text-body1">Body1</div>
+    <div class="mui--text-dark-secondary mui--text-caption">Caption</div>
+    <div class="mui--text-dark mui--text-menu">Menu</div>
+    <div class="mui--text-dark mui--text-button">Button</div>
+    <div style="background-color:#444;">
+        <div class="mui--text-light-secondary mui--text-display4">Display4</div>
+        <div class="mui--text-light-secondary mui--text-display3">Display3</div>
+        <div class="mui--text-light-secondary mui--text-display2">Display2</div>
+        <div class="mui--text-light-secondary mui--text-display1">Display1</div>
+        <div class="mui--text-light mui--text-headline">Headline</div>
+        <div class="mui--text-light mui--text-title">Title</div>
+        <div class="mui--text-light mui--text-subhead">Subhead</div>
+        <div class="mui--text-light mui--text-body2">Body2</div>
+        <div class="mui--text-light mui--text-body1">Body1</div>
+        <div class="mui--text-light-secondary mui--text-caption">Caption</div>
+        <div class="mui--text-light mui--text-menu">Menu</div>
+        <div class="mui--text-light mui--text-button">Button</div>
+    </div>
+    <div class="mui--text-accent-secondary mui--text-display4">Display4</div>
+    <div class="mui--text-accent-secondary mui--text-display3">Display3</div>
+    <div class="mui--text-accent-secondary mui--text-display2">Display2</div>
+    <div class="mui--text-accent-secondary mui--text-display1">Display1</div>
+    <div class="mui--text-accent mui--text-headline">Headline</div>
+    <div class="mui--text-accent mui--text-title">Title</div>
+    <div class="mui--text-accent mui--text-subhead">Subhead</div>
+    <div class="mui--text-accent mui--text-body2">Body2</div>
+    <div class="mui--text-accent mui--text-body1">Body1</div>
+    <div class="mui--text-accent-secondary mui--text-caption">Caption</div>
+    <div class="mui--text-accent mui--text-menu">Menu</div>
+    <div class="mui--text-accent mui--text-button">Button</div>
+</div>
+<br>

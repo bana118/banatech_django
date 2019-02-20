@@ -10,10 +10,10 @@ CSSFrameworks
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
 
-<!-- Semantic-UI CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"/>
-<!-- Semantic-UI JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+<!-- MUI CSS -->
+<link href="https://cdn.muicss.com/mui-0.9.41/css/mui.min.css" rel="stylesheet" type="text/css" />
+<!-- MUI JS -->
+<script src="https://cdn.muicss.com/mui-0.9.41/js/mui.min.js"></script>
 
 {% endblock %}
 
@@ -24,7 +24,7 @@ CSSFrameworks
         CSSフレームワークとはボタンやテーブルのデザインやドロップダウンなどよく使うJavaScriptをダウンロードやCDNで指定するだけで簡単に
         仕様できるようになるライブラリです。要素のクラス名などに指定するだけで以下のようなコンポーネントが簡単に置けます。
         様々なフレームワークがあるのでこのページをぜひ参考にしてください。多くのブラウザにある開発者用機能(F12)でソースが見れます。
-        このページにある機能は全体のほんの一部なのでそれぞれの公式サイトも参照してください。
+        このページにある機能は全体のほんの一部なのでそれぞれの公式ドキュメントも参照してください。
     </p>
     <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -34,7 +34,7 @@ CSSFrameworks
             <a href="#tab2" class="nav-link" data-toggle="tab">UIkit</a>
         </li>
         <li class="nav-item">
-            <a href="#tab3" class="nav-link" data-toggle="tab">Semantic UI</a>
+            <a href="#tab3" class="nav-link" data-toggle="tab">MUI</a>
         </li>
     </ul>
     <div class="tab-content">
@@ -45,7 +45,7 @@ CSSFrameworks
             {% include "UIkit.html" %}
         </div>
         <div id="tab3" class="tab-pane">
-            {% include "Semantic-UI.html" %}
+            {% include "MUI.html" %}
         </div>
     </div>
 </div>
