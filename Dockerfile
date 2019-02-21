@@ -13,6 +13,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
 	git \
+	nano \
 	python3 \
 	python3-dev \
 	python3-setuptools \
@@ -49,3 +50,14 @@ RUN pip3 install -r /home/docker/code/requirements.txt
 COPY . /home/docker/code/
 EXPOSE 80
 CMD ["supervisord", "-n"]
+
+#djangoでcreatesuperuserを行うため
+RUN apt-get update
+RUN apt-get install language-pack-ja
+RUN update-locale LANG=ja_JP.UTF-8
+
+#今はmakemigrations, migrate, createsuperuserは手動で行うことにする
+#RUN export LANG=ja_JP.UTF-8
+#RUN python3 /home/docker/code/banaTECH/manage.py makemigrations
+#RUN python3 /home/docker/code/banaTECH/manage.py migrate
+#RUN python3 /home/docker/code/banaTECH/manage.py createsuperuser
