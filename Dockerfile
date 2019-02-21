@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
 
+# avoid freeze while configuring tzdata 
+ENV DEBIAN_FRONTEND=noninteractive
+
 #Author
 MAINTAINER banaTECH
 
@@ -16,6 +19,15 @@ RUN apt-get update && \
 	python3-pip \
 	nginx \
 	supervisor \
+	libtiff-dev \
+	libjpeg-dev \
+	zlib1g-dev \
+	libfreetype6-dev \
+	liblcms2-dev \
+	libwebp-dev \
+	tcl-dev \
+	tk-dev \
+	python-tk \
 	sqlite3 && \
 	pip3 install -U pip setuptools && \
    rm -rf /var/lib/apt/lists/*
