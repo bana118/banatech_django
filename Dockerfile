@@ -56,6 +56,8 @@ RUN apt-get update
 RUN apt-get install language-pack-ja
 RUN update-locale LANG=ja_JP.UTF-8
 
+#adminサイトのstaticファイルを追加
+RUN python3 /home/docker/code/banaTECH/manage.py collectstatic
 #今はmakemigrations, migrate, createsuperuserは手動で行うことにする
 #RUN export LANG=ja_JP.UTF-8
 #RUN python3 /home/docker/code/banaTECH/manage.py makemigrations
