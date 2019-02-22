@@ -17,96 +17,17 @@
     <p>操作方法：操作方法を書く。</p>
     <div class="card text-left">
         <div class="card-body">
+            {% for block in ""|rjust:"36" %}
+            {% if forloop.counter0|divisibleby:"6" %}
             <div class="row">
+                {% endif %}
                 <div class="col-md-2">
-                    <canvas id="c1" width="40" height="40"></canvas>
+                    <canvas id="b-{{ forloop.counter }}" width="40" height="40"></canvas>
                 </div>
+                {% if forloop.counter|divisibleby:"6" %}
             </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-2">
-            </div>
+            {% endif %}
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -114,6 +35,7 @@
     onload = function () {
         draw1();
     };
+    const size = 40;
     /* fillRect()の例 */
     function draw1() {
         var canvas = document.getElementById('c1');
@@ -123,7 +45,57 @@
         var ctx = canvas.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'rgb(192, 80, 77)'; // 赤
-        ctx.fillRect(0, 0, 40, 40);
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillRed(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'red';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillBlue(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillGreen(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'green';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillYellow(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillPurple(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'purple';
+        ctx.fillRect(0, 0, size, size);
     }
 </script>
 {% endblock %}
