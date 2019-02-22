@@ -19,95 +19,111 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-2">
-                <div class="badge badge-primary">
-                </div>
-                </div>
-                <div class="col-md-2">
-                あ
-                </div>
-                <div class="col-md-2">
-                あ
-                </div>
-                <div class="col-md-2">
-                あ
-                </div>
-                <div class="col-md-2">
-                あ
-                </div>
-                <div class="col-md-2">
-                あ
+                    <canvas id="c1" width="40" height="40"></canvas>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
+            <div class="col-md-2">
+
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
+            <div class="col-md-2">
+
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
+            <div class="col-md-2">
+
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
+            <div class="col-md-2">
+
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-2">
-                </div>
+            <div class="col-md-2">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+<script>
+    onload = function () {
+        draw1();
+    };
+    /* fillRect()の例 */
+    function draw1() {
+        var canvas = document.getElementById('c1');
+        if (!canvas || !canvas.getContext) {
+            return false;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb(192, 80, 77)'; // 赤
+        ctx.fillRect(0, 0, 40, 40);
+    }
+</script>
+{% endblock %}
