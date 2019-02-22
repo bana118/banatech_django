@@ -22,7 +22,7 @@
             <div class="row">
                 {% endif %}
                 <div class="col-md-2">
-                    <canvas id="b-{{ forloop.counter }}" width="40" height="40"></canvas>
+                    <canvas id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
                 </div>
                 {% if forloop.counter|divisibleby:"6" %}
             </div>
@@ -33,26 +33,29 @@
 </div>
 <script>
     onload = function () {
-        draw1();
+        var block;
+        for(i=0;i < 36; i++){
+            block = document.getElementById('b-'+i);
+            if(i % 5 == 0){
+                fillRed(block);
+            }else if (i % 5 == 1){
+                fillBlue(block);
+            }else if (i % 5 == 2){
+                fillGreen(block);
+            }else if (i % 5 == 3){
+                fillYellow(block);
+            }else{
+                fillPurple(block);
+            }
+        }
     };
     const size = 40;
-    /* fillRect()の例 */
-    function draw1() {
-        var canvas = document.getElementById('c1');
-        if (!canvas || !canvas.getContext) {
-            return false;
-        }
-        var ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'rgb(192, 80, 77)'; // 赤
-        ctx.fillRect(0, 0, size, size);
-    }
 
     function fillRed(block) {
         if (!block || !block.getContext) {
             return false;
         }
-        var ctx = canvas.getContext('2d');
+        var ctx = block.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'red';
         ctx.fillRect(0, 0, size, size);
@@ -62,7 +65,7 @@
         if (!block || !block.getContext) {
             return false;
         }
-        var ctx = canvas.getContext('2d');
+        var ctx = block.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'blue';
         ctx.fillRect(0, 0, size, size);
@@ -72,7 +75,7 @@
         if (!block || !block.getContext) {
             return false;
         }
-        var ctx = canvas.getContext('2d');
+        var ctx = block.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'green';
         ctx.fillRect(0, 0, size, size);
@@ -82,7 +85,7 @@
         if (!block || !block.getContext) {
             return false;
         }
-        var ctx = canvas.getContext('2d');
+        var ctx = block.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'yellow';
         ctx.fillRect(0, 0, size, size);
@@ -92,7 +95,7 @@
         if (!block || !block.getContext) {
             return false;
         }
-        var ctx = canvas.getContext('2d');
+        var ctx = block.getContext('2d');
         ctx.beginPath();
         ctx.fillStyle = 'purple';
         ctx.fillRect(0, 0, size, size);
