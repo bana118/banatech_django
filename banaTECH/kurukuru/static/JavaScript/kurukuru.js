@@ -14,11 +14,18 @@ onload = function () {
             fillPurple(block);
         }
     }
+    strokeController(1, 1);
 };
 const size = 40;
+const margin = 4;
 
 function strokeController(x, y){
-    
+    var controller = document.getElementById('controller');
+    var ctx = controller.getContext('2d');
+    const controllerSize = size * 2 + margin * 4;
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x ,y , controllerSize, controllerSize);
 }
 function fillRed(block) {
     if (!block || !block.getContext) {

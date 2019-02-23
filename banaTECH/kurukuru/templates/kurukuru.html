@@ -16,16 +16,19 @@
 <div class="container">
     <h1>くるくる</h1>
     <p>操作方法：操作方法を書く。</p>
-    <div class="blockBox d-flex justify-content-centerr">
-        {% for block in ""|rjust:"36" %}
-        {% if forloop.counter0|divisibleby:"6" %}
-        <div class="blockrow d-flex flex-row">
+    <div class="container p-0" style="width: 288px;">
+        <div class="blockBox d-flex justify-content-center" style="position: relative;">
+        <canvas id="controller" width="288" height="288" style="position: absolute;"></canvas>
+            {% for block in ""|rjust:"36" %}
+            {% if forloop.counter0|divisibleby:"6" %}
+            <div class="blockColumn d-flex flex-column">
+                {% endif %}
+                <canvas class="m-1" id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
+                {% if forloop.counter|divisibleby:"6" %}
+            </div>
             {% endif %}
-            <canvas id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
-            {% if forloop.counter|divisibleby:"6" %}
+            {% endfor %}
         </div>
-        {% endif %}
-        {% endfor %}
     </div>
 </div>
 <script>
