@@ -49,6 +49,7 @@ RUN pip3 install -r /home/docker/code/requirements.txt
 # add (the rest of) our code
 COPY . /home/docker/code/
 EXPOSE 80
+EXPOSE 443
 CMD ["supervisord", "-n"]
 
 #djangoでcreatesuperuserを行うため
