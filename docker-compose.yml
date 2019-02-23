@@ -1,16 +1,19 @@
-https-portal:
-  image: steveltn/https-portal:1
-  ports:
-    - '80:80'
-    - '443:443'
-  links:
-    - django
-  restart: always
-  environment:
-    DOMAINS: 'django.dip.jp -> http://django'
-    # STAGE: 'production'
-    # FORCE_RENEW: 'true'
+version: "3"
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - django
+    restart: always
+    environment:
+      DOMAINS: "banatech.dip.jp -> http://django:8080"
+      # STAGE: 'production'
+      # FORCE_RENEW: 'true'
 
 django:
   image: django
-  
+  ports:
+      - '8080'
