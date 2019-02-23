@@ -8,97 +8,26 @@
 <!-- React.js -->
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-
+{% load static %}
+<script src="{% static 'JavaScript/kurukuru.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <h1>くるくる</h1>
     <p>操作方法：操作方法を書く。</p>
-    <div class="card text-left">
-        <div class="card-body">
-            {% for block in ""|rjust:"36" %}
-            {% if forloop.counter0|divisibleby:"6" %}
-            <div class="row">
-                {% endif %}
-                <div class="col-md-2">
-                    <canvas id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
-                </div>
-                {% if forloop.counter|divisibleby:"6" %}
-            </div>
+    <div class="blockBox d-flex justify-content-centerr">
+        {% for block in ""|rjust:"36" %}
+        {% if forloop.counter0|divisibleby:"6" %}
+        <div class="blockrow d-flex flex-row">
             {% endif %}
-            {% endfor %}
+            <canvas id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
+            {% if forloop.counter|divisibleby:"6" %}
         </div>
+        {% endif %}
+        {% endfor %}
     </div>
 </div>
 <script>
-    onload = function () {
-        var block;
-        for(i=0;i < 36; i++){
-            block = document.getElementById('b-'+i);
-            if(i % 5 == 0){
-                fillRed(block);
-            }else if (i % 5 == 1){
-                fillBlue(block);
-            }else if (i % 5 == 2){
-                fillGreen(block);
-            }else if (i % 5 == 3){
-                fillYellow(block);
-            }else{
-                fillPurple(block);
-            }
-        }
-    };
-    const size = 40;
-
-    function fillRed(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillBlue(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillGreen(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'green';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillYellow(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'yellow';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillPurple(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'purple';
-        ctx.fillRect(0, 0, size, size);
-    }
 </script>
 {% endblock %}
