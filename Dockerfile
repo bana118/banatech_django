@@ -48,7 +48,7 @@ RUN pip3 install -r /home/docker/code/requirements.txt
 
 # add (the rest of) our code
 COPY . /home/docker/code/
-EXPOSE 8080
+EXPOSE 80
 CMD ["supervisord", "-n"]
 
 #今はmakemigrations, migrate, createsuperuserは手動で行うことにする
