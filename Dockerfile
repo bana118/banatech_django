@@ -51,14 +51,13 @@ COPY . /home/docker/code/
 EXPOSE 80
 CMD ["supervisord", "-n"]
 
-#djangoでcreatesuperuserを行うため
-RUN apt-get update
-RUN apt-get install language-pack-ja
-RUN update-locale LANG=ja_JP.UTF-8
-
 #adminサイトのstaticファイルを追加
 RUN python3 /home/docker/code/banaTECH/manage.py collectstatic
+
 #今はmakemigrations, migrate, createsuperuserは手動で行うことにする
+#RUN apt-get update
+#RUN apt-get install language-pack-ja
+#RUN update-locale LANG=ja_JP.UTF-8
 #RUN export LANG=ja_JP.UTF-8
 #RUN python3 /home/docker/code/banaTECH/manage.py makemigrations
 #RUN python3 /home/docker/code/banaTECH/manage.py migrate
