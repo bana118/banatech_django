@@ -1,31 +1,18 @@
 var controller;
 var board;
 onload = function () {
-    var block;
-    /*for (i = 0; i < 36; i++) {
-        block = document.getElementById('b-' + i);
-        if (i % 5 == 0) {
-            fillRed(block);
-        } else if (i % 5 == 1) {
-            fillBlue(block);
-        } else if (i % 5 == 2) {
-            fillGreen(block);
-        } else if (i % 5 == 3) {
-            fillYellow(block);
-        } else {
-            fillPurple(block);
-        }
-    }*/
     controller = new Controller();
     board = new Board();
     board.paint();
 };
 
-const size = 40;
-const margin = 4;
-const boxSize = size * 6 + margin * 12 + 2;
-document.onkeydown = keydown;
+const size = 40; //ブロックのサイズ
+const margin = 4; //ブロックのマージン
+const backgroundSize = size * 6 + margin * 12 + 2; //背景のサイズ
+const controllerSize = size * 2 + margin * 4; //コントローラーのサイズ
+const spanSize = 40; //コントローラーの隙間のサイズ
 
+document.onkeydown = keydown;
 function keydown(event) {
     if (event.key == "d") {
         controller.moveRight();
@@ -41,7 +28,7 @@ function keydown(event) {
 }
 
 function blockClockwise(controllerX, controllerY) {
-    var duration = 100;
+    var duration = 10;
     var positionUpperLeft = 6 * controllerX + controllerY;
     var positionUpperRight = 6 * (controllerX + 1) + controllerY;
     var positionLowerLeft = 6 * controllerX + (controllerY + 1);
@@ -53,22 +40,22 @@ function blockClockwise(controllerX, controllerY) {
     var callbackUpperLeft = anime({
         targets: blockUpperLeft,
         translateX: size + margin * 2,
-        duration:duration
+        duration: duration
     });
     var callbackUpperRight = anime({
         targets: blockUpperRight,
         translateY: size + margin * 2,
-        duration:duration
+        duration: duration
     });
     var callbackLoweLeft = anime({
         targets: blockLowerLeft,
         translateY: -(size + margin * 2),
-        duration:duration
+        duration: duration
     });
     var callbackLowerRight = anime({
         targets: blockLowerRight,
         translateX: -(size + margin * 2),
-        duration:duration
+        duration: duration
     });
     callbackUpperLeft.complete = function () {
         $("#" + blockUpperLeft.id).removeAttr("style");
@@ -84,6 +71,15 @@ function blockClockwise(controllerX, controllerY) {
     };
     board.boardClockwise(controllerX, controllerY);
     board.paint();
+    anime({
+        targets: controller.controller,
+        rotate: [-90,0],
+        duration: 300,
+        /*update: function () {
+            transform = controller.controller.style.transform;
+            controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
+        }*/
+    });
 }
 
 function blockCounterclockwise(controllerX, controllerY) {
@@ -134,50 +130,67 @@ class Controller {
     constructor() {
         this.x = 0;
         this.y = 0;
+        this.deg = 0;
+        this.duration = 10;
         this.controller = document.getElementById('controller');
         this.ctx = this.controller.getContext('2d');
         this.position(this.x, this.y);
     }
 
     position(x, y) {
-        const controllerSize = size * 2 + margin * 4;
-        const controllerX = x * (size + margin * 2) + 1;
-        const controllerY = y * (size + margin * 2) + 1;
         this.ctx.beginPath();
         this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(controllerX, controllerY, controllerSize, controllerSize);
+        this.ctx.strokeRect(1, 1, controllerSize - 2, controllerSize - 2);
+        this.ctx.clearRect(controllerSize / 2 - spanSize / 2, 0, spanSize, controllerSize);
+        this.ctx.clearRect(0, controllerSize / 2 - spanSize / 2, controllerSize, spanSize);
     }
 
     moveRight() {
         if (this.x < 4) {
             this.x = this.x + 1;
+            anime({
+                targets: this.controller,
+                translateX: (size + margin * 2) * this.x,
+                duration: this.duration,
+            });
         }
-        this.ctx.clearRect(0, 0, boxSize, boxSize);
-        this.position(this.x, this.y);
     }
 
     moveLeft() {
         if (this.x > 0) {
             this.x = this.x - 1;
+            anime({
+                targets: this.controller,
+                translateX: (size + margin * 2) * this.x,
+                duration: this.duration,
+            });
         }
-        this.ctx.clearRect(0, 0, boxSize, boxSize);
-        this.position(this.x, this.y);
     }
 
     moveUp() {
         if (this.y > 0) {
             this.y = this.y - 1;
+            anime({
+                targets: this.controller,
+                translateY: (size + margin * 2) * this.y,
+                duration: this.duration
+            });
         }
-        this.ctx.clearRect(0, 0, boxSize, boxSize);
-        this.position(this.x, this.y);
     }
 
     moveDown() {
         if (this.y < 4) {
             this.y = this.y + 1;
+            var callbackMoveDown = anime({
+                targets: this.controller,
+                translateY: (size + margin * 2) * this.y,
+                duration: this.duration
+            });
+            /*callbackMoveDown.begin = function () {
+                transform = this.controller.style.transform;
+                this.controller.style.transform = transform.replace(/\d*deg/, '0deg');
+            };*/
         }
-        this.ctx.clearRect(0, 0, boxSize, boxSize);
-        this.position(this.x, this.y);
     }
 }
 

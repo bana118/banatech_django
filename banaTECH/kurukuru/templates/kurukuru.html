@@ -5,6 +5,7 @@
 
 {% block head %}
 <!-- anime.js -->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>-->
 {% load static %}
 <script src="{% static 'JavaScript/anime.min.js' %}"></script>
 
@@ -17,7 +18,8 @@
     <p>操作方法：操作方法を書く。</p>
     <div class="container p-0" style="width: 290px;">
         <div class="blockBox d-flex justify-content-center" style="position: relative;">
-        <canvas id="controller" width="290" height="290" style="position: absolute;"></canvas>
+            <canvas id="background" width="290" height="290" style="position: absolute;"></canvas>
+            <canvas id="controller" width="96" height="96" style="position: absolute; left: 0"></canvas>
             {% for block in ""|rjust:"36" %}
             {% if forloop.counter0|divisibleby:"6" %}
             <div class="blockColumn d-flex flex-column">
