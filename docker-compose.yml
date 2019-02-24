@@ -1,0 +1,9 @@
+services:
+  web:
+    image: django-https
+    volumes:
+      - /home/volume/code:/home/docker/code
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
