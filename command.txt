@@ -7,3 +7,6 @@ apt-get install certbot
 sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.jpn.ph
 sudo rm -rf code/*
 sudo cp -pR banaTECH/* docker/code
+sudo certbot renew --force-renew --dry-run --webroot-path /home/docker/code/banaTECH/static --post-hook "sudo docker restart 18d6743981c0"
+0 4 1 * * sudo certbot renew && sudo docker restart 18d6743981c0
+
