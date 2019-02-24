@@ -5,5 +5,5 @@ sudo docker exec -i -t コンテナid bash
 apt-get update
 apt-get install certbot
 sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.jpn.ph
-sudo rm -rf code/
+sudo rm -rf code/*
 sudo cp -pR banaTECH/* docker/code

@@ -30,6 +30,7 @@ RUN apt-get update && \
 	tcl-dev \
 	tk-dev \
 	python-tk \
+	certbot \
 	sqlite3 && \
 	pip3 install -U pip setuptools && \
    rm -rf /var/lib/apt/lists/*
