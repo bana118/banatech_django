@@ -1,6 +1,9 @@
+# よく使うコマンド
 sudo docker build -t django-https .
 sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/home/docker/code -v /etc/letsencrypt:/etc/letsencrypt django-https
 sudo docker exec -i -t コンテナid bash
 apt-get update
 apt-get install certbot
-sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.dip.jp
+sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.jpn.ph
+sudo rm -rf code/
+sudo cp -pR banaTECH/* docker/code
