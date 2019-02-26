@@ -4,3 +4,6 @@ from django.shortcuts import render
 
 def topPage(request):
     return render(request, "topPage.html")
+
+def privacyPolicy(request):
+    return render(request, "privacy_policy.html")
