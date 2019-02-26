@@ -9,5 +9,7 @@ urlpatterns = [
     path('category/<str:category>', blog.views.search_category),
     path('search', blog.views.search),
     path('delete/<int:article_id>', blog.views.delete),
+    path('edit/<int:article_id>', blog.views.edit),
+    path('edited', blog.views.edited),
     path('view_md/<int:article_id>', blog.views.view_md),
 ]

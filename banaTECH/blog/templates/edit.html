@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title%}
+{{ article.title }}--banaTECH--
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+<!--静的なコードをハイライトするなら-->
+<!--<script>hljs.initHighlightingOnLoad();</script>-->
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>記事編集</h1>
+    <form id="articleEdit" method="POST" action="/blog/edited">
+        <div class="form-group">
+            <label for="title">タイトル</label>
+            <input type="text" class="form-control" id="title" value="{{ article.title }}">
+        </div>
+        <div class="form-group">
+            <label for="category">カテゴリー</label>
+            <input type="text" class="form-control" id="category" value="{{ article.category_split_space }}">
+        </div>
+        <div class="form-group">
+            <label for="content">内容</label>
+            <textarea class="form-control" id="content" rows="30">{{ content }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="img">画像</label>
+            <input type="file" class="form-control-file" id="img" multiple="multiple" accept="image/*">
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="imgCheck">
+            <label class="form-check-label" for="imgCheck">画像を変更する</label>
+        </div>
+        <button type="submit" class="btn btn-primary">更新</button>
+    </form>
+</div>
+{% endblock %}
