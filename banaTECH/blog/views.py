@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils import timezone
 from .models import Article, Category
 from .forms import ArticleForm
 import banaTECH.settings as settings
@@ -82,13 +83,49 @@ def delete(request, article_id):
 @login_required
 def edit(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
-    editPath = settings.BASE_DIR + "/media/article/" + str(article_id)
-    content = article.article.read().decode('utf-8')
+    editPath = settings.BASE_DIR + "/media/article/" + str(article.id) + "/" + str(article.id) + ".md"
+    with open(editPath, "r", encoding='utf-8') as md:
+        content = md.read()
     return render(request, "edit.html", {"article": article, "content": content})
 
 
 @login_required
-def edited(request):
+def edited(request, article_id):
+    article = Article.objects.filter(id=article_id)[0]
+    title = request.POST["title"]
+    category_split_space = request.POST["category"]
+    content = request.POST["content"]
+    imgCheck = request.POST["imgCheck"]
+
+    article.title = title
+    article.category_split_space = category_split_space
+    article.category.clear()
+    article.save()
+    category_list = category_split_space.split()
+    categories = Category.objects.all()
+    for c in category_list:
+        if len(categories.filter(name=c)) == 0:
+            new_category = Category(name=c)
+            new_category.save()
+            article.category.add(new_category)
+        else:
+            category = categories.filter(name=c)[0]
+            article.category.add(category)
+    article.post_date = timezone.datetime.now()
+    article.save()
+
+    editPath = settings.BASE_DIR + "/media/article/" + str(article.id) + "/" + str(article.id) + ".md"
+    with open(editPath, "w", encoding='utf-8', newline="\n") as md:
+        md.write(content)
+
+    if imgCheck == "on":
+        os.makedirs(settings.BASE_DIR + "/media/article/" +
+                    str(article.id) + "/image", exist_ok=True)
+        for image in request.FILES.getlist("image"):
+            with open(settings.BASE_DIR + "/media/article/" + str(article.id) + "/image/" + image.name, "wb+") as destination:
+                for chunk in image.chunks():
+                    destination.write(chunk)
+
     articles = Article.objects.all()
     return render(request, "blog.html", {"articles": articles})
 
