@@ -28,7 +28,7 @@ function keydown(event) {
 }
 
 function blockClockwise(controllerX, controllerY) {
-    var duration = 10;
+    var duration = 1;
     var positionUpperLeft = 6 * controllerX + controllerY;
     var positionUpperRight = 6 * (controllerX + 1) + controllerY;
     var positionLowerLeft = 6 * controllerX + (controllerY + 1);
@@ -71,7 +71,7 @@ function blockClockwise(controllerX, controllerY) {
     };
     board.boardClockwise(controllerX, controllerY);
     board.paint();
-    anime({
+    /*anime({
         targets: controller.controller,
         rotate: [-90,0],
         duration: 300,
@@ -79,7 +79,7 @@ function blockClockwise(controllerX, controllerY) {
             transform = controller.controller.style.transform;
             controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
         }*/
-    });
+    //});
 }
 
 function blockCounterclockwise(controllerX, controllerY) {
@@ -131,7 +131,7 @@ class Controller {
         this.x = 0;
         this.y = 0;
         this.deg = 0;
-        this.duration = 10;
+        this.duration = 1;
         this.controller = document.getElementById('controller');
         this.ctx = this.controller.getContext('2d');
         this.position(this.x, this.y);
