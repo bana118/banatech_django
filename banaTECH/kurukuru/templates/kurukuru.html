@@ -14,6 +14,11 @@
 <div class="container">
     <h1>くるくる</h1>
     <div class="container p-0" style="width: 290px;">
+        <audio src="" id="startSoundEffect"></audio>
+        <audio src="" id="moveSoundEffect"></audio>
+        <audio src="" id="scoreSoundEffect"></audio>
+        <audio src="" id="rotateSoundEffect"></audio>
+        <audio src="" id="BGM"></audio>
         <div class="card">
             <div class="card-body text-center p-2">
                 <div class="row">
@@ -92,7 +97,6 @@
     function countDown() {
         var timer = setInterval(function () {
             time--;
-            console.log(time);
             document.getElementById("time").innerHTML = "time: " + time;
             if (time < 1) {
                 clearInterval(timer);
@@ -103,10 +107,13 @@
 
     function gameStart() {
         if (mode == 0) {
+            var startSoundEffect = document.getElementById("startSoundEffect");
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             var img = new Image();
             if (count == 3) {
+                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.play();
                 img.src = "{% static 'images/three.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -114,6 +121,8 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 2) {
+                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.play();
                 img.src = "{% static 'images/two.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -121,6 +130,8 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 1) {
+                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.play();
                 img.src = "{% static 'images/one.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -129,11 +140,20 @@
                 }
                 setTimeout("gameStart()", 1000);
             } else if (count == 0) {
+                startSoundEffect.src = "{% static 'music/gamestart.mp3' %}";
+                startSoundEffect.play();
+                var BGM = document.getElementById("BGM");
+                BGM.src = "{% static 'music/mozegaku_09_idance.mp3' %}";
+                BGM.currentTime = 0;
+                BGM.play();
                 mode = 1;
                 ctx.clearRect(0, 0, backgroundSize, backgroundSize);
                 countDown();
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
+            var startSoundEffect = document.getElementById("startSoundEffect");
+            startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+            startSoundEffect.play();
             mode = 0;
             reset();
             initScreen();
@@ -142,6 +162,11 @@
 
     //ゲームオーバー処理
     function gameOver() {
+        var BGM = document.getElementById("BGM");
+        BGM.pause();
+        var startSoundEffect = document.getElementById("startSoundEffect");
+        startSoundEffect.src = "{% static 'music/gameover.mp3' %}";
+        startSoundEffect.play();
         mode = -1;
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
@@ -168,6 +193,9 @@
 
     //スコア加算
     function scoreUp() {
+        var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        scoreSoundEffect.src = "{% static 'music/scoreUp.mp3' %}";
+        scoreSoundEffect.play();
         score += 100;
         document.getElementById("score").innerHTML = "score: " + score;
     }
@@ -234,6 +262,9 @@
     }
 
     function blockClockwise(controllerX, controllerY) {
+        var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+        rotateSoundEffect.src = "{% static 'music/rotate.mp3' %}";
+        rotateSoundEffect.play();
         board.boardClockwise(controllerX, controllerY);
         board.judge();
         board.paint();
@@ -246,6 +277,9 @@
     }
 
     function blockCounterClockwise(controllerX, controllerY) {
+        var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+        rotateSoundEffect.src = "{% static 'music/rotate.mp3' %}";
+        rotateSoundEffect.play();
         board.boardCounterClockwise(controllerX, controllerY);
         board.judge();
         board.paint();
@@ -371,6 +405,9 @@
             if (this.x < 4) {
                 this.x = this.x + 1;
                 this.controller.style.left = this.x * (size + margin * 2) + "px";
+                var moveSoundEffect = document.getElementById("moveSoundEffect");
+                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.play();
             }
         }
 
@@ -378,6 +415,9 @@
             if (this.x > 0) {
                 this.x = this.x - 1;
                 this.controller.style.left = this.x * (size + margin * 2) + "px";
+                var moveSoundEffect = document.getElementById("moveSoundEffect");
+                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.play();
             }
         }
 
@@ -385,6 +425,9 @@
             if (this.y > 0) {
                 this.y = this.y - 1;
                 this.controller.style.top = this.y * (size + margin * 2) + "px";
+                var moveSoundEffect = document.getElementById("moveSoundEffect");
+                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.play();
             }
         }
 
@@ -392,6 +435,9 @@
             if (this.y < 4) {
                 this.y = this.y + 1;
                 this.controller.style.top = this.y * (size + margin * 2) + "px";
+                var moveSoundEffect = document.getElementById("moveSoundEffect");
+                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.play();
             }
         }
     }
