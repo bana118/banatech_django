@@ -18,13 +18,13 @@
     <p>操作方法：操作方法を書く。</p>
     <div class="container p-0" style="width: 290px;">
         <div class="blockBox d-flex justify-content-center" style="position: relative;">
-            <canvas id="background" width="290" height="290" style="position: absolute;"></canvas>
-            <canvas id="controller" width="96" height="96" style="position: absolute; left: 0"></canvas>
+            <canvas id="background" width="290px" height="290px" style="position: absolute;"></canvas>
+            <canvas id="controller" width="96px" height="96px" style="position: absolute; top:0px; left: 0px;"></canvas>
             {% for block in ""|rjust:"36" %}
             {% if forloop.counter0|divisibleby:"6" %}
             <div class="blockColumn d-flex flex-column">
                 {% endif %}
-                <canvas class="m-1" id="b-{{ forloop.counter0 }}" width="40" height="40"></canvas>
+                <canvas class="m-1" id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
                 {% if forloop.counter|divisibleby:"6" %}
             </div>
             {% endif %}

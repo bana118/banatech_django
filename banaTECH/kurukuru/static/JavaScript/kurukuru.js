@@ -13,6 +13,7 @@ const controllerSize = size * 2 + margin * 4; //コントローラーのサイ�
 const spanSize = 40; //コントローラーの隙間のサイズ
 
 document.onkeydown = keydown;
+
 function keydown(event) {
     if (event.key == "d") {
         controller.moveRight();
@@ -24,11 +25,13 @@ function keydown(event) {
         controller.moveDown();
     } else if (event.key == "ArrowRight") {
         blockClockwise(controller.x, controller.y);
+    } else if (event.key == "ArrowLeft") {
+        blockCounterClockwise(controller.x, controller.y);
     }
 }
 
 function blockClockwise(controllerX, controllerY) {
-    var duration = 1;
+    /*var duration = 1;
     var positionUpperLeft = 6 * controllerX + controllerY;
     var positionUpperRight = 6 * (controllerX + 1) + controllerY;
     var positionLowerLeft = 6 * controllerX + (controllerY + 1);
@@ -68,7 +71,7 @@ function blockClockwise(controllerX, controllerY) {
     };
     callbackLowerRight.complete = function () {
         $("#" + blockLowerRight.id).removeAttr("style");
-    };
+    };*/
     board.boardClockwise(controllerX, controllerY);
     board.paint();
     /*anime({
@@ -80,9 +83,64 @@ function blockClockwise(controllerX, controllerY) {
             controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
         }*/
     //});
+
+
 }
 
-function blockCounterclockwise(controllerX, controllerY) {
+function blockCounterClockwise(controllerX, controllerY) {
+    /*var duration = 1;
+    var positionUpperLeft = 6 * controllerX + controllerY;
+    var positionUpperRight = 6 * (controllerX + 1) + controllerY;
+    var positionLowerLeft = 6 * controllerX + (controllerY + 1);
+    var positionLowerRight = 6 * (controllerX + 1) + (controllerY + 1);
+    var blockUpperLeft = document.getElementById("b-" + positionUpperLeft);
+    var blockUpperRight = document.getElementById("b-" + positionUpperRight);
+    var blockLowerLeft = document.getElementById("b-" + positionLowerLeft);
+    var blockLowerRight = document.getElementById("b-" + positionLowerRight);
+    var callbackUpperLeft = anime({
+        targets: blockUpperLeft,
+        translateX: size + margin * 2,
+        duration: duration
+    });
+    var callbackUpperRight = anime({
+        targets: blockUpperRight,
+        translateY: size + margin * 2,
+        duration: duration
+    });
+    var callbackLoweLeft = anime({
+        targets: blockLowerLeft,
+        translateY: -(size + margin * 2),
+        duration: duration
+    });
+    var callbackLowerRight = anime({
+        targets: blockLowerRight,
+        translateX: -(size + margin * 2),
+        duration: duration
+    });
+    callbackUpperLeft.complete = function () {
+        $("#" + blockUpperLeft.id).removeAttr("style");
+    };
+    callbackUpperRight.complete = function () {
+        $("#" + blockUpperRight.id).removeAttr("style");
+    };
+    callbackLoweLeft.complete = function () {
+        $("#" + blockLowerLeft.id).removeAttr("style");
+    };
+    callbackLowerRight.complete = function () {
+        $("#" + blockLowerRight.id).removeAttr("style");
+    };*/
+    board.boardCounterClockwise(controllerX, controllerY);
+    board.paint();
+    /*anime({
+        targets: controller.controller,
+        rotate: [-90,0],
+        duration: 300,
+        /*update: function () {
+            transform = controller.controller.style.transform;
+            controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
+        }*/
+    //});
+
 
 }
 
@@ -125,13 +183,21 @@ class Board {
         this.array[controllerX + 1][controllerY + 1] = this.array[controllerX + 1][controllerY];
         this.array[controllerX + 1][controllerY] = temp;
     }
+
+    boardCounterClockwise(controllerX, controllerY) {
+        var temp = this.array[controllerX][controllerY];
+        this.array[controllerX][controllerY] = this.array[controllerX + 1][controllerY];
+        this.array[controllerX + 1][controllerY] = this.array[controllerX + 1][controllerY + 1];
+        this.array[controllerX + 1][controllerY + 1] = this.array[controllerX][controllerY + 1];
+        this.array[controllerX][controllerY + 1] = temp;
+    }
 }
 class Controller {
     constructor() {
         this.x = 0;
         this.y = 0;
         this.deg = 0;
-        this.duration = 1;
+        //this.duration = 1;
         this.controller = document.getElementById('controller');
         this.ctx = this.controller.getContext('2d');
         this.position(this.x, this.y);
@@ -148,48 +214,52 @@ class Controller {
     moveRight() {
         if (this.x < 4) {
             this.x = this.x + 1;
-            anime({
+            /*anime({
                 targets: this.controller,
                 translateX: (size + margin * 2) * this.x,
                 duration: this.duration,
-            });
+            });*/
+            this.controller.style.left = this.x * (size + margin * 2) + "px";
         }
     }
 
     moveLeft() {
         if (this.x > 0) {
             this.x = this.x - 1;
-            anime({
+            /*anime({
                 targets: this.controller,
                 translateX: (size + margin * 2) * this.x,
                 duration: this.duration,
-            });
+            });*/
+            this.controller.style.left = this.x * (size + margin * 2) + "px";
         }
     }
 
     moveUp() {
         if (this.y > 0) {
             this.y = this.y - 1;
-            anime({
+            /*anime({
                 targets: this.controller,
                 translateY: (size + margin * 2) * this.y,
                 duration: this.duration
-            });
+            });*/
+            this.controller.style.top = this.y * (size + margin * 2) + "px";
         }
     }
 
     moveDown() {
         if (this.y < 4) {
             this.y = this.y + 1;
-            var callbackMoveDown = anime({
+            /*var callbackMoveDown = anime({
                 targets: this.controller,
                 translateY: (size + margin * 2) * this.y,
                 duration: this.duration
             });
-            /*callbackMoveDown.begin = function () {
+            callbackMoveDown.begin = function () {
                 transform = this.controller.style.transform;
                 this.controller.style.transform = transform.replace(/\d*deg/, '0deg');
             };*/
+            this.controller.style.top = this.y * (size + margin * 2) + "px";
         }
     }
 }
