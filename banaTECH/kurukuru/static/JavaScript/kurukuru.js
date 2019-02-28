@@ -73,17 +73,17 @@ function blockClockwise(controllerX, controllerY) {
         $("#" + blockLowerRight.id).removeAttr("style");
     };*/
     board.boardClockwise(controllerX, controllerY);
+    board.judge();
     board.paint();
     anime({
         targets: controller.controller,
-        rotate: [-90,0],
+        rotate: [-90, 0],
         duration: 500,
         /*update: function () {
             transform = controller.controller.style.transform;
             controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
         }*/
     });
-
 
 }
 
@@ -130,10 +130,11 @@ function blockCounterClockwise(controllerX, controllerY) {
         $("#" + blockLowerRight.id).removeAttr("style");
     };*/
     board.boardCounterClockwise(controllerX, controllerY);
+    board.judge();
     board.paint();
     anime({
         targets: controller.controller,
-        rotate: [90,0],
+        rotate: [90, 0],
         duration: 500,
         /*update: function () {
             transform = controller.controller.style.transform;
@@ -157,6 +158,24 @@ class Board {
         ];
     }
 
+    //ブロックが4つそろっているか判定
+    judge() {
+        var i, j;
+        search:
+            for (i = 0; i < 5; i++) {
+                for (j = 0; j < 5; j++) {
+                    if (this.array[i][j] == this.array[i][j + 1] && this.array[i][j] == this.array[i + 1][j] && this.array[i][j] == this.array[i + 1][j + 1]) {
+                        this.array[i][j] = 0;
+                        this.array[i][j + 1] = 0;
+                        this.array[i + 1][j] = 0;
+                        this.array[i + 1][j + 1] = 0;
+                    }
+                }
+            }
+
+    }
+
+    //盤面を画面に反映
     paint() {
         for (var i = 0; i < 6; i++) {
             for (var j = 0; j < 6; j++) {
@@ -171,6 +190,8 @@ class Board {
                     fillYellow(block);
                 } else if (this.array[i][j] == 5) {
                     fillPurple(block);
+                } else if (this.array[i][j] == 0) {
+                    fillReset(i, j);
                 }
             }
         }
@@ -262,6 +283,48 @@ class Controller {
             this.controller.style.top = this.y * (size + margin * 2) + "px";
         }
     }
+}
+
+//色を四方とかぶらないようにセット
+function fillReset(i, j) {
+    var block = document.getElementById("b-" + (6 * i + j));
+    var colorList = [1, 2, 3, 4, 5]; //この中から色を選ぶ
+    //四方との重複を削除
+    if (i == 0) {
+        colorList = colorList.filter(n => n !== board.array[i + 1][j]);
+    } else if (i == 5) {
+        colorList = colorList.filter(n => n !== board.array[i - 1][j]);
+    } else {
+        colorList = colorList.filter(n => n !== board.array[i + 1][j]);
+        colorList = colorList.filter(n => n !== board.array[i - 1][j]);
+    }
+    if (j == 0) {
+        colorList = colorList.filter(n => n !== board.array[i][j + 1]);
+    } else if (j == 5) {
+        colorList = colorList.filter(n => n !== board.array[i][j - 1]);
+    } else {
+        colorList = colorList.filter(n => n !== board.array[i][j + 1]);
+        colorList = colorList.filter(n => n !== board.array[i][j - 1]);
+    }
+    //リストからランダムで選ぶ
+    var color = colorList[Math.floor(Math.random() * colorList.length)];
+    board.array[i][j] = color;
+    if (color == 1) {
+        fillRed(block);
+    } else if (color == 2) {
+        fillBlue(block);
+    } else if (color == 3) {
+        fillGreen(block);
+    } else if (color == 4) {
+        fillYellow(block);
+    } else if (color == 5) {
+        fillPurple(block);
+    }
+    anime({
+        targets: block,
+        scale: [0, 1],
+        duration: 1000,
+    });
 }
 
 function fillRed(block) {
