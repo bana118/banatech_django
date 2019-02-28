@@ -74,15 +74,15 @@ function blockClockwise(controllerX, controllerY) {
     };*/
     board.boardClockwise(controllerX, controllerY);
     board.paint();
-    /*anime({
+    anime({
         targets: controller.controller,
         rotate: [-90,0],
-        duration: 300,
+        duration: 500,
         /*update: function () {
             transform = controller.controller.style.transform;
             controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
         }*/
-    //});
+    });
 
 
 }
@@ -131,15 +131,15 @@ function blockCounterClockwise(controllerX, controllerY) {
     };*/
     board.boardCounterClockwise(controllerX, controllerY);
     board.paint();
-    /*anime({
+    anime({
         targets: controller.controller,
-        rotate: [-90,0],
-        duration: 300,
+        rotate: [90,0],
+        duration: 500,
         /*update: function () {
             transform = controller.controller.style.transform;
             controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
         }*/
-    //});
+    });
 
 
 }
