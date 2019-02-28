@@ -12,6 +12,31 @@ const backgroundSize = size * 6 + margin * 12 + 2; //背景のサイズ
 const controllerSize = size * 2 + margin * 4; //コントローラーのサイズ
 const spanSize = 40; //コントローラーの隙間のサイズ
 
+//ボタンからの操作
+function buttonRight() {
+    controller.moveRight();
+}
+
+function buttonLeft() {
+    controller.moveLeft();
+}
+
+function buttonUp() {
+    controller.moveUp();
+}
+
+function buttonDown() {
+    controller.moveDown();
+}
+
+function buttonClockwise() {
+    blockClockwise(controller.x, controller.y);
+}
+
+function buttonCounterClockwise() {
+    blockCounterClockwise(controller.x, controller.y);
+}
+
 document.onkeydown = keydown;
 
 function keydown(event) {
@@ -31,47 +56,6 @@ function keydown(event) {
 }
 
 function blockClockwise(controllerX, controllerY) {
-    /*var duration = 1;
-    var positionUpperLeft = 6 * controllerX + controllerY;
-    var positionUpperRight = 6 * (controllerX + 1) + controllerY;
-    var positionLowerLeft = 6 * controllerX + (controllerY + 1);
-    var positionLowerRight = 6 * (controllerX + 1) + (controllerY + 1);
-    var blockUpperLeft = document.getElementById("b-" + positionUpperLeft);
-    var blockUpperRight = document.getElementById("b-" + positionUpperRight);
-    var blockLowerLeft = document.getElementById("b-" + positionLowerLeft);
-    var blockLowerRight = document.getElementById("b-" + positionLowerRight);
-    var callbackUpperLeft = anime({
-        targets: blockUpperLeft,
-        translateX: size + margin * 2,
-        duration: duration
-    });
-    var callbackUpperRight = anime({
-        targets: blockUpperRight,
-        translateY: size + margin * 2,
-        duration: duration
-    });
-    var callbackLoweLeft = anime({
-        targets: blockLowerLeft,
-        translateY: -(size + margin * 2),
-        duration: duration
-    });
-    var callbackLowerRight = anime({
-        targets: blockLowerRight,
-        translateX: -(size + margin * 2),
-        duration: duration
-    });
-    callbackUpperLeft.complete = function () {
-        $("#" + blockUpperLeft.id).removeAttr("style");
-    };
-    callbackUpperRight.complete = function () {
-        $("#" + blockUpperRight.id).removeAttr("style");
-    };
-    callbackLoweLeft.complete = function () {
-        $("#" + blockLowerLeft.id).removeAttr("style");
-    };
-    callbackLowerRight.complete = function () {
-        $("#" + blockLowerRight.id).removeAttr("style");
-    };*/
     board.boardClockwise(controllerX, controllerY);
     board.judge();
     board.paint();
@@ -79,56 +63,11 @@ function blockClockwise(controllerX, controllerY) {
         targets: controller.controller,
         rotate: [-90, 0],
         duration: 500,
-        /*update: function () {
-            transform = controller.controller.style.transform;
-            controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
-        }*/
     });
 
 }
 
 function blockCounterClockwise(controllerX, controllerY) {
-    /*var duration = 1;
-    var positionUpperLeft = 6 * controllerX + controllerY;
-    var positionUpperRight = 6 * (controllerX + 1) + controllerY;
-    var positionLowerLeft = 6 * controllerX + (controllerY + 1);
-    var positionLowerRight = 6 * (controllerX + 1) + (controllerY + 1);
-    var blockUpperLeft = document.getElementById("b-" + positionUpperLeft);
-    var blockUpperRight = document.getElementById("b-" + positionUpperRight);
-    var blockLowerLeft = document.getElementById("b-" + positionLowerLeft);
-    var blockLowerRight = document.getElementById("b-" + positionLowerRight);
-    var callbackUpperLeft = anime({
-        targets: blockUpperLeft,
-        translateX: size + margin * 2,
-        duration: duration
-    });
-    var callbackUpperRight = anime({
-        targets: blockUpperRight,
-        translateY: size + margin * 2,
-        duration: duration
-    });
-    var callbackLoweLeft = anime({
-        targets: blockLowerLeft,
-        translateY: -(size + margin * 2),
-        duration: duration
-    });
-    var callbackLowerRight = anime({
-        targets: blockLowerRight,
-        translateX: -(size + margin * 2),
-        duration: duration
-    });
-    callbackUpperLeft.complete = function () {
-        $("#" + blockUpperLeft.id).removeAttr("style");
-    };
-    callbackUpperRight.complete = function () {
-        $("#" + blockUpperRight.id).removeAttr("style");
-    };
-    callbackLoweLeft.complete = function () {
-        $("#" + blockLowerLeft.id).removeAttr("style");
-    };
-    callbackLowerRight.complete = function () {
-        $("#" + blockLowerRight.id).removeAttr("style");
-    };*/
     board.boardCounterClockwise(controllerX, controllerY);
     board.judge();
     board.paint();
@@ -136,10 +75,6 @@ function blockCounterClockwise(controllerX, controllerY) {
         targets: controller.controller,
         rotate: [90, 0],
         duration: 500,
-        /*update: function () {
-            transform = controller.controller.style.transform;
-            controller.controller.style.transform = transform.replace(/\d*deg/, '0deg');
-        }*/
     });
 
 
@@ -235,11 +170,6 @@ class Controller {
     moveRight() {
         if (this.x < 4) {
             this.x = this.x + 1;
-            /*anime({
-                targets: this.controller,
-                translateX: (size + margin * 2) * this.x,
-                duration: this.duration,
-            });*/
             this.controller.style.left = this.x * (size + margin * 2) + "px";
         }
     }
@@ -247,11 +177,6 @@ class Controller {
     moveLeft() {
         if (this.x > 0) {
             this.x = this.x - 1;
-            /*anime({
-                targets: this.controller,
-                translateX: (size + margin * 2) * this.x,
-                duration: this.duration,
-            });*/
             this.controller.style.left = this.x * (size + margin * 2) + "px";
         }
     }
@@ -259,11 +184,6 @@ class Controller {
     moveUp() {
         if (this.y > 0) {
             this.y = this.y - 1;
-            /*anime({
-                targets: this.controller,
-                translateY: (size + margin * 2) * this.y,
-                duration: this.duration
-            });*/
             this.controller.style.top = this.y * (size + margin * 2) + "px";
         }
     }
@@ -271,15 +191,6 @@ class Controller {
     moveDown() {
         if (this.y < 4) {
             this.y = this.y + 1;
-            /*var callbackMoveDown = anime({
-                targets: this.controller,
-                translateY: (size + margin * 2) * this.y,
-                duration: this.duration
-            });
-            callbackMoveDown.begin = function () {
-                transform = this.controller.style.transform;
-                this.controller.style.transform = transform.replace(/\d*deg/, '0deg');
-            };*/
             this.controller.style.top = this.y * (size + margin * 2) + "px";
         }
     }
@@ -323,7 +234,8 @@ function fillReset(i, j) {
     anime({
         targets: block,
         scale: [0, 1],
-        duration: 1000,
+        opacity: [0, 1],
+        duration: 500,
     });
 }
 
