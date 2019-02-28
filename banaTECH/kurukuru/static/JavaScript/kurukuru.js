@@ -1,8 +1,17 @@
-var controller;
-var board;
+var controller; //サークル型コントローラー
+var board; //ゲームの盤面を2次元配列で記録
+var score;
+var time;
+var mode; //ゲームを起動しているかどうか
+
 onload = function () {
+    mode = 0;
     controller = new Controller();
     board = new Board();
+    score = 0;
+    document.getElementById("score").innerHTML = "score: " + score;
+    time = 60;
+    document.getElementById("time").innerHTML = "time: " + time;
     board.paint();
 };
 
@@ -12,46 +21,78 @@ const backgroundSize = size * 6 + margin * 12 + 2; //背景のサイズ
 const controllerSize = size * 2 + margin * 4; //コントローラーのサイズ
 const spanSize = 40; //コントローラーの隙間のサイズ
 
+//初期状態に戻す
+function reset() {
+    mode = 0;
+    controller.reset();
+    board.reset();
+    score = 0;
+    document.getElementById("score").innerHTML = "score: " + score;
+    time = 60;
+    document.getElementById("time").innerHTML = "time: " + time;
+}
+
+//スコア加算
+function scoreUp() {
+    score += 100;
+    document.getElementById("score").innerHTML = "score: " + score;
+}
+
 //ボタンからの操作
 function buttonRight() {
-    controller.moveRight();
+    if (mode == 1) {
+        controller.moveRight();
+    }
+
 }
 
 function buttonLeft() {
-    controller.moveLeft();
+    if (mode == 1) {
+        controller.moveLeft();
+    }
 }
 
 function buttonUp() {
-    controller.moveUp();
+    if (mode == 1) {
+        controller.moveUp();
+    }
 }
 
 function buttonDown() {
-    controller.moveDown();
+    if (mode == 1) {
+        controller.moveDown();
+    }
 }
 
 function buttonClockwise() {
-    blockClockwise(controller.x, controller.y);
+    if (mode == 1) {
+        blockClockwise(controller.x, controller.y);
+    }
 }
 
 function buttonCounterClockwise() {
-    blockCounterClockwise(controller.x, controller.y);
+    if (mode == 1) {
+        blockCounterClockwise(controller.x, controller.y);
+    }
 }
 
 document.onkeydown = keydown;
 
 function keydown(event) {
-    if (event.key == "d") {
-        controller.moveRight();
-    } else if (event.key == "a") {
-        controller.moveLeft();
-    } else if (event.key == "w") {
-        controller.moveUp();
-    } else if (event.key == "s") {
-        controller.moveDown();
-    } else if (event.key == "ArrowRight") {
-        blockClockwise(controller.x, controller.y);
-    } else if (event.key == "ArrowLeft") {
-        blockCounterClockwise(controller.x, controller.y);
+    if (mode == 1) {
+        if (event.key == "d") {
+            controller.moveRight();
+        } else if (event.key == "a") {
+            controller.moveLeft();
+        } else if (event.key == "w") {
+            controller.moveUp();
+        } else if (event.key == "s") {
+            controller.moveDown();
+        } else if (event.key == "ArrowRight") {
+            blockClockwise(controller.x, controller.y);
+        } else if (event.key == "ArrowLeft") {
+            blockCounterClockwise(controller.x, controller.y);
+        }
     }
 }
 
@@ -93,6 +134,19 @@ class Board {
         ];
     }
 
+    //初期状態に戻す
+    reset() {
+        this.array = [
+            [1, 2, 3, 4, 5, 1],
+            [2, 3, 4, 5, 1, 2],
+            [3, 4, 5, 1, 2, 3],
+            [4, 5, 1, 2, 3, 4],
+            [5, 1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5, 1]
+        ];
+        this.paint();
+    }
+
     //ブロックが4つそろっているか判定
     judge() {
         var i, j;
@@ -104,6 +158,7 @@ class Board {
                         this.array[i][j + 1] = 0;
                         this.array[i + 1][j] = 0;
                         this.array[i + 1][j + 1] = 0;
+                        scoreUp();
                     }
                 }
             }
@@ -152,10 +207,15 @@ class Controller {
     constructor() {
         this.x = 0;
         this.y = 0;
-        this.deg = 0;
-        //this.duration = 1;
         this.controller = document.getElementById('controller');
         this.ctx = this.controller.getContext('2d');
+        this.position(this.x, this.y);
+    }
+
+    //初期状態に戻す
+    reset() {
+        this.x = 0;
+        this.y = 0;
         this.position(this.x, this.y);
     }
 
