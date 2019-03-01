@@ -12,7 +12,7 @@ import shutil
 
 
 def blog(request):
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
 
@@ -45,19 +45,19 @@ def posted(request):
                 category = categories.filter(name=c)[0]
                 article.category.add(category)
         article.save()
-        articles = Article.objects.all()
+        articles = Article.objects.all().order_by("post_date").reverse()
         return render(request, "blog.html", {"articles": articles})
 
 def view(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
     categories = article.category.all()
     relatedList = Article.objects.filter(Q(category__in=categories), ~Q(id=article.id)).distinct()
-    relatedArticles = relatedList.order_by(post_date).reverse()[0:3]
+    relatedArticles = relatedList.order_by("post_date").reverse()[0:3]
     return render(request, "view.html", {"article": article, "relatedArticles": relatedArticles})
 
 
 def search_category(request, category):
-    articles = Article.objects.filter(category__name=category)
+    articles = Article.objects.filter(category__name=category).order_by("post_date").reverse()
     return render(request, "search_category.html", {"category": category, "articles": articles})
 
 
@@ -65,7 +65,7 @@ def search(request):
     search = request.POST["search"]
     articles = Article.objects.filter(
         Q(category__name__icontains=search) | Q(title__icontains=search)
-    ).distinct()
+    ).distinct().order_by("post_date").reverse()
     return render(request, "search.html", {"search": search, "articles": articles})
 
 
