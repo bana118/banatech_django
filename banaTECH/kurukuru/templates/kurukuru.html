@@ -155,6 +155,13 @@
             BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
             BGM.load();
             BGM.currentTime = 0;
+
+            var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+            rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
+            rotateSoundEffect.load();
+            var moveSoundEffect = document.getElementById("moveSoundEffect");
+            moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
+            moveSoundEffect.load();
             if (count == 3) {
                 startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
@@ -184,15 +191,24 @@
                 }
                 setTimeout("gameStart()", 1000);
             } else if (count == 0) {
-                BGM.addEventListener('canplaythrough', function (e) {
-                    BGM.removeEventListener('canplaythrough', arguments.callee);
+                if (BGM.readyState === 4) {
                     startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                     startSoundEffect.play();
                     BGM.play();
                     mode = 1;
                     ctx.clearRect(0, 0, backgroundSize, backgroundSize);
                     countDown();
-                });
+                } else {
+                    BGM.addEventListener('canplaythrough', function (e) {
+                        BGM.removeEventListener('canplaythrough', arguments.callee);
+                        startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
+                        startSoundEffect.play();
+                        BGM.play();
+                        mode = 1;
+                        ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+                        countDown();
+                    });
+                }
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             var startSoundEffect = document.getElementById("startSoundEffect");
