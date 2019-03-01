@@ -67,7 +67,7 @@
     <br>
     <h1>くるくる</h1>
     <p>ルール：カーソルを操作して同じ色のブロックを4つ正方形に並べよう。連続で消していくとスコアアップ！
-    スペースキーかゲーム画面クリックで最初の画面からゲームスタートしたりゲームオーバー画面から最初の画面に戻ることができます。</p>
+        スペースキーかゲーム画面クリックで最初の画面からゲームスタートしたりゲームオーバー画面から最初の画面に戻ることができます。</p>
     <p>操作方法（キーボード）</p>
     <pre>       wキー：カーソル上移動</pre>
     <pre>       aキー：カーソル左移動</pre>
@@ -151,6 +151,10 @@
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             var img = new Image();
+            var BGM = document.getElementById("BGM");
+            BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
+            BGM.load();
+            BGM.currentTime = 0;
             if (count == 3) {
                 startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
@@ -180,15 +184,15 @@
                 }
                 setTimeout("gameStart()", 1000);
             } else if (count == 0) {
-                startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
-                startSoundEffect.play();
-                var BGM = document.getElementById("BGM");
-                BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
-                BGM.currentTime = 0;
-                BGM.play();
-                mode = 1;
-                ctx.clearRect(0, 0, backgroundSize, backgroundSize);
-                countDown();
+                BGM.addEventListener('canplaythrough', function (e) {
+                    BGM.removeEventListener('canplaythrough', arguments.callee);
+                    startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
+                    startSoundEffect.play();
+                    BGM.play();
+                    mode = 1;
+                    ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+                    countDown();
+                });
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             var startSoundEffect = document.getElementById("startSoundEffect");
