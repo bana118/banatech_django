@@ -22,11 +22,14 @@
     </p>
     <a href="/blog/view_md/{{ article.id }}">markdownファイル</a>
     <div id="markdown_content" src="{{article.article.url}}"></div>
+    <h3>関連記事</h3>
+    {% for relatedArticle in relatedArticles %}
+    <a href="/blog/{{relatedArticle.id}}">{{ relatedArticle.title }}</a>
+    <br>
+    {% endfor %}
     <br>
     <a href="/blog/edit/{{ article.id }}">記事編集(管理者用)</a>
-    <br>
     <a href="/blog/delete/{{ article.id }}" onclick="return confirm('本当に削除しますか？')">記事削除(管理者用)</a>
-    <br>
 </div>
 <script>
     $(document).ready(function () {
