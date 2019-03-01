@@ -48,11 +48,12 @@ def posted(request):
         articles = Article.objects.all()
         return render(request, "blog.html", {"articles": articles})
 
-
 def view(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
     categories = article.category.all()
-    return render(request, "view.html", {"article": article})
+    relatedList = Article.objects.filter(Q(category__in=categories), ~Q(id=article.id)).distinct()
+    relatedArticles = relatedList.order_by(post_date).reverse()[0:3]
+    return render(request, "view.html", {"article": article, "relatedArticles": relatedArticles})
 
 
 def search_category(request, category):
@@ -83,7 +84,8 @@ def delete(request, article_id):
 @login_required
 def edit(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
-    editPath = settings.BASE_DIR + "/media/article/" + str(article.id) + "/" + str(article.id) + ".md"
+    editPath = settings.BASE_DIR + "/media/article/" + \
+        str(article.id) + "/" + str(article.id) + ".md"
     with open(editPath, "r", encoding='utf-8') as md:
         content = md.read()
     return render(request, "edit.html", {"article": article, "content": content})
@@ -114,7 +116,8 @@ def edited(request, article_id):
     article.post_date = timezone.datetime.now()
     article.save()
 
-    editPath = settings.BASE_DIR + "/media/article/" + str(article.id) + "/" + str(article.id) + ".md"
+    editPath = settings.BASE_DIR + "/media/article/" + \
+        str(article.id) + "/" + str(article.id) + ".md"
     with open(editPath, "w", encoding='utf-8', newline="\n") as md:
         md.write(content)
 
