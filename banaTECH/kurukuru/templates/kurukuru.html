@@ -98,6 +98,9 @@
         controller = new Controller();
         board = new Board();
         document.getElementById("outputVolume").innerHTML = 100;
+        var startSoundEffect = document.getElementById("startSoundEffect");
+        startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
+        startSoundEffect.load();
         reset();
     };
 
@@ -162,6 +165,9 @@
             var moveSoundEffect = document.getElementById("moveSoundEffect");
             moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
             moveSoundEffect.load();
+            var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+            scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
+            scoreSoundEffect.load();
             if (count == 3) {
                 startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
