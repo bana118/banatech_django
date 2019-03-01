@@ -5,7 +5,6 @@
 
 {% block head %}
 <!-- anime.js -->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>-->
 {% load static %}
 <script src="{% static 'JavaScript/anime.min.js' %}"></script>
 {% endblock %}
@@ -68,6 +67,7 @@
     var board; //ゲームの盤面を2次元配列で記録
     var score; //ゲームのスコア
     var time; //ゲームの制限時間
+    var scoreTime; //スコアアップ時のtimeを記録する用
     var mode; //ゲームをスタートしているかどうか 1:ゲーム中 0:ゲーム開始前 -1:ゲームオーバー
     var count; //ゲームスタート時のカウントダウン用
 
@@ -185,7 +185,8 @@
         board.paint();
         score = 0;
         document.getElementById("score").innerHTML = "score: " + score;
-        time = 60;
+        time = 100;
+        scoreTime = 100;
         count = 3;
         document.getElementById("time").innerHTML = "time: " + time;
         initScreen();
@@ -196,7 +197,8 @@
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
         scoreSoundEffect.src = "{% static 'music/scoreUp.mp3' %}";
         scoreSoundEffect.play();
-        score += 100;
+        score += (100-(scoreTime-time)) * 4 + 100; //スコア変動100~500
+        scoreTime = time;
         document.getElementById("score").innerHTML = "score: " + score;
     }
 
@@ -480,8 +482,7 @@
         anime({
             targets: block,
             scale: [0, 1],
-            opacity: [0, 1],
-            duration: 500,
+            duration: 1000,
         });
     }
 
