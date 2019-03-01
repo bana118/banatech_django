@@ -6,7 +6,7 @@
 {% block head %}
 <!-- anime.js -->
 {% load static %}
-<script src="{% static 'JavaScript/anime.min.js' %}"></script>
+<script src="{% static 'kurukuru/JavaScript/anime.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -127,7 +127,7 @@
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
         var img = new Image();
-        img.src = "{% static 'images/gamestart.png' %}";
+        img.src = "{% static 'kurukuru/images/gamestart.png' %}";
         img.onload = function () {
             ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
         }
@@ -152,27 +152,27 @@
             var ctx = screen.getContext("2d");
             var img = new Image();
             if (count == 3) {
-                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
-                img.src = "{% static 'images/three.png' %}";
+                img.src = "{% static 'kurukuru/images/three.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
                     count--;
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 2) {
-                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
-                img.src = "{% static 'images/two.png' %}";
+                img.src = "{% static 'kurukuru/images/two.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
                     count--;
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 1) {
-                startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
                 startSoundEffect.play();
-                img.src = "{% static 'images/one.png' %}";
+                img.src = "{% static 'kurukuru/images/one.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
                     count--;
@@ -180,10 +180,10 @@
                 }
                 setTimeout("gameStart()", 1000);
             } else if (count == 0) {
-                startSoundEffect.src = "{% static 'music/gamestart.mp3' %}";
+                startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                 startSoundEffect.play();
                 var BGM = document.getElementById("BGM");
-                BGM.src = "{% static 'music/mozegaku_09_idance.mp3' %}";
+                BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
                 BGM.currentTime = 0;
                 BGM.play();
                 mode = 1;
@@ -192,7 +192,7 @@
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             var startSoundEffect = document.getElementById("startSoundEffect");
-            startSoundEffect.src = "{% static 'music/countdown.mp3' %}";
+            startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
             startSoundEffect.play();
             mode = 0;
             reset();
@@ -205,13 +205,13 @@
         var BGM = document.getElementById("BGM");
         BGM.pause();
         var startSoundEffect = document.getElementById("startSoundEffect");
-        startSoundEffect.src = "{% static 'music/gameover.mp3' %}";
+        startSoundEffect.src = "{% static 'kurukuru/music/gameover.mp3' %}";
         startSoundEffect.play();
         mode = -1;
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
         var img = new Image();
-        img.src = "{% static 'images/gameover.png' %}";
+        img.src = "{% static 'kurukuru/images/gameover.png' %}";
         img.onload = function () {
             ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
         }
@@ -235,7 +235,7 @@
     //スコア加算
     function scoreUp() {
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
-        scoreSoundEffect.src = "{% static 'music/scoreUp.mp3' %}";
+        scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
         scoreSoundEffect.play();
         score += (100 - (scoreTime - time)) * 4 + 100; //スコア変動100~500
         scoreTime = time;
@@ -305,7 +305,7 @@
 
     function blockClockwise(controllerX, controllerY) {
         var rotateSoundEffect = document.getElementById("rotateSoundEffect");
-        rotateSoundEffect.src = "{% static 'music/rotate.mp3' %}";
+        rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
         rotateSoundEffect.play();
         board.boardClockwise(controllerX, controllerY);
         board.judge();
@@ -320,7 +320,7 @@
 
     function blockCounterClockwise(controllerX, controllerY) {
         var rotateSoundEffect = document.getElementById("rotateSoundEffect");
-        rotateSoundEffect.src = "{% static 'music/rotate.mp3' %}";
+        rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
         rotateSoundEffect.play();
         board.boardCounterClockwise(controllerX, controllerY);
         board.judge();
@@ -448,7 +448,7 @@
                 this.x = this.x + 1;
                 this.controller.style.left = this.x * (size + margin * 2) + "px";
                 var moveSoundEffect = document.getElementById("moveSoundEffect");
-                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
                 moveSoundEffect.play();
             }
         }
@@ -458,7 +458,7 @@
                 this.x = this.x - 1;
                 this.controller.style.left = this.x * (size + margin * 2) + "px";
                 var moveSoundEffect = document.getElementById("moveSoundEffect");
-                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
                 moveSoundEffect.play();
             }
         }
@@ -468,7 +468,7 @@
                 this.y = this.y - 1;
                 this.controller.style.top = this.y * (size + margin * 2) + "px";
                 var moveSoundEffect = document.getElementById("moveSoundEffect");
-                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
                 moveSoundEffect.play();
             }
         }
@@ -478,7 +478,7 @@
                 this.y = this.y + 1;
                 this.controller.style.top = this.y * (size + margin * 2) + "px";
                 var moveSoundEffect = document.getElementById("moveSoundEffect");
-                moveSoundEffect.src = "{% static 'music/move.mp3' %}";
+                moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
                 moveSoundEffect.play();
             }
         }
