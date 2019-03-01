@@ -11,12 +11,11 @@
 
 {% block content %}
 <div class="container">
-    <h1>くるくる</h1>
     <div class="container p-0" style="width: 290px;">
         <audio src="" id="startSoundEffect"></audio>
         <audio src="" id="moveSoundEffect"></audio>
-        <audio src="" id="scoreSoundEffect"></audio>
         <audio src="" id="rotateSoundEffect"></audio>
+        <audio src="" id="scoreSoundEffect"></audio>
         <audio src="" id="BGM"></audio>
         <div class="card">
             <div class="card-body text-center p-2">
@@ -60,6 +59,13 @@
         </div>
     </div>
     <br>
+    <p class="text-center">
+        音量調整：
+        <input type="range" value="100" id="volume" min="0" max="100" step="1" onchange="setVolume(this.value)">
+    </p>
+    <p class="text-center">音量：<span id="outputVolume"></span></p>
+    <br>
+    <h1>くるくる</h1>
     <p>操作方法：操作方法を書く。</p>
 </div>
 <script>
@@ -74,6 +80,7 @@
     onload = function () {
         controller = new Controller();
         board = new Board();
+        document.getElementById("outputVolume").innerHTML = 100;
         reset();
     };
 
@@ -82,6 +89,22 @@
     const backgroundSize = size * 6 + margin * 12 + 2; //背景のサイズ
     const controllerSize = size * 2 + margin * 4; //コントローラーのサイズ
     const spanSize = 40; //コントローラーの隙間のサイズ
+
+    //音量変更
+    function setVolume(value) {
+        var startSoundEffect = document.getElementById("startSoundEffect");
+        var moveSoundEffect = document.getElementById("moveSoundEffect");
+        var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+        var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        var BGM = document.getElementById("BGM");
+        var volume = value / 100;
+        startSoundEffect.volume = volume;
+        moveSoundEffect.volume = volume;
+        rotateSoundEffect.volume = volume;
+        scoreSoundEffect.volume = volume;
+        BGM.volume = volume;
+        document.getElementById("outputVolume").innerHTML = value;
+    }
 
     function initScreen() {
         var screen = document.getElementById("screen");
@@ -197,7 +220,7 @@
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
         scoreSoundEffect.src = "{% static 'music/scoreUp.mp3' %}";
         scoreSoundEffect.play();
-        score += (100-(scoreTime-time)) * 4 + 100; //スコア変動100~500
+        score += (100 - (scoreTime - time)) * 4 + 100; //スコア変動100~500
         scoreTime = time;
         document.getElementById("score").innerHTML = "score: " + score;
     }
