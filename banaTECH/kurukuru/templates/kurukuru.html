@@ -175,12 +175,16 @@
 
     function gameStart() {
         if (mode == 0) {
-            var startSoundEffect = document.getElementById("startSoundEffect");
             var countDownSoundEffect = document.getElementById("countDownSoundEffect");
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             var img = new Image();
             var BGM = document.getElementById("BGM");
+            BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
+            BGM.load();
+            var startSoundEffect = document.getElementById("startSoundEffect");
+            startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
+            startSoundEffect.load();
             BGM.currentTime = 0;
             if (count == 3) {
                 countDownSoundEffect.play();
