@@ -13,6 +13,8 @@
 <div class="container">
     <div class="container p-0" style="width: 290px;">
         <audio src="" id="startSoundEffect"></audio>
+        <audio src="" id="overSoundEffect"></audio>
+        <audio src="" id="countDownSoundEffect"></audio>
         <audio src="" id="moveSoundEffect"></audio>
         <audio src="" id="rotateSoundEffect"></audio>
         <audio src="" id="scoreSoundEffect"></audio>
@@ -99,8 +101,23 @@
         board = new Board();
         document.getElementById("outputVolume").innerHTML = 100;
         var startSoundEffect = document.getElementById("startSoundEffect");
-        startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
+        startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
         startSoundEffect.load();
+        var countDownSoundEffect = document.getElementById("countDownSoundEffect");
+        countDownSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
+        countDownSoundEffect.load();
+        var overSoundEffect = document.getElementById("overSoundEffect");
+        overSoundEffect.src = "{% static 'kurukuru/music/gameover.mp3' %}";
+        overSoundEffect.load();
+        var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
+        scoreSoundEffect.load();
+        var moveSoundEffect = document.getElementById("moveSoundEffect");
+        moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
+        moveSoundEffect.load();
+        var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+        rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
+        rotateSoundEffect.load();
         reset();
     };
 
@@ -116,12 +133,16 @@
         var moveSoundEffect = document.getElementById("moveSoundEffect");
         var rotateSoundEffect = document.getElementById("rotateSoundEffect");
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        var countDownSoundEffect = document.getElementById("countDownSoundEffect");
+        var overSoundEffect = document.getElementById("overSoundEffect");
         var BGM = document.getElementById("BGM");
         var volume = value / 100;
         startSoundEffect.volume = volume;
         moveSoundEffect.volume = volume;
         rotateSoundEffect.volume = volume;
         scoreSoundEffect.volume = volume;
+        countDownSoundEffect.volume = volume;
+        overSoundEffect.voleme = volume;
         BGM.volume = volume;
         document.getElementById("outputVolume").innerHTML = value;
     }
@@ -151,6 +172,7 @@
     function gameStart() {
         if (mode == 0) {
             var startSoundEffect = document.getElementById("startSoundEffect");
+            var countDownSoundEffect = document.getElementById("countDownSoundEffect");
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             var img = new Image();
@@ -159,18 +181,9 @@
             BGM.load();
             BGM.currentTime = 0;
 
-            var rotateSoundEffect = document.getElementById("rotateSoundEffect");
-            rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
-            rotateSoundEffect.load();
-            var moveSoundEffect = document.getElementById("moveSoundEffect");
-            moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
-            moveSoundEffect.load();
-            var scoreSoundEffect = document.getElementById("scoreSoundEffect");
-            scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
-            scoreSoundEffect.load();
+
             if (count == 3) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/three.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -178,8 +191,7 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 2) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/two.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -187,18 +199,15 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 1) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/one.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
                     count--;
                     setTimeout("gameStart()", 1000);
                 }
-                setTimeout("gameStart()", 1000);
             } else if (count == 0) {
                 if (BGM.readyState === 4) {
-                    startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                     startSoundEffect.play();
                     BGM.play();
                     mode = 1;
@@ -207,7 +216,6 @@
                 } else {
                     BGM.addEventListener('canplaythrough', function (e) {
                         BGM.removeEventListener('canplaythrough', arguments.callee);
-                        startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                         startSoundEffect.play();
                         BGM.play();
                         mode = 1;
@@ -217,9 +225,7 @@
                 }
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
-            var startSoundEffect = document.getElementById("startSoundEffect");
-            startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-            startSoundEffect.play();
+            countDownSoundEffect.play();
             mode = 0;
             reset();
             initScreen();
@@ -230,9 +236,8 @@
     function gameOver() {
         var BGM = document.getElementById("BGM");
         BGM.pause();
-        var startSoundEffect = document.getElementById("startSoundEffect");
-        startSoundEffect.src = "{% static 'kurukuru/music/gameover.mp3' %}";
-        startSoundEffect.play();
+        var overSoundEffect = document.getElementById("overSoundEffect");
+        overSoundEffect.play();
         mode = -1;
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
@@ -261,7 +266,6 @@
     //スコア加算
     function scoreUp() {
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
-        scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
         scoreSoundEffect.play();
         score += (100 - (scoreTime - time)) * 4 + 100; //スコア変動100~500
         scoreTime = time;
