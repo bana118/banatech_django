@@ -180,8 +180,6 @@
             BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
             BGM.load();
             BGM.currentTime = 0;
-
-
             if (count == 3) {
                 countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/three.png' %}";
@@ -208,6 +206,7 @@
                 }
             } else if (count == 0) {
                 if (BGM.readyState === 4) {
+                    startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                     startSoundEffect.play();
                     BGM.play();
                     mode = 1;
@@ -216,6 +215,7 @@
                 } else {
                     BGM.addEventListener('canplaythrough', function (e) {
                         BGM.removeEventListener('canplaythrough', arguments.callee);
+                        startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
                         startSoundEffect.play();
                         BGM.play();
                         mode = 1;
