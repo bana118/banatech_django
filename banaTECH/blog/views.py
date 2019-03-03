@@ -46,19 +46,35 @@ def posted(request):
                 category = categories.filter(name=c)[0]
                 article.category.add(category)
         article.save()
+
+        # sitemap.xmlへの追加
+        xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+        root = xmlTree.getroot()
+        url = ET.SubElement(root, "url")
+        loc = ET.SubElement(url, "loc")
+        lastmod = ET.SubElement(url, "lastmod")
+        priority = ET.SubElement(url, "priority")
+        loc.text = "https://banatech.tk/blog/" + str(article.id)
+        lastmod.text = str(article.post_date)
+        priority.text = "0.64"
+        xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+
         articles = Article.objects.all().order_by("post_date").reverse()
         return render(request, "blog.html", {"articles": articles})
+
 
 def view(request, article_id):
     article = Article.objects.filter(id=article_id)[0]
     categories = article.category.all()
-    relatedList = Article.objects.filter(Q(category__in=categories), ~Q(id=article.id)).distinct()
+    relatedList = Article.objects.filter(
+        Q(category__in=categories), ~Q(id=article.id)).distinct()
     relatedArticles = relatedList.order_by("post_date").reverse()[0:3]
     return render(request, "view.html", {"article": article, "relatedArticles": relatedArticles})
 
 
 def search_category(request, category):
-    articles = Article.objects.filter(category__name=category).order_by("post_date").reverse()
+    articles = Article.objects.filter(
+        category__name=category).order_by("post_date").reverse()
     return render(request, "search_category.html", {"category": category, "articles": articles})
 
 
@@ -78,6 +94,16 @@ def delete(request, article_id):
         shutil.rmtree(deletePath)
     if not article is None:
         article.delete()
+
+    # sitemap.xmlからの削除
+    xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+    root = xmlTree.getroot()
+    for url in root.findall("url"):
+        deleteURL = "https://banatech.tk/blog/" + str(article_id)
+        if url.find("loc").text == deleteURL:
+            root.remove(url)
+    xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+
     articles = Article.objects.all()
     return render(request, "blog.html", {"articles": articles})
 
@@ -130,6 +156,15 @@ def edited(request, article_id):
                 for chunk in image.chunks():
                     destination.write(chunk)
 
+    # sitemap.xmlの更新
+    xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+    root = xmlTree.getroot()
+    for url in root.findall("url"):
+        editURL = "https://banatech.tk/blog/" + str(article_id)
+        if url.find("loc").text == editURL:
+            url.find("lastmod").text = str(article.post_date)
+    xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+    
     articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
