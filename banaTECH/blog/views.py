@@ -129,7 +129,7 @@ def edited(request, article_id):
                 for chunk in image.chunks():
                     destination.write(chunk)
 
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
 
