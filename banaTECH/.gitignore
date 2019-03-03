@@ -6,3 +6,7 @@ __pycache__/
 
 #article
 media/article/
+
+#sitemap
+
+static/sitemap/
