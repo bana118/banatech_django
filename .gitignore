@@ -9,3 +9,6 @@ __pycache__/
 
 #article
 banaTECH/media/article/
+
+#sitemap
+static/sitemap/
