@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'CSSFrameworks',
     'LaTeXEditor',
     'kurukuru',
+    'hakogucha',
 ]
 
 MIDDLEWARE = [
