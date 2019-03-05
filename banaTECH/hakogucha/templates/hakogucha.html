@@ -1,1 +1,73 @@
-hakogucha
+{% extends "base.html" %}
+{% block title%}
+ハコグチャ
+{% endblock %}
+
+{% block head %}
+<!-- anime.js -->
+{% load static %}
+<script src="{% static 'kurukuru/JavaScript/anime.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="touch-action: manipulation;">
+    <div class="container p-0" style="width: 290px;">
+        <div class="card">
+            <div class="card-body text-center p-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="text-left" id="score">score: </div>
+                    </div>
+                    <div class="col">
+                        <div class="text-right" id="time">time: </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="blockBox d-flex justify-content-center" style="position: relative;">
+            <canvas id="controller" width="96px" height="96px" style="position: absolute; top:0px; left: 0px;"></canvas>
+            {% for block in ""|rjust:"36" %}
+            {% if forloop.counter0|divisibleby:"6" %}
+            <div class="blockColumn d-flex flex-column">
+                {% endif %}
+                <canvas class="m-1" id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
+                {% if forloop.counter|divisibleby:"6" %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            <canvas id="screen" width="290px" height="290px" style="position: absolute;" onClick="gameStart();"></canvas>
+        </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <button class="col-2 btn fas btn-danger fa-angle-up fa-3x fa-fw" onClick="buttonUp();"></button>
+        </div>
+        <div class="row">
+            <button class="col-3 btn btn-primary fas fa-angle-left fa-3x fa-fw" onClick="buttonLeft();"></button>
+            <button class="col-3 btn btn-primary fas fa-angle-right fa-3x fa-fw" onClick="buttonRight();"></button>
+            <div class="col-1"></div>
+            <button class="col-2 btn btn-success fas fa-undo fa-2x fa-fw" onClick="buttonCounterClockwise();"></button>
+            <button class="col-2 btn btn-info fas fa-redo fa-2x fa-fw" onClick="buttonClockwise();"></button>
+        </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <button class="col-2 btn fas btn-danger fa-angle-down fa-3x fa-fw" onClick="buttonDown();"></button>
+        </div>
+    </div>
+    <br>
+    <p class="text-center">
+        音量調整：
+        <input type="range" value="100" id="volume" min="0" max="100" step="1" onchange="setVolume(this.value)">
+    </p>
+    <p class="text-center">音量：<span id="outputVolume"></span></p>
+    <br>
+    <h1>くるくる</h1>
+    <p>ルール：</p>
+    <p>制作記事：</p>
+    <p>操作方法（キーボード）</p>
+    <p>操作方法（ボタン）</p>
+    <p>効果音：</p>
+    <p>BGM：</p>
+</div>
+<script>
+</script>
+{% endblock %}
