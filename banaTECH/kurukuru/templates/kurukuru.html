@@ -398,7 +398,6 @@
         //ブロックが4つそろっているか判定
         judge() {
             var i, j;
-            search:
                 for (i = 0; i < 5; i++) {
                     for (j = 0; j < 5; j++) {
                         if (this.array[i][j] == this.array[i][j + 1] && this.array[i][j] == this.array[i + 1][j] &&

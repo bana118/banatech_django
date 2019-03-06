@@ -7,6 +7,8 @@
 <!-- anime.js -->
 {% load static %}
 <script src="{% static 'kurukuru/JavaScript/anime.min.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,17 +27,16 @@
             </div>
         </div>
         <div class="blockBox d-flex justify-content-center" style="position: relative;">
-            <canvas id="controller" width="96px" height="96px" style="position: absolute; top:0px; left: 0px;"></canvas>
-            {% for block in ""|rjust:"36" %}
-            {% if forloop.counter0|divisibleby:"6" %}
+            {% for block in ""|rjust:"90" %}
+            {% if forloop.counter0|divisibleby:"9" %}
             <div class="blockColumn d-flex flex-column">
                 {% endif %}
-                <canvas class="m-1" id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
-                {% if forloop.counter|divisibleby:"6" %}
+                <canvas id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
+                {% if forloop.counter|divisibleby:"9" %}
             </div>
             {% endif %}
             {% endfor %}
-            <canvas id="screen" width="290px" height="290px" style="position: absolute;" onClick="gameStart();"></canvas>
+            <canvas id="screen" width="400px" height="360px" style="position: absolute;" onClick="gameStart();"></canvas>
         </div>
         <div class="row">
             <div class="col-2"></div>
@@ -44,9 +45,6 @@
         <div class="row">
             <button class="col-3 btn btn-primary fas fa-angle-left fa-3x fa-fw" onClick="buttonLeft();"></button>
             <button class="col-3 btn btn-primary fas fa-angle-right fa-3x fa-fw" onClick="buttonRight();"></button>
-            <div class="col-1"></div>
-            <button class="col-2 btn btn-success fas fa-undo fa-2x fa-fw" onClick="buttonCounterClockwise();"></button>
-            <button class="col-2 btn btn-info fas fa-redo fa-2x fa-fw" onClick="buttonClockwise();"></button>
         </div>
         <div class="row">
             <div class="col-2"></div>
@@ -69,5 +67,147 @@
     <p>BGM：</p>
 </div>
 <script>
+    onload = function () {
+        board = new Board();
+        board.reset();
+        board.paint();
+    };
+    const size = 40; //ブロックのサイズ
+    class Board {
+        constructor() {
+            /* 縦横逆なことに注意 */
+            this.array = [
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3],
+                [0, 0, 0, 0, 0, 0, 0, 4, 1],
+                [0, 0, 0, 0, 0, 0, 0, 3, 2],
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3],
+                [0, 0, 0, 0, 0, 0, 0, 4, 1],
+                [0, 0, 0, 0, 0, 0, 0, 3, 2],
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3]
+            ];
+        }
+
+        //初期状態に戻す
+        reset() {
+            this.array = [
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3],
+                [0, 0, 0, 0, 0, 0, 0, 4, 1],
+                [0, 0, 0, 0, 0, 0, 0, 3, 2],
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3],
+                [0, 0, 0, 0, 0, 0, 0, 4, 1],
+                [0, 0, 0, 0, 0, 0, 0, 3, 2],
+                [0, 0, 0, 0, 0, 0, 0, 1, 4],
+                [0, 0, 0, 0, 0, 0, 0, 2, 3]
+            ];
+            this.paint();
+        }
+
+        //ブロックが3つそろっているか判定
+        judge() {
+            var i, j;
+            search:
+                for (i = 0; i < 5; i++) {
+                    for (j = 0; j < 5; j++) {
+                        if (this.array[i][j] == this.array[i][j + 1] && this.array[i][j] == this.array[i + 1][j] &&
+                            this.array[i][j] == this.array[i + 1][j + 1]) {
+                            this.array[i][j] = 0;
+                            this.array[i][j + 1] = 0;
+                            this.array[i + 1][j] = 0;
+                            this.array[i + 1][j + 1] = 0;
+                            scoreUp();
+                        }
+                    }
+                }
+
+        }
+
+        //盤面を画面に反映
+        paint() {
+            for (var i = 0; i < 10; i++) {
+                for (var j = 0; j < 9; j++) {
+                    var block = document.getElementById("b-" + (9 * i + j));
+                    if (this.array[i][j] == 1) {
+                        fillRed(block);
+                    } else if (this.array[i][j] == 2) {
+                        fillBlue(block);
+                    } else if (this.array[i][j] == 3) {
+                        fillGreen(block);
+                    } else if (this.array[i][j] == 4) {
+                        fillGray1(block);
+                    }
+                }
+            }
+        }
+
+    }
+
+    function strokeCross(block) {
+
+    }
+
+    function fillRed(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'red';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillBlue(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillGreen(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'green';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillGray1(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillGray2(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    function fillGray3(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, 0, size, size);
+    }
 </script>
 {% endblock %}
