@@ -27,15 +27,26 @@
             </div>
         </div>
         <div class="blockBox d-flex justify-content-center" style="position: relative;">
-            {% for block in ""|rjust:"90" %}
+            {% for ladder in ""|rjust:"90" %}
             {% if forloop.counter0|divisibleby:"9" %}
-            <div class="blockColumn d-flex flex-column">
+            <div class="ladderColumn d-flex flex-column">
                 {% endif %}
-                <canvas id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
+                <canvas id="l-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
                 {% if forloop.counter|divisibleby:"9" %}
             </div>
             {% endif %}
             {% endfor %}
+            <div class="blocks d-flex justify-content-center" style="position: absolute;">
+                {% for block in ""|rjust:"90" %}
+                {% if forloop.counter0|divisibleby:"9" %}
+                <div class="blockColumn d-flex flex-column">
+                    {% endif %}
+                    <canvas id="b-{{ forloop.counter0 }}" width="40px" height="40px"></canvas>
+                    {% if forloop.counter|divisibleby:"9" %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
             <canvas id="screen" width="400px" height="360px" style="position: absolute;" onClick="gameStart();"></canvas>
         </div>
         <div class="row">
@@ -58,7 +69,7 @@
     </p>
     <p class="text-center">音量：<span id="outputVolume"></span></p>
     <br>
-    <h1>くるくる</h1>
+    <h1>ハコグチャ</h1>
     <p>ルール：</p>
     <p>制作記事：</p>
     <p>操作方法（キーボード）</p>
@@ -67,12 +78,39 @@
     <p>BGM：</p>
 </div>
 <script>
+    var board;
+    const size = 40; //ブロックのサイズ
+
     onload = function () {
         board = new Board();
-        board.reset();
-        board.paint();
+        reset();
     };
-    const size = 40; //ブロックのサイズ
+
+
+    //初期状態に戻す
+    function reset() {
+        board.reset();
+        ladderSet();
+    }
+
+    function ladderSet() {
+        for (var i = 0; i < 10; i++) {
+            for (var j = 2; j < 9; j++) {
+                var ladder = document.getElementById("l-" + (9 * i + j));
+                var ctx = ladder.getContext('2d');
+                ctx.beginPath();
+                ctx.linewidth = 3;
+                ctx.strokeStyle = "#8B4513";
+                ctx.strokeRect(10, 2, 20, 7);
+                ctx.strokeRect(10, 2, 20, 14);
+                ctx.strokeRect(10, 2, 20, 21);
+                ctx.strokeRect(10, 2, 20, 28);
+                ctx.strokeRect(10, 2, 20, 35);
+                ctx.strokeRect(10, 2, 20, 40);
+            }
+        }
+    }
+
     class Board {
         constructor() {
             /* 縦横逆なことに注意 */
