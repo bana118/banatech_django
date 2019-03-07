@@ -457,7 +457,7 @@
             this.y = 0;
             this.controller = document.getElementById('controller');
             this.ctx = this.controller.getContext('2d');
-            this.position(this.x, this.y);
+            this.position();
         }
 
         //初期状態に戻す
@@ -466,10 +466,10 @@
             this.y = 0;
             this.controller.style.left = this.x * (size + margin * 2) + "px";
             this.controller.style.top = this.y * (size + margin * 2) + "px";
-            this.position(this.x, this.y);
+            this.position();
         }
 
-        position(x, y) {
+        position() {
             this.ctx.beginPath();
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(1, 1, controllerSize - 2, controllerSize - 2);
