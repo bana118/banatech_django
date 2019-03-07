@@ -88,6 +88,19 @@
         reset();
     };
 
+    document.onkeydown = keydown;
+
+    function keydown(event) {
+        if (event.key == "d") {
+            player.moveRight();
+        } else if (event.key == "a") {
+            player.moveLeft();
+        } else if (event.key == "w") {
+            player.moveUp();
+        } else if (event.key == "s") {
+            player.moveDown();
+        }
+    }
 
     //初期状態に戻す
     function reset() {
@@ -187,25 +200,56 @@
     }
 
     class Player {
-        constructor(){
+        constructor() {
             this.x = 0;
             this.y = 0;
             this.player = document.getElementById('player');
             this.position();
         }
-        
+
         reset() {
             this.x = 0;
             this.y = 0;
-            this.controller.style.left = this.x * size + "px";
-            this.controller.style.top = this.y * size + size * 2 + "px";
+            this.player.style.left = this.x * size + "px";
+            this.player.style.top = this.y * size + size * 2 + "px";
             this.position();
         }
 
-        position(){
+        position() {
             this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
         }
 
+        moveRight() {
+            if (this.x < 9) {
+                this.x = this.x + 1;
+                this.player.style.left = this.x * size + "px";
+                this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+            }
+        }
+
+        moveLeft() {
+            if (this.x > 0) {
+                this.x = this.x - 1;
+                this.player.style.left = this.x * size + "px";
+                this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+            }
+        }
+
+        moveUp() {
+            if (this.y > 0) {
+                this.y = this.y - 1;
+                this.player.style.top = this.y * size + size * 2 + "px";
+                this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+            }
+        }
+
+        moveDown() {
+            if (this.y < 6) {
+                this.y = this.y + 1;
+                this.player.style.top = this.y * size + size * 2 + "px";
+                this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+            }
+        }
     }
 
     function strokeCross(block) {
