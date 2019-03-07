@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'frame',
     'blog',
     'CSSFrameworks',
     'LaTeXEditor',
+    'kurukuru',
+    'hakogucha',
 ]
 
 MIDDLEWARE = [
@@ -123,10 +127,12 @@ LOGIN_REDIRECT_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static/"),
+)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+SITE_ID = 1
