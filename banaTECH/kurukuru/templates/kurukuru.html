@@ -320,6 +320,7 @@
     function keydown(event) {
         if (event.key == " ") {
             gameStart();
+            return false; //画面スクロールを無効
         }
         if (mode == 1) {
             if (event.key == "d") {

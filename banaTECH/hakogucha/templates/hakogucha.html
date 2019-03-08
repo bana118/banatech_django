@@ -96,6 +96,7 @@
     function keydown(event) {
         if (event.key == " ") {
             gameStart();
+            return false; //画面スクロールを無効
         }
         if (mode == 1) {
             if (event.key == "d") {
@@ -106,6 +107,8 @@
                 player.moveUp();
             } else if (event.key == "s") {
                 player.moveDown();
+            } else if (event.key == "Enter") {
+                player.punch();
             }
         }
     }
@@ -183,7 +186,7 @@
                 [0, 0, 0, 0, 0, 0, 0, 10, 40],
                 [0, 0, 0, 0, 0, 0, 0, 20, 30],
                 [0, 0, 0, 0, 0, 0, 0, 40, 10],
-                [0, 0, 0, 0, 0, 0, 0, 30, 20],
+                [0, 0, 0, 0, 0, 0, 11, 30, 20], //テスト用
                 [0, 0, 0, 0, 0, 0, 0, 10, 40],
                 [0, 0, 0, 0, 0, 0, 0, 20, 30],
                 [0, 0, 0, 0, 0, 0, 0, 40, 10],
@@ -218,17 +221,18 @@
             for (var i = 0; i < 10; i++) {
                 for (var j = 0; j < 9; j++) {
                     var block = document.getElementById("b-" + (9 * i + j));
-                    if (this.array[i][j] / 10 == 1) {
+                    if (Math.floor(this.array[i][j] / 10) == 1) {
                         fillRed(block);
-                    } else if (this.array[i][j] / 10 == 2) {
+                    } else if (Math.floor(this.array[i][j] / 10) == 2) {
                         fillBlue(block);
-                    } else if (this.array[i][j] / 10 == 3) {
+                    } else if (Math.floor(this.array[i][j] / 10) == 3) {
                         fillGreen(block);
-                    } else if (this.array[i][j] / 10 == 4) {
+                    } else if (Math.floor(this.array[i][j] / 10) == 4) {
                         fillGray1(block);
+                    } else if (this.array[i][j] == 0) {
+                        fillClear(block);
                     }
                     if (this.array[i][j] != 0 && this.array[i][j] % 10 == 0) {
-                        console.log("debug");
                         strokeCross(block);
                     }
                 }
@@ -260,37 +264,50 @@
 
         moveRight() {
             if (this.x < 9 && board.array[this.x + 1][this.y] == 0) {
-                this.state = 0;
                 this.x = this.x + 1;
                 this.player.style.left = this.x * size + "px";
-                this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
             }
+            this.state = 0;
+            this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
         }
 
         moveLeft() {
             if (this.x > 0 && board.array[this.x - 1][this.y] == 0) {
-                this.state = 1;
                 this.x = this.x - 1;
                 this.player.style.left = this.x * size + "px";
-                this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
             }
+            this.state = 1;
+            this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
         }
 
         moveUp() {
             if (this.y > 2 && board.array[this.x][this.y - 1] == 0) {
-                this.state = 2;
                 this.y = this.y - 1;
                 this.player.style.top = this.y * size + "px";
-                this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
             }
+            this.state = 2;
+            this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
         }
 
         moveDown() {
             if (this.y < 8 && board.array[this.x][this.y + 1] == 0) {
-                this.state = 2;
                 this.y = this.y + 1;
                 this.player.style.top = this.y * size + "px";
-                this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+            }
+            this.state = 2;
+            this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+        }
+
+        punch() {
+            if (this.x < 9 && this.state == 0 && board.array[this.x + 1][this.y] != 0) {
+                board.array[this.x + 1][this.y] = 0;
+                board.paint();
+            } else if (this.x > 0 && this.state == 1 && board.array[this.x - 1][this.y] != 0) {
+                board.array[this.x - 1][this.y] = 0;
+                board.paint();
+            } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
+                board.array[this.x][this.y + 1] = 0;
+                board.paint();
             }
         }
     }
@@ -312,6 +329,14 @@
         ctx.lineTo(20, 15);
         ctx.fillStyle = 'black';
         ctx.fill();
+    }
+
+    function fillClear(block) {
+        if (!block || !block.getContext) {
+            return false;
+        }
+        var ctx = block.getContext('2d');
+        ctx.clearRect(0, 0, size, size);
     }
 
     function fillRed(block) {
