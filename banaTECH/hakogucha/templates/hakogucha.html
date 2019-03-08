@@ -106,7 +106,7 @@
                 player.moveUp();
             } else if (event.key == "s") {
                 player.moveDown();
-            } 
+            }
         }
     }
 
@@ -227,7 +227,8 @@
                     } else if (this.array[i][j] / 10 == 4) {
                         fillGray1(block);
                     }
-                    if (this.array[i][j] != 0 && this.array[i][j] % 10 == 0){
+                    if (this.array[i][j] != 0 && this.array[i][j] % 10 == 0) {
+                        console.log("debug");
                         strokeCross(block);
                     }
                 }
@@ -240,6 +241,7 @@
         constructor() {
             this.x = 0;
             this.y = 2;
+            this.state = 0; //向いている方向 0:右 1:左 2:下
             this.player = document.getElementById('player');
             this.position();
         }
@@ -258,6 +260,7 @@
 
         moveRight() {
             if (this.x < 9 && board.array[this.x + 1][this.y] == 0) {
+                this.state = 0;
                 this.x = this.x + 1;
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
@@ -266,6 +269,7 @@
 
         moveLeft() {
             if (this.x > 0 && board.array[this.x - 1][this.y] == 0) {
+                this.state = 1;
                 this.x = this.x - 1;
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
@@ -274,6 +278,7 @@
 
         moveUp() {
             if (this.y > 2 && board.array[this.x][this.y - 1] == 0) {
+                this.state = 2;
                 this.y = this.y - 1;
                 this.player.style.top = this.y * size + "px";
                 this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
@@ -282,6 +287,7 @@
 
         moveDown() {
             if (this.y < 8 && board.array[this.x][this.y + 1] == 0) {
+                this.state = 2;
                 this.y = this.y + 1;
                 this.player.style.top = this.y * size + "px";
                 this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
@@ -290,7 +296,22 @@
     }
 
     function strokeCross(block) {
-
+        var ctx = block.getContext('2d');
+        ctx.beginPath();
+        ctx.moveTo(10, 5);
+        ctx.lineTo(5, 10);
+        ctx.lineTo(15, 20);
+        ctx.lineTo(5, 30);
+        ctx.lineTo(10, 35);
+        ctx.lineTo(20, 25);
+        ctx.lineTo(30, 35);
+        ctx.lineTo(35, 30);
+        ctx.lineTo(25, 20);
+        ctx.lineTo(35, 10);
+        ctx.lineTo(30, 5);
+        ctx.lineTo(20, 15);
+        ctx.fillStyle = 'black';
+        ctx.fill();
     }
 
     function fillRed(block) {
