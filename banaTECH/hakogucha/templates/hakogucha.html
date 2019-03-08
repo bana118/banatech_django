@@ -266,6 +266,12 @@
             if (this.x < 9 && board.array[this.x + 1][this.y] == 0) {
                 this.x = this.x + 1;
                 this.player.style.left = this.x * size + "px";
+            }else if(this.x < 8 && board.array[this.x + 1][this.y] != 0 && board.array[this.x + 2][this.y] == 0){
+                board.array[this.x + 2][this.y] = board.array[this.x + 1][this.y];
+                board.array[this.x + 1][this.y] = 0;
+                this.x = this.x + 1;
+                this.player.style.left = this.x * size + "px";
+                board.paint();
             }
             this.state = 0;
             this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
@@ -275,6 +281,12 @@
             if (this.x > 0 && board.array[this.x - 1][this.y] == 0) {
                 this.x = this.x - 1;
                 this.player.style.left = this.x * size + "px";
+            }else if(this.x > 1 && board.array[this.x - 1][this.y] != 0 && board.array[this.x - 2][this.y] == 0){
+                board.array[this.x - 2][this.y] = board.array[this.x - 1][this.y];
+                board.array[this.x - 1][this.y] = 0;
+                this.x = this.x - 1;
+                this.player.style.left = this.x * size + "px";
+                board.paint();
             }
             this.state = 1;
             this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
