@@ -281,15 +281,33 @@
         }
 
         //そろったブロックを消す
-        delete(list){
-            for(var block of list){
+        delete(list) {
+            for (var block of list) {
                 var num = Number(block.id.slice(2));
-                console.log(num);
                 var i = Math.floor(num / 9);
                 var j = num % 9;
-                this.array[i][j] = 0;
+                board.array[i][j] = 0;
+                board.paint();
+                anime({
+                    targets: block,
+                    background: 'rgba(255, 255, 0, 1)',
+                    duration: 200,
+                    begin: function (anim) {
+                        mode = 2;
+                        anime.set(block, {
+                            background: 'rgba(0, 0, 0, 1)'
+                        });
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        for (var b of list) {
+                            anime.set(b, {
+                                background: 'rgba(0, 0, 0, 0)'
+                            });
+                        }
+                    }
+                });
             }
-            this.paint();
         }
 
         //盤面を画面に反映
@@ -321,6 +339,7 @@
         constructor() {
             this.x = 0;
             this.y = 2;
+            this.duration = 200; //行動時移動不能時間
             this.state = 0; //向いている方向 0:右 1:左 2:下
             this.player = document.getElementById('player');
             this.position();
@@ -342,30 +361,62 @@
             if (this.x < 9 && board.array[this.x + 1][this.y] == 0) {
                 this.x = this.x + 1;
                 this.player.style.left = this.x * size + "px";
+                this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
             } else if (this.x < 8 && board.array[this.x + 1][this.y] != 0 && board.array[this.x + 2][this.y] == 0) {
-                board.array[this.x + 2][this.y] = board.array[this.x + 1][this.y];
-                board.array[this.x + 1][this.y] = 0;
-                this.player.style.left = this.x * size + "px";
-                board.paint();
+                var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
+                anime({
+                    targets: block,
+                    translateX: [0, 40],
+                    duration: player.duration,
+                    begin: function (anim) {
+                        mode = 2;
+                        player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+                        anime.set(block, {
+                            translateX: 0
+                        });
+                        board.array[player.x + 2][player.y] = board.array[player.x + 1][player.y];
+                        board.array[player.x + 1][player.y] = 0;
+                        board.paint();
+                        board.judge();
+                    }
+                });
             }
             this.state = 0;
-            this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
-            board.judge();
         }
 
         moveLeft() {
             if (this.x > 0 && board.array[this.x - 1][this.y] == 0) {
                 this.x = this.x - 1;
                 this.player.style.left = this.x * size + "px";
+                this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
             } else if (this.x > 1 && board.array[this.x - 1][this.y] != 0 && board.array[this.x - 2][this.y] == 0) {
-                board.array[this.x - 2][this.y] = board.array[this.x - 1][this.y];
-                board.array[this.x - 1][this.y] = 0;
-                this.player.style.left = this.x * size + "px";
-                board.paint();
+                var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
+                anime({
+                    targets: block,
+                    translateX: [0, -40],
+                    duration: player.duration,
+                    begin: function (anim) {
+                        mode = 2;
+                        player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+                        anime.set(block, {
+                            translateX: 0
+                        });
+                        board.array[player.x - 2][player.y] = board.array[player.x - 1][player.y];
+                        board.array[player.x - 1][player.y] = 0;
+                        board.paint();
+                        board.judge();
+                    }
+                });
             }
             this.state = 1;
-            this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
-            board.judge();
         }
 
         moveUp() {
@@ -375,7 +426,6 @@
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
-            board.judge();
         }
 
         moveDown() {
@@ -385,19 +435,85 @@
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
-            board.judge();
         }
 
         punch() {
             if (this.x < 9 && this.state == 0 && board.array[this.x + 1][this.y] != 0) {
-                board.array[this.x + 1][this.y] = 0;
-                board.paint();
+                var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
+                var ctx = block.getContext('2d');
+                anime({
+                    targets: block,
+                    scale: [1, 5],
+                    rotate: [0, 90],
+                    duration: player.duration,
+                    begin: function (anim) {
+                        mode = 2;
+                        player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
+                        ctx.clearRect(5, 0, size - 10, size);
+                        ctx.clearRect(0, 5, size, size - 10);
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+                        anime.set(block, {
+                            scale: 1,
+                            rotate: 0,
+                        });
+                        board.array[player.x + 1][player.y] = 0;
+                        board.paint();
+                    }
+                });
+
             } else if (this.x > 0 && this.state == 1 && board.array[this.x - 1][this.y] != 0) {
-                board.array[this.x - 1][this.y] = 0;
-                board.paint();
+                var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
+                var ctx = block.getContext('2d');
+                anime({
+                    targets: block,
+                    scale: [1, 5],
+                    rotate: [0, 90],
+                    duration: player.duration,
+                    begin: function (anim) {
+                        mode = 2;
+                        player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
+                        ctx.clearRect(5, 0, size - 10, size);
+                        ctx.clearRect(0, 5, size, size - 10);
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+                        anime.set(block, {
+                            scale: 1,
+                            rotate: 0,
+                        });
+                        board.array[player.x - 1][player.y] = 0;
+                        board.paint();
+                    }
+                });
             } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
-                board.array[this.x][this.y + 1] = 0;
-                board.paint();
+                var block = document.getElementById("b-" + (this.x * 9 + this.y + 1));
+                var ctx = block.getContext('2d');
+                anime({
+                    targets: block,
+                    scale: [1, 5],
+                    rotate: [0, 90],
+                    duration: player.duration,
+                    begin: function (anim) {
+                        mode = 2;
+                        player.player.src = "{% static 'hakogucha/player/punch2.png' %}";
+                        ctx.clearRect(5, 0, size - 10, size);
+                        ctx.clearRect(0, 5, size, size - 10);
+                    },
+                    complete: function (anim) {
+                        mode = 1;
+                        player.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+                        anime.set(block, {
+                            scale: 1,
+                            rotate: 0,
+                        });
+                        board.array[player.x][player.y + 1] = 0;
+                        board.paint();
+                    }
+                });
             }
         }
     }
