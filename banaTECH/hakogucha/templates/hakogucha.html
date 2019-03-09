@@ -241,21 +241,27 @@
                     var i = Math.floor(num / 9);
                     var j = num % 9;
                     var temp = this.array[i][j];
-                    this.fall(block, temp);
+                    var next;
+                    if(j == 0){
+                        next = 0;
+                    }else{
+                        next = this.array[i][j-1];
+                    }
+                    this.fall(block, temp, next);
                 }
             }
         }
         //空中にあるブロックを落とす
-        fall(block, temp) {
+        fall(block, temp, next) {
             var num = Number(block.id.slice(2));
             var i = Math.floor(num / 9);
             var j = num % 9;
             board.array[i][j + 1] = temp;
-            board.array[i][j] = 0;
+            board.array[i][j] = next;
             anime({
                 targets: block,
                 translateY: [0, 40],
-                duration: 200,
+                duration: 50,
                 complete: function (anim) {
                     anime.set(block, {
                         translateY: 0
@@ -348,7 +354,7 @@
                     background: 'rgba(255, 255, 0, 1)',
                     duration: 200,
                     begin: function (anim) {
-                        mode = 2;
+                        mode = 3;
                         anime.set(block, {
                             background: 'rgba(0, 0, 0, 1)'
                         });
@@ -498,6 +504,7 @@
             if (this.x < 9 && this.state == 0 && board.array[this.x + 1][this.y] != 0) {
                 var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
+                board.array[this.x + 1][this.y] = 0;
                 anime({
                     targets: block,
                     scale: [1, 5],
@@ -516,7 +523,6 @@
                             scale: 1,
                             rotate: 0,
                         });
-                        board.array[player.x + 1][player.y] = 0;
                         board.paint();
                         board.air();
                     }
