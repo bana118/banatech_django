@@ -9,6 +9,7 @@ import banaTECH.settings as settings
 import os
 import shutil
 import xml.etree.ElementTree as ET
+from datetime import datetime
 # Create your views here.
 
 
@@ -55,7 +56,8 @@ def posted(request):
         lastmod = ET.SubElement(url, "lastmod")
         priority = ET.SubElement(url, "priority")
         loc.text = "https://banatech.tk/blog/" + str(article.id)
-        lastmod.text = str(article.post_date)
+        dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
+        lastmod.text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         priority.text = "0.64"
         xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
 
@@ -162,9 +164,10 @@ def edited(request, article_id):
     for url in root.findall("url"):
         editURL = "https://banatech.tk/blog/" + str(article_id)
         if url.find("loc").text == editURL:
-            url.find("lastmod").text = str(article.post_date)
+            dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
+            url.find("lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
     xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
-    
+
     articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
