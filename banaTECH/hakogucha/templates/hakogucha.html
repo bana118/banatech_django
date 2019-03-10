@@ -583,7 +583,7 @@
                         board.paint();
                         var airList = [];
                         for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x + 1, y]);
+                            airList.push([player.x - 1, y]);
                         }
                         board.air(airList);
                     }
