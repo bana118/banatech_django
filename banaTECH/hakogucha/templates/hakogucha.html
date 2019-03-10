@@ -211,9 +211,31 @@
             this.paint();
         }
 
-        //空中にあるブロックを探してfallに渡す
-        air() {
-            var airList = [];
+        //ブロックが空中にあるか判定
+        air(i, j) {
+            if (board.array[i][j] != 0) {
+                var count = 0;
+                for (var height = 8; height > j; height--) {
+                    if (board.array[i][height] == 0) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    board.judge();
+                } else {
+                    var block = document.getElementById("b-" + (9 * i + j));
+                    var temp = this.array[i][j];
+                    console.log(temp);
+                    var next;
+                    if (j == 0) {
+                        next = 0;
+                    } else {
+                        next = this.array[i][j - 1];
+                    }
+                    board.fall(block, temp, next);
+                }
+            }
+            /*var airList = [];
             var count = 0;
             for (var i = 0; i < 10; i++) {
                 for (var j = 7; j > -1; j--) { //下から順に処理するため
@@ -234,41 +256,42 @@
             airList = airList.filter(function (element, index, array) {
                 return array.indexOf(element) === index;
             });
-            if (airList.length > 0) {
+            if (airList.length > 0 && mode != 3) {
                 var tempList = [];
                 for (var block of airList) {
                     var num = Number(block.id.slice(2));
                     var i = Math.floor(num / 9);
-                    var j = num % 9;
+                    var j = Math.floor(num) % 9;
                     var temp = this.array[i][j];
                     var next;
-                    if(j == 0){
+                    if (j == 0) {
                         next = 0;
-                    }else{
-                        next = this.array[i][j-1];
+                    } else {
+                        next = this.array[i][j - 1];
                     }
                     this.fall(block, temp, next);
                 }
-            }
+            } else {
+                board.judge();
+            }*/
         }
         //空中にあるブロックを落とす
         fall(block, temp, next) {
             var num = Number(block.id.slice(2));
             var i = Math.floor(num / 9);
-            var j = num % 9;
+            var j = Math.floor(num) % 9;
             board.array[i][j + 1] = temp;
             board.array[i][j] = next;
             anime({
                 targets: block,
                 translateY: [0, 40],
-                duration: 50,
+                duration: 200,
                 complete: function (anim) {
                     anime.set(block, {
                         translateY: 0
                     });
                     board.paint();
-                    board.judge();
-                    board.air();
+                    board.air(i, j + 1);
                 }
             });
         }
@@ -298,9 +321,16 @@
                         this.already[i][j] = 1;
                         var color = Math.floor(this.array[i][j] / 10);
                         list = list.concat(this.collect(i, j, color, []));
-
+                        if (list.length > 1) {
+                            console.log(list);
+                        }
                         if (list.length > 2) {
-                            this.delete(list);
+                            for (var block of list) {
+                                var num = Number(block.id.slice(2));
+                                var k = Math.floor(num / 9);
+                                var l = Math.floor(num) % 9;
+                                this.delete(block, k, l);
+                            }
                         }
                     }
                 }
@@ -342,33 +372,30 @@
         }
 
         //そろったブロックを消す
-        delete(list) {
-            for (var block of list) {
-                var num = Number(block.id.slice(2));
-                var i = Math.floor(num / 9);
-                var j = num % 9;
-                board.array[i][j] = 0;
-                board.paint();
-                anime({
-                    targets: block,
-                    background: 'rgba(255, 255, 0, 1)',
-                    duration: 200,
-                    begin: function (anim) {
-                        mode = 3;
-                        anime.set(block, {
-                            background: 'rgba(0, 0, 0, 1)'
-                        });
-                    },
-                    complete: function (anim) {
-                        mode = 1;
-                        for (var b of list) {
-                            anime.set(b, {
-                                background: 'rgba(0, 0, 0, 0)'
-                            });
-                        }
+        delete(block, i, j) {
+            anime({
+                targets: block,
+                background: 'rgba(255, 255, 0, 1)',
+                duration: 200,
+                begin: function (anim) {
+                    mode = 3;
+                    board.array[i][j] = 0;
+                    block.getContext('2d').clearRect(0, 0, size, size);
+                    anime.set(block, {
+                        background: 'rgba(0, 0, 0, 1)'
+                    });
+                },
+                complete: function (anim) {
+                    mode = 1;
+                    board.paint();
+                    for (var y = 0; y < j; y++) {
+                        board.air(i, y);
                     }
-                });
-            }
+                    anime.set(block, {
+                        background: 'rgba(0, 0, 0, 0)'
+                    });
+                }
+            });
         }
 
         //盤面を画面に反映
@@ -442,8 +469,12 @@
                             translateX: 0
                         });
                         board.paint();
-                        board.judge();
-                        board.air();
+                        var airList = [];
+                        airList.push([player.x + 2, player.y]);
+                        board.air(player.x + 2, player.y);
+                        for (var y = 0; y < player.y; y++) {
+                            airList.push([player.x + 2, y]);
+                        }
                     }
                 });
             }
@@ -474,8 +505,10 @@
                             translateX: 0
                         });
                         board.paint();
-                        board.judge();
-                        board.air();
+                        board.air(player.x - 2, player.y);
+                        for (var y = 0; y < player.y; y++) {
+                            board.air(player.x - 1, y);
+                        }
                     }
                 });
             }
@@ -524,7 +557,9 @@
                             rotate: 0,
                         });
                         board.paint();
-                        board.air();
+                        for (var y = 0; y < player.y; y++) {
+                            board.air(player.x + 1, y);
+                        }
                     }
                 });
 
@@ -551,7 +586,9 @@
                         });
                         board.array[player.x - 1][player.y] = 0;
                         board.paint();
-                        board.air();
+                        for (var y = 0; y < player.y; y++) {
+                            board.air(player.x - 1, y);
+                        }
                     }
                 });
             } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
@@ -577,7 +614,6 @@
                         });
                         board.array[player.x][player.y + 1] = 0;
                         board.paint();
-                        board.air();
                     }
                 });
             }
