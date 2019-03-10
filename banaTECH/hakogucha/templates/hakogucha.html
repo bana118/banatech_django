@@ -211,89 +211,74 @@
             this.paint();
         }
 
-        //ブロックが空中にあるか判定
-        air(i, j) {
-            if (board.array[i][j] != 0) {
-                var count = 0;
-                for (var height = 8; height > j; height--) {
-                    if (board.array[i][height] == 0) {
-                        count++;
+        //ブロックが空中にあるか判定して落下処理
+        air(airList) {
+            var tempList = [];
+            var nextList = [];
+            var countList = [];
+            var i;
+            var j;
+            for (var pair of airList) {
+                i = pair[0];
+                j = pair[1];
+                if (j != 8 && board.array[i][j] != 0) {
+                    var count = 0;
+                    for (var height = 8; height > j; height--) {
+                        if (board.array[i][height] == 0) {
+                            count++;
+                        }
                     }
-                }
-                if (count == 0) {
-                    board.judge();
+                    countList.push(count);
+                    if (count == 0) {
+                        board.judge();
+                    } else {
+                        var block = document.getElementById("b-" + (9 * i + j));
+                        var temp = this.array[i][j];
+                        var next;
+                        if (j == 0) {
+                            next = 0;
+                        } else {
+                            next = this.array[i][j - 1];
+                        }
+                        tempList.push(temp);
+                        nextList.push(next);
+                    }
                 } else {
+                    tempList.push(0);
+                    nextList.push(0);
+                    countList.push(0);
+                }
+            }
+
+            for (var pair of airList) {
+                i = pair[0];
+                j = pair[1];
+                if (j != 8 && board.array[i][j] != 0 && countList[airList.indexOf(pair)] != 0) {
                     var block = document.getElementById("b-" + (9 * i + j));
-                    var temp = this.array[i][j];
-                    console.log(temp);
-                    var next;
-                    if (j == 0) {
-                        next = 0;
-                    } else {
-                        next = this.array[i][j - 1];
-                    }
-                    board.fall(block, temp, next);
-                }
-            }
-            /*var airList = [];
-            var count = 0;
-            for (var i = 0; i < 10; i++) {
-                for (var j = 7; j > -1; j--) { //下から順に処理するため
-                    if (this.array[i][j] != 0) {
-                        for (var k = j + 1; k < 9; k++) {
-                            if (this.array[i][k] == 0) {
-                                count++;
+                    board.array[i][j + 1] = tempList[airList.indexOf(pair)];
+                    board.array[i][j] = nextList[airList.indexOf(pair)];
+                    anime({
+                        targets: block,
+                        translateY: [0, 40],
+                        duration: 200,
+                        complete: function (anim) {
+                            anime.set(this.animatables[0].target, {
+                                translateY: 0
+                            });
+                            var num = Number(this.animatables[0].target.id.slice(2));
+                            var p = [Math.floor(num / 9), Math.floor(num) % 9];
+                            if (p.toString() == airList[airList.length - 1].toString()) {
+                                var newAirList = [];
+                                for (var x of airList) {
+                                    newAirList.push([x[0], x[1] + 1]);
+                                }
+                                board.air(newAirList);
                             }
+                            board.paint();
                         }
-                        if (count != 0) {
-                            airList.push(document.getElementById("b-" + (9 * i + j)));
-                        }
-                        count = 0;
-                    }
+                    });
                 }
             }
-            //重複を削除
-            airList = airList.filter(function (element, index, array) {
-                return array.indexOf(element) === index;
-            });
-            if (airList.length > 0 && mode != 3) {
-                var tempList = [];
-                for (var block of airList) {
-                    var num = Number(block.id.slice(2));
-                    var i = Math.floor(num / 9);
-                    var j = Math.floor(num) % 9;
-                    var temp = this.array[i][j];
-                    var next;
-                    if (j == 0) {
-                        next = 0;
-                    } else {
-                        next = this.array[i][j - 1];
-                    }
-                    this.fall(block, temp, next);
-                }
-            } else {
-                board.judge();
-            }*/
-        }
-        //空中にあるブロックを落とす
-        fall(block, temp, next) {
-            var num = Number(block.id.slice(2));
-            var i = Math.floor(num / 9);
-            var j = Math.floor(num) % 9;
-            board.array[i][j + 1] = temp;
-            board.array[i][j] = next;
-            anime({
-                targets: block,
-                translateY: [0, 40],
-                duration: 200,
-                complete: function (anim) {
-                    anime.set(block, {
-                        translateY: 0
-                    });
-                    board.paint();
-                    board.air(i, j + 1);
-                }
-            });
         }
 
         //ブロックが3つ以上そろっているか判定
@@ -388,9 +373,11 @@
                 complete: function (anim) {
                     mode = 1;
                     board.paint();
+                    var airList = [];
                     for (var y = 0; y < j; y++) {
-                        board.air(i, y);
+                        airList.push([i, y]);
                     }
+                    board.air(airList);
                     anime.set(block, {
                         background: 'rgba(0, 0, 0, 0)'
                     });
@@ -469,12 +456,14 @@
                             translateX: 0
                         });
                         board.paint();
+                        board.air([
+                            [player.x + 2, player.y]
+                        ]);
                         var airList = [];
-                        airList.push([player.x + 2, player.y]);
-                        board.air(player.x + 2, player.y);
                         for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x + 2, y]);
+                            airList.push([player.x + 1, y]);
                         }
+                        board.air(airList);
                     }
                 });
             }
@@ -505,10 +494,14 @@
                             translateX: 0
                         });
                         board.paint();
-                        board.air(player.x - 2, player.y);
+                        board.air([
+                            [player.x - 2, player.y]
+                        ]);
+                        var airList = [];
                         for (var y = 0; y < player.y; y++) {
-                            board.air(player.x - 1, y);
+                            airList.push([player.x - 1, y]);
                         }
+                        board.air(airList);
                     }
                 });
             }
@@ -557,9 +550,11 @@
                             rotate: 0,
                         });
                         board.paint();
+                        var airList = [];
                         for (var y = 0; y < player.y; y++) {
-                            board.air(player.x + 1, y);
+                            airList.push([player.x + 1, y]);
                         }
+                        board.air(airList);
                     }
                 });
 
@@ -586,9 +581,11 @@
                         });
                         board.array[player.x - 1][player.y] = 0;
                         board.paint();
+                        var airList = [];
                         for (var y = 0; y < player.y; y++) {
-                            board.air(player.x - 1, y);
+                            airList.push([player.x + 1, y]);
                         }
+                        board.air(airList);
                     }
                 });
             } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
