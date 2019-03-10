@@ -51,10 +51,10 @@ def posted(request):
         # sitemap.xmlへの追加
         xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
         root = xmlTree.getroot()
-        url = ET.SubElement(root, "url")
-        loc = ET.SubElement(url, "loc")
-        lastmod = ET.SubElement(url, "lastmod")
-        priority = ET.SubElement(url, "priority")
+        url = ET.SubElement(root, "ns0:url")
+        loc = ET.SubElement(url, "ns0:loc")
+        lastmod = ET.SubElement(url, "ns0:lastmod")
+        priority = ET.SubElement(url, "ns0:priority")
         loc.text = "https://banatech.tk/blog/" + str(article.id)
         dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
         lastmod.text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -102,7 +102,7 @@ def delete(request, article_id):
     root = xmlTree.getroot()
     for url in root.findall("url"):
         deleteURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("loc").text == deleteURL:
+        if url.find("ns0:loc").text == deleteURL:
             root.remove(url)
     xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
 
@@ -163,9 +163,9 @@ def edited(request, article_id):
     root = xmlTree.getroot()
     for url in root.findall("url"):
         editURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("loc").text == editURL:
+        if url.find("ns0:loc").text == editURL:
             dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
-            url.find("lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+            url.find("ns0:lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
     xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
 
     articles = Article.objects.all().order_by("post_date").reverse()
