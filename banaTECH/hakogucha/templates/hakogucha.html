@@ -201,7 +201,7 @@
                 [0, 0, 0, 0, 0, 0, 0, 20, 30],
                 [0, 0, 0, 0, 0, 0, 11, 40, 10],
                 [0, 0, 0, 0, 0, 0, 0, 30, 20],
-                [0, 0, 0, 11, 31, 21, 11, 10, 40],
+                [0, 0, 0, 11, 21, 21, 11, 10, 40],
                 [0, 0, 0, 0, 0, 0, 0, 20, 30],
                 [0, 0, 0, 0, 0, 0, 0, 40, 10],
                 [0, 0, 0, 0, 0, 0, 0, 30, 20],
@@ -221,7 +221,7 @@
             for (var pair of airList) {
                 i = pair[0];
                 j = pair[1];
-                if (j != 8 && board.array[i][j] != 0) {
+                if (j < 8 && board.array[i][j] != 0) {
                     var count = 0;
                     for (var height = 8; height > j; height--) {
                         if (board.array[i][height] == 0) {
@@ -230,7 +230,7 @@
                     }
                     countList.push(count);
                     if (count == 0) {
-                        board.judge();
+                        this.judge(i, j);
                     } else {
                         var block = document.getElementById("b-" + (9 * i + j));
                         var temp = this.array[i][j];
@@ -273,16 +273,88 @@
                                     newAirList.push([x[0], x[1] + 1]);
                                 }
                                 board.air(newAirList);
+                                board.paint();
                             }
-                            board.paint();
                         }
                     });
                 }
             }
         }
 
+
+        judge(i, j) {
+            var color = Math.floor(this.array[i][j] / 10);
+            var deleteList = [];
+            deleteList.push([i, j]);
+            this.collect(i, j, -1, -1, color, deleteList);
+            if (deleteList.length > 2) {
+                board.delete(deleteList);
+            }
+        }
+
+        collect(i, j, previousI, previousJ, color, deleteList) {
+            if (i < 9 && Math.floor(this.array[i + 1][j] / 10) == color && i + 1 != previousI) {
+                deleteList.push([i + 1, j]);
+                this.collect(i + 1, j, i, j, color, deleteList);
+            }
+            if (i > 0 && Math.floor(this.array[i - 1][j] / 10) == color && i - 1 != previousI) {
+                deleteList.push([i - 1, j]);
+                this.collect(i - 1, j, i, j, color, deleteList);
+            }
+            if (j < 8 && Math.floor(this.array[i][j + 1] / 10) == color && j + 1 != previousJ) {
+                deleteList.push([i, j + 1]);
+                this.collect(i, j + 1, i, j, color, deleteList);
+            }
+            if (j > 0 && Math.floor(this.array[i][j - 1] / 10) == color && j - 1 != previousJ) {
+                deleteList.push([i, j - 1]);
+                this.collect(i, j - 1, i, j, color, deleteList);
+            }
+        }
+
+        delete(deleteList) {
+            var alreadyIList = [];
+            for (var pair of deleteList) {
+                var i = pair[0];
+                var j = pair[1];
+                var block = document.getElementById("b-" + (9 * i + j));
+                board.array[i][j] = 0;
+                anime({
+                    targets: block,
+                    background: ['rgba(0, 0, 0, 1)','rgba(255, 255, 0, 1)'],
+                    duration: 500,
+                    begin: function (anim) {
+                        mode = 3;
+                        this.animatables[0].target.getContext('2d').clearRect(0, 0, size, size);
+                        console.log(this.animatables[0].target);
+                    },
+                    complete: function (anim) {
+                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
+                        mode = 1
+                        board.paint();
+                        if (!alreadyIList.includes(blockI)) {
+                            alreadyIList.push(blockI);
+                            var airList = [];
+                            for (var y = 0; y < blockJ; y++) {
+                                airList.push([blockI, y]);
+                            }
+                            console.log(airList);
+                            board.air(airList);
+
+                        }
+                        anime.set(this.animatables[0].target, {
+                            background: 'rgba(0, 0, 0, 0)'
+                        });
+                    }
+                });
+            }
+        }
+
+
+
+
         //ブロックが3つ以上そろっているか判定
-        judge() {
+        /*judge() {
             var i, j;
             var list;
             this.already = [
@@ -320,9 +392,9 @@
                     }
                 }
             }
-        }
+        }*/
 
-        collect(i, j, color, collectList) { //隣り合う同色ブロックをリストに入れていく
+        /*collect(i, j, color, collectList) { //隣り合う同色ブロックをリストに入れていく
             var block;
             if ((i < 1 || (i > 0 && this.already[i - 1][j] == 1)) && (i > 8 || (i < 9 && this.already[i + 1][j] ==
                     1)) && (j <
@@ -354,10 +426,10 @@
                 collectList = collectList.concat(this.collect(i, j + 1, color, [], this.already));
             }
             return collectList;
-        }
+        }*/
 
         //そろったブロックを消す
-        delete(block, i, j) {
+        /*delete(block, i, j) {
             anime({
                 targets: block,
                 background: 'rgba(255, 255, 0, 1)',
@@ -383,7 +455,7 @@
                     });
                 }
             });
-        }
+        }*/
 
         //盤面を画面に反映
         paint() {
@@ -451,18 +523,21 @@
                     },
                     complete: function (anim) {
                         mode = 1;
+                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
                         player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
-                        anime.set(block, {
+                        anime.set(this.animatables[0].target, {
                             translateX: 0
                         });
                         board.paint();
                         board.air([
-                            [player.x + 2, player.y]
+                            [blockI + 1, blockJ]
                         ]);
                         var airList = [];
-                        for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x + 1, y]);
+                        for (var y = 0; y < blockJ; y++) {
+                            airList.push([blockI, y]);
                         }
+                        console.log(airList);
                         board.air(airList);
                     }
                 });
@@ -489,17 +564,19 @@
                     },
                     complete: function (anim) {
                         mode = 1;
+                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
                         player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
-                        anime.set(block, {
+                        anime.set(this.animatables[0].target, {
                             translateX: 0
                         });
                         board.paint();
                         board.air([
-                            [player.x - 2, player.y]
+                            [blockI - 1, blockJ]
                         ]);
                         var airList = [];
-                        for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x - 1, y]);
+                        for (var y = 0; y < blockJ; y++) {
+                            airList.push([blockI, y]);
                         }
                         board.air(airList);
                     }
@@ -544,15 +621,17 @@
                     },
                     complete: function (anim) {
                         mode = 1;
+                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
                         player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
-                        anime.set(block, {
+                        anime.set(this.animatables[0].target, {
                             scale: 1,
                             rotate: 0,
                         });
                         board.paint();
                         var airList = [];
-                        for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x + 1, y]);
+                        for (var y = 0; y < blockJ; y++) {
+                            airList.push([blockI, y]);
                         }
                         board.air(airList);
                     }
@@ -561,6 +640,7 @@
             } else if (this.x > 0 && this.state == 1 && board.array[this.x - 1][this.y] != 0) {
                 var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
+                board.array[this.x - 1][this.y] = 0;
                 anime({
                     targets: block,
                     scale: [1, 5],
@@ -574,16 +654,17 @@
                     },
                     complete: function (anim) {
                         mode = 1;
+                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
                         player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
-                        anime.set(block, {
+                        anime.set(this.animatables[0].target, {
                             scale: 1,
                             rotate: 0,
                         });
-                        board.array[player.x - 1][player.y] = 0;
                         board.paint();
                         var airList = [];
-                        for (var y = 0; y < player.y; y++) {
-                            airList.push([player.x - 1, y]);
+                        for (var y = 0; y < blockJ; y++) {
+                            airList.push([blockI, y]);
                         }
                         board.air(airList);
                     }
@@ -591,6 +672,7 @@
             } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
                 var block = document.getElementById("b-" + (this.x * 9 + this.y + 1));
                 var ctx = block.getContext('2d');
+                board.array[this.x][this.y + 1] = 0;
                 anime({
                     targets: block,
                     scale: [1, 5],
@@ -605,11 +687,10 @@
                     complete: function (anim) {
                         mode = 1;
                         player.player.src = "{% static 'hakogucha/player/ladder.png' %}";
-                        anime.set(block, {
+                        anime.set(this.animatables[0].target, {
                             scale: 1,
                             rotate: 0,
                         });
-                        board.array[player.x][player.y + 1] = 0;
                         board.paint();
                     }
                 });
