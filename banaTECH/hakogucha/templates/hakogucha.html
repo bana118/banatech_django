@@ -129,6 +129,7 @@
             var ctx = screen.getContext("2d");
             ctx.clearRect(0, 0, backgroundSize, backgroundSize);
             mode = 1;
+            board.random_generate();
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             mode = 0;
             reset();
@@ -211,11 +212,20 @@
             this.paint();
         }
 
+        //ランダムにブロックを生成
+        random_generate(){
+            var colorList = [11, 21, 31, 41];
+            var iList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            var color = colorList[Math.floor(Math.random() * colorList.length)];
+            var i = iList[Math.floor(Math.random() * iList.length)];
+            board.generate(color, i);
+        }
+
         //ブロックを生成
         generate(color, i) {
             var block = document.getElementById("b-" + (9 * i));
-            board.array[i][0] = color;
-            board.paint();
+            this.array[i][0] = color;
+            this.paint();
             anime({
                 targets: block,
                 translateX: [-10, 10],
@@ -230,6 +240,7 @@
                     board.air([
                         [i, 0]
                     ]);
+                    setTimeout(board.random_generate, 300);
                 }
             });
         }
@@ -300,7 +311,7 @@
                             }
                         }
                     });
-                }else if(j == 8){
+                } else if (j == 8) {
                     this.judge(i, j);
                 }
             }
