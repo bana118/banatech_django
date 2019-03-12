@@ -5,11 +5,11 @@ from django.http import HttpResponse
 from django.utils import timezone
 from .models import Article, Category
 from .forms import ArticleForm
-import banaTECH.settings as settings
+from django.conf import settings
 import os
 import shutil
 import xml.etree.ElementTree as ET
-from datetime import datetime
+import datetime
 # Create your views here.
 
 
@@ -56,7 +56,7 @@ def posted(request):
         lastmod = ET.SubElement(url, "ns0:lastmod")
         priority = ET.SubElement(url, "ns0:priority")
         loc.text = "https://banatech.tk/blog/" + str(article.id)
-        dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
+        dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
         lastmod.text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         priority.text = "0.64"
         xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
@@ -99,14 +99,15 @@ def delete(request, article_id):
 
     # sitemap.xmlからの削除
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+    ns0 = {"ns0": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     root = xmlTree.getroot()
-    for url in root.findall("url"):
+    for url in root.findall("ns0:url", ns0):
         deleteURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("ns0:loc").text == deleteURL:
+        if url.find("ns0:loc", ns0).text == deleteURL:
             root.remove(url)
     xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
 
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
 
@@ -161,11 +162,12 @@ def edited(request, article_id):
     # sitemap.xmlの更新
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
     root = xmlTree.getroot()
-    for url in root.findall("url"):
+    ns0 = {"ns0": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    for url in root.findall("ns0:url", ns0):
         editURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("ns0:loc").text == editURL:
-            dt = datetime.strptime(str(article.post_date), "%Y-%m-%d %H:%M:%S.%f")
-            url.find("ns0:lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        if url.find("ns0:loc", ns0).text == editURL:
+            dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
+            url.find("ns0:lastmod", ns0).text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
     xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
 
     articles = Article.objects.all().order_by("post_date").reverse()
