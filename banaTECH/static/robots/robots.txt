@@ -1,0 +1,5 @@
+User-agent : *
+Disallow : /blog/tamplates/edit.html
+Disallow : /blog/tamplates/post.html
+Disallow : /media/article/
+Sitemap : https://banatech.tk/sitemap.xml
