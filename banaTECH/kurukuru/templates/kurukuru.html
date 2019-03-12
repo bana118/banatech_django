@@ -10,9 +10,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container" style="touch-action: manipulation;">
     <div class="container p-0" style="width: 290px;">
         <audio src="" id="startSoundEffect"></audio>
+        <audio src="" id="overSoundEffect"></audio>
+        <audio src="" id="countDownSoundEffect"></audio>
         <audio src="" id="moveSoundEffect"></audio>
         <audio src="" id="rotateSoundEffect"></audio>
         <audio src="" id="scoreSoundEffect"></audio>
@@ -44,18 +46,18 @@
         </div>
         <div class="row">
             <div class="col-2"></div>
-            <button class="col-2 btn fas fa-angle-up fa-3x fa-fw" onClick="buttonUp();"></button>
+            <button class="col-2 btn fas btn-danger fa-angle-up fa-3x fa-fw" onClick="buttonUp();"></button>
         </div>
         <div class="row">
-            <button class="col-3 btn fas fa-angle-left fa-3x fa-fw" onClick="buttonLeft();"></button>
-            <button class="col-3 btn fas fa-angle-right fa-3x fa-fw" onClick="buttonRight();"></button>
+            <button class="col-3 btn btn-primary fas fa-angle-left fa-3x fa-fw" onClick="buttonLeft();"></button>
+            <button class="col-3 btn btn-primary fas fa-angle-right fa-3x fa-fw" onClick="buttonRight();"></button>
             <div class="col-1"></div>
-            <button class="col-2 btn fas fa-undo fa-2x fa-fw" onClick="buttonCounterClockwise();"></button>
-            <button class="col-2 btn fas fa-redo fa-2x fa-fw" onClick="buttonClockwise();"></button>
+            <button class="col-2 btn btn-success fas fa-undo fa-2x fa-fw" onClick="buttonCounterClockwise();"></button>
+            <button class="col-2 btn btn-info fas fa-redo fa-2x fa-fw" onClick="buttonClockwise();"></button>
         </div>
         <div class="row">
             <div class="col-2"></div>
-            <button class="col-2 btn fas fa-angle-down fa-3x fa-fw" onClick="buttonDown();"></button>
+            <button class="col-2 btn fas btn-danger fa-angle-down fa-3x fa-fw" onClick="buttonDown();"></button>
         </div>
     </div>
     <br>
@@ -67,7 +69,9 @@
     <br>
     <h1>くるくる</h1>
     <p>ルール：カーソルを操作して同じ色のブロックを4つ正方形に並べよう。連続で消していくとスコアアップ！
-    スペースキーかゲーム画面クリックで最初の画面からゲームスタートしたりゲームオーバー画面から最初の画面に戻ることができます。</p>
+        スペースキーかゲーム画面クリックで最初の画面からゲームスタートしたりゲームオーバー画面から最初の画面に戻ることができます。</p>
+    <p>うまく動作しない場合は一度更新すると音楽や画像がキャッシュに入り、動くかもしれません。またGoogle Chromeだと動くかもしれません。</p>
+    <p>制作記事：<a href="https://banatech.tk/blog/15">anime.jsを使ったブラウザパズルゲーム</a></p>
     <p>操作方法（キーボード）</p>
     <pre>       wキー：カーソル上移動</pre>
     <pre>       aキー：カーソル左移動</pre>
@@ -98,6 +102,27 @@
         controller = new Controller();
         board = new Board();
         document.getElementById("outputVolume").innerHTML = 100;
+        var startSoundEffect = document.getElementById("startSoundEffect");
+        startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
+        startSoundEffect.load();
+        var countDownSoundEffect = document.getElementById("countDownSoundEffect");
+        countDownSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
+        countDownSoundEffect.load();
+        var overSoundEffect = document.getElementById("overSoundEffect");
+        overSoundEffect.src = "{% static 'kurukuru/music/gameover.mp3' %}";
+        overSoundEffect.load();
+        var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
+        scoreSoundEffect.load();
+        var moveSoundEffect = document.getElementById("moveSoundEffect");
+        moveSoundEffect.src = "{% static 'kurukuru/music/move.mp3' %}";
+        moveSoundEffect.load();
+        var rotateSoundEffect = document.getElementById("rotateSoundEffect");
+        rotateSoundEffect.src = "{% static 'kurukuru/music/rotate.mp3' %}";
+        rotateSoundEffect.load();
+        var BGM = document.getElementById("BGM");
+        BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
+        BGM.load();
         reset();
     };
 
@@ -113,12 +138,16 @@
         var moveSoundEffect = document.getElementById("moveSoundEffect");
         var rotateSoundEffect = document.getElementById("rotateSoundEffect");
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
+        var countDownSoundEffect = document.getElementById("countDownSoundEffect");
+        var overSoundEffect = document.getElementById("overSoundEffect");
         var BGM = document.getElementById("BGM");
         var volume = value / 100;
         startSoundEffect.volume = volume;
         moveSoundEffect.volume = volume;
         rotateSoundEffect.volume = volume;
         scoreSoundEffect.volume = volume;
+        countDownSoundEffect.volume = volume;
+        overSoundEffect.voleme = volume;
         BGM.volume = volume;
         document.getElementById("outputVolume").innerHTML = value;
     }
@@ -147,13 +176,19 @@
 
     function gameStart() {
         if (mode == 0) {
-            var startSoundEffect = document.getElementById("startSoundEffect");
+            var countDownSoundEffect = document.getElementById("countDownSoundEffect");
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             var img = new Image();
+            var BGM = document.getElementById("BGM");
+            BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
+            BGM.load();
+            var startSoundEffect = document.getElementById("startSoundEffect");
+            startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
+            startSoundEffect.load();
+            BGM.currentTime = 0;
             if (count == 3) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/three.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -161,8 +196,7 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 2) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/two.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
@@ -170,30 +204,33 @@
                     setTimeout("gameStart()", 1000);
                 }
             } else if (count == 1) {
-                startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-                startSoundEffect.play();
+                countDownSoundEffect.play();
                 img.src = "{% static 'kurukuru/images/one.png' %}";
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
                     count--;
                     setTimeout("gameStart()", 1000);
                 }
-                setTimeout("gameStart()", 1000);
             } else if (count == 0) {
-                startSoundEffect.src = "{% static 'kurukuru/music/gamestart.mp3' %}";
-                startSoundEffect.play();
-                var BGM = document.getElementById("BGM");
-                BGM.src = "{% static 'kurukuru/music/mozegaku_09_idance.mp3' %}";
-                BGM.currentTime = 0;
-                BGM.play();
-                mode = 1;
-                ctx.clearRect(0, 0, backgroundSize, backgroundSize);
-                countDown();
+                if (BGM.readyState === 4) {
+                    BGM.play();
+                    mode = 1;
+                    ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+                    countDown();
+                    startSoundEffect.play();
+                } else {
+                    BGM.addEventListener('canplaythrough', function (e) {
+                        BGM.removeEventListener('canplaythrough', arguments.callee);
+                        BGM.play();
+                        mode = 1;
+                        ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+                        countDown();
+                        startSoundEffect.play();
+                    });
+                }
             }
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
-            var startSoundEffect = document.getElementById("startSoundEffect");
-            startSoundEffect.src = "{% static 'kurukuru/music/countdown.mp3' %}";
-            startSoundEffect.play();
+            countDownSoundEffect.play();
             mode = 0;
             reset();
             initScreen();
@@ -204,9 +241,8 @@
     function gameOver() {
         var BGM = document.getElementById("BGM");
         BGM.pause();
-        var startSoundEffect = document.getElementById("startSoundEffect");
-        startSoundEffect.src = "{% static 'kurukuru/music/gameover.mp3' %}";
-        startSoundEffect.play();
+        var overSoundEffect = document.getElementById("overSoundEffect");
+        overSoundEffect.play();
         mode = -1;
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
@@ -235,7 +271,6 @@
     //スコア加算
     function scoreUp() {
         var scoreSoundEffect = document.getElementById("scoreSoundEffect");
-        scoreSoundEffect.src = "{% static 'kurukuru/music/scoreUp.mp3' %}";
         scoreSoundEffect.play();
         score += (100 - (scoreTime - time)) * 4 + 100; //スコア変動100~500
         scoreTime = time;

@@ -9,10 +9,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
 <!--静的なコードをハイライトするなら-->
 <!--<script>hljs.initHighlightingOnLoad();</script>-->
+<style>
+    #title {
+        padding: 0.5em;
+        /*文字周りの余白*/
+        color: #010101;
+        /*文字色*/
+        background: #eaf3ff;
+        /*背景色*/
+        border-bottom: solid 3px #516ab6;
+        /*下線*/
+    }
+
+    #markdown_content h1 {
+        font-size: 2em;
+        background: linear-gradient(transparent 70%, #a7d6ff 70%);
+    }
+
+    h3 {
+        border-bottom: double 5px #FFC778;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>{{ article.title }}</h1>
+    <h1 id="title">{{ article.title }}</h1>
     <h4>{{ article.post_date }}</h4>
     <p>
         カテゴリー：
@@ -22,11 +43,14 @@
     </p>
     <a href="/blog/view_md/{{ article.id }}">markdownファイル</a>
     <div id="markdown_content" src="{{article.article.url}}"></div>
+    <h3>関連記事</h3>
+    {% for relatedArticle in relatedArticles %}
+    <a href="/blog/{{relatedArticle.id}}">{{ relatedArticle.title }}</a>
+    <br>
+    {% endfor %}
     <br>
     <a href="/blog/edit/{{ article.id }}">記事編集(管理者用)</a>
-    <br>
     <a href="/blog/delete/{{ article.id }}" onclick="return confirm('本当に削除しますか？')">記事削除(管理者用)</a>
-    <br>
 </div>
 <script>
     $(document).ready(function () {
