@@ -252,9 +252,9 @@
                         board.air([
                             [i, 0]
                         ]);
-                        setTimeout(function () {
+                        /*setTimeout(function () {
                             board.random_generate(i);
-                        }, 300);
+                        }, 300);*/
                     }
                 });
             } else {
@@ -313,7 +313,7 @@
                     anime({
                         targets: block,
                         translateY: [0, 40],
-                        duration: 100,
+                        duration: 200,
                         complete: function (anim) {
                             anime.set(this.animatables[0].target, {
                                 translateY: 0
