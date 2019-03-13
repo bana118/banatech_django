@@ -414,7 +414,7 @@
                     complete: function (anim) {
                         var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
                         var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
-                        mode = 1
+                        mode = 1;
                         board.paint();
                         if (processList.includes([blockI, blockJ].toString())) {
                             var airList = [];
