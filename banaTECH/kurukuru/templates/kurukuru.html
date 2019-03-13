@@ -229,7 +229,8 @@
                     });
                 }
             }
-        } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
+        } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動]
+            var countDownSoundEffect = document.getElementById("countDownSoundEffect");
             countDownSoundEffect.play();
             mode = 0;
             reset();
@@ -399,18 +400,18 @@
         //ブロックが4つそろっているか判定
         judge() {
             var i, j;
-                for (i = 0; i < 5; i++) {
-                    for (j = 0; j < 5; j++) {
-                        if (this.array[i][j] == this.array[i][j + 1] && this.array[i][j] == this.array[i + 1][j] &&
-                            this.array[i][j] == this.array[i + 1][j + 1]) {
-                            this.array[i][j] = 0;
-                            this.array[i][j + 1] = 0;
-                            this.array[i + 1][j] = 0;
-                            this.array[i + 1][j + 1] = 0;
-                            scoreUp();
-                        }
+            for (i = 0; i < 5; i++) {
+                for (j = 0; j < 5; j++) {
+                    if (this.array[i][j] == this.array[i][j + 1] && this.array[i][j] == this.array[i + 1][j] &&
+                        this.array[i][j] == this.array[i + 1][j + 1]) {
+                        this.array[i][j] = 0;
+                        this.array[i][j + 1] = 0;
+                        this.array[i + 1][j] = 0;
+                        this.array[i + 1][j + 1] = 0;
+                        scoreUp();
                     }
                 }
+            }
 
         }
 

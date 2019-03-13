@@ -198,6 +198,28 @@
             this.paint();
         }
 
+        //空中にあるブロックを集める
+        collectAir() {
+            var airList = [];
+            var count = 0;
+            for (var i = 0; i < 10; i++) {
+                for (var j = 0; j < 8; j++) {
+                    if (this.array[i][j] != 0) {
+                        for (var height = j + 1; height < 9; height++) {
+                            if (this.array[i][height] == 0) {
+                                count++;
+                            }
+                        }
+                        if (count > 0) {
+                            airList.push([i, j]);
+                        }
+                        count = 0;
+                    }
+                }
+            }
+            return airList;
+        }
+
         //ランダムにブロックを生成
         random_generate(exceptI) {
             var colorList = [11, 21, 31, 41];
@@ -212,28 +234,34 @@
 
         //ブロックを生成
         generate(color, i) {
-            var block = document.getElementById("b-" + (9 * i));
-            this.array[i][0] = color;
-            this.paint();
-            anime({
-                targets: block,
-                translateX: [-10, 10],
-                direction: 'alternate',
-                loop: 2,
-                duration: 500,
-                easing: 'easeInOutSine',
-                complete: function (anim) {
-                    anime.set(this.animatables[0].target, {
-                        translateX: 0
-                    });
-                    board.air([
-                        [i, 0]
-                    ]);
-                    setTimeout(function () {
-                        board.random_generate(i);
-                    }, 300);
-                }
-            });
+            if (mode != 3) {
+                var block = document.getElementById("b-" + (9 * i));
+                this.array[i][0] = color;
+                this.paint();
+                anime({
+                    targets: block,
+                    translateX: [-10, 10],
+                    direction: 'alternate',
+                    loop: 2,
+                    duration: 300,
+                    easing: 'easeInOutSine',
+                    complete: function (anim) {
+                        anime.set(this.animatables[0].target, {
+                            translateX: 0
+                        });
+                        board.air([
+                            [i, 0]
+                        ]);
+                        setTimeout(function () {
+                            board.random_generate(i);
+                        }, 300);
+                    }
+                });
+            } else {
+                setTimeout(function () {
+                    board.random_generate(i);
+                }, 300);
+            }
         }
 
         //ブロックが空中にあるか判定して落下処理
@@ -285,15 +313,13 @@
                     anime({
                         targets: block,
                         translateY: [0, 40],
-                        duration: 200,
+                        duration: 100,
                         complete: function (anim) {
                             anime.set(this.animatables[0].target, {
                                 translateY: 0
                             });
                             var num = Number(this.animatables[0].target.id.slice(2));
                             var p = [Math.floor(num / 9), Math.floor(num) % 9];
-                            console.log("p:" + p);
-                            console.log("a:" + airList[airList.length - 1].toString());
                             if (p.toString() == airList[airList.length - 1].toString()) {
                                 var newAirList = [];
                                 for (var x of airList) {
@@ -316,9 +342,8 @@
             var deleteList = [];
             deleteList.push([i, j]);
             this.collect(i, j, -1, -1, color, deleteList);
-            console.log(deleteList);
             if (deleteList.length > 2) {
-                board.delete(deleteList);
+                board.delete(deleteList, 0);
             }
         }
 
@@ -341,8 +366,38 @@
             }
         }
 
-        delete(deleteList) {
+        delete(deleteList, airFlg) { //airFlgは空中のブロックを消したかどうか
             var alreadyIList = [];
+            var processList = [];
+            for (var pair of deleteList) {
+                if (!alreadyIList.includes(pair[0])) {
+                    alreadyIList.push(pair[0]);
+                    processList.push(pair.toString());
+                }
+            }
+            var allAirList = [];
+            for (var pair of deleteList) {
+                for (var y = pair[1] - 1; y > -1; y--) {
+                    if (board.array[pair[0]][y] == 0) {
+                        break;
+                    }
+                    allAirList.push([pair[0], y]);
+                }
+            }
+            if (airFlg == 0) {
+                var airDeleteList = board.collectAir().filter(function (element) {
+                    var count = 0;
+                    for (var e of allAirList) {
+                        if (e.toString() == element.toString()) {
+                            count++;
+                        }
+                    }
+                    if (count == 0) {
+                        return element;
+                    }
+                });
+                board.delete(airDeleteList, 1);
+            }
             for (var pair of deleteList) {
                 var i = pair[0];
                 var j = pair[1];
@@ -361,13 +416,26 @@
                         var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
                         mode = 1
                         board.paint();
-                        if (!alreadyIList.includes(blockI)) {
-                            alreadyIList.push(blockI);
+                        if (processList.includes([blockI, blockJ].toString())) {
                             var airList = [];
-                            for (var y = 0; y < blockJ; y++) {
+                            for (var y = blockJ - 1; y > -1; y--) {
+                                if (board.array[blockI][y] == 0) {
+                                    break;
+                                }
                                 airList.push([blockI, y]);
                             }
-                            console.log(airList);
+                            var airDeleteList = board.collectAir().filter(function (element) {
+                                var count = 0;
+                                for (var e of allAirList) {
+                                    if (e.toString() == element.toString()) {
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    return element;
+                                }
+                            });
+                            board.delete(airDeleteList);
                             board.air(airList);
                         }
                         anime.set(this.animatables[0].target, {
@@ -458,7 +526,6 @@
                         for (var y = 0; y < blockJ; y++) {
                             airList.push([blockI, y]);
                         }
-                        console.log(airList);
                         board.air(airList);
                     }
                 });
