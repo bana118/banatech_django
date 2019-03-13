@@ -320,25 +320,15 @@
                             });
                             var num = Number(this.animatables[0].target.id.slice(2));
                             var p = [Math.floor(num / 9), Math.floor(num) % 9];
-                            if (p.toString() == airList[airList.length - 1].toString()) {
+                            if (flg != 0) {
                                 flg = 1;
                                 var newAirList = [];
                                 for (var x of airList) {
                                     newAirList.push([x[0], x[1] + 1]);
-                                }
+                                }board.paint();
                                 board.air(newAirList);
-                                board.paint();
                             }
-                            console.log(flg);
-                            if(flg == 0 && p.toString() == airList[airList.length - 1].toString()){
-                                flg = 1;
-                                var newAirList = [];
-                                for (var x of airList) {
-                                    newAirList.push([x[0], x[1] + 1]);
-                                }
-                                board.air(newAirList);
-                                board.paint();
-                            }
+                            console.log("1:" + flg+ ", " + airList.length);
                         }
                     });
                 } else if (j == 8) {
