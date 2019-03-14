@@ -81,6 +81,9 @@
 <script>
     var board;
     var player;
+    var score; //ゲームのスコア
+    var time; //ゲームの制限時間
+    var comboTime; //コンボの間隔
     var mode; //ゲームをスタートしているかどうか 3: ブロック消滅時の硬直 2:行動後の硬直 1:ゲーム中 0:ゲーム開始前 -1:ゲームオーバー
     const size = 40; //ブロックのサイズ
     const backgroundSize = size * 10;
@@ -129,7 +132,8 @@
             var ctx = screen.getContext("2d");
             ctx.clearRect(0, 0, backgroundSize, backgroundSize);
             mode = 1;
-            board.random_generate(-1);
+            board.random_generate(0);
+            countDown();
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             mode = 0;
             reset();
@@ -137,13 +141,57 @@
         }
     }
 
+    //ゲームオーバー処理
+    function gameOver() {
+        mode = -1;
+        var screen = document.getElementById("screen");
+        var ctx = screen.getContext("2d");
+        ctx.fillStyle = "red";
+        ctx.font = "30px 'ＭＳ Ｐゴシック'";
+        ctx.fillText("GAME OVER", 120, 160);
+        anime({
+            targets: player.player,
+            translateY: [0, 20],
+            scaleY: [1, 0],
+            duration: 400,
+        });
+    }
+
     //初期状態に戻す
     function reset() {
         mode = 0;
+        score = 0;
+        document.getElementById("score").innerHTML = "score: " + score;
+        time = 120;
+        document.getElementById("time").innerHTML = "time: " + time;
+        comboTime = 0;
         board.reset();
         player.reset();
+        anime.set(player.player, {
+            translateY: 0,
+            scaleY: 1,
+        });
         ladderSet();
         initScreen();
+    }
+
+    //ゲームの制限時間をはかる
+    function countDown() {
+        /*var timer = setInterval(function () {
+            time--;
+            document.getElementById("time").innerHTML = "time: " + time;
+            if (time < 1) {
+                clearInterval(timer);
+                gameOver();
+            }
+        }, 1000);*/
+        time--;
+        document.getElementById("time").innerHTML = "time: " + time;
+        if (time > -1 && mode != -1) {
+            setTimeout(countDown, 1000);
+        } else {
+            mode = -1;
+        }
     }
 
     function ladderSet() {
@@ -234,7 +282,7 @@
 
         //ブロックを生成
         generate(color, i) {
-            if (mode != 3) {
+            if (mode != 3 && mode != -1) {
                 var block = document.getElementById("b-" + (9 * i));
                 this.array[i][0] = color;
                 this.paint();
@@ -257,7 +305,7 @@
                         }, 300);
                     }
                 });
-            } else {
+            } else if (mode == 3) {
                 setTimeout(function () {
                     board.random_generate(i);
                 }, 300);
@@ -319,16 +367,29 @@
                                 translateY: 0
                             });
                             var num = Number(this.animatables[0].target.id.slice(2));
-                            var p = [Math.floor(num / 9), Math.floor(num) % 9];
-                            if (flg == 0) {
+                            var blockP = [Math.floor(num / 9), Math.floor(num) % 9];
+                            if (blockP[0] == player.x && blockP[1] + 1 == player.y) {
+                                gameOver();
+                            }
+                            if (flg == 0 && blockP.toString() == airList[0].toString() && mode != -1) {
                                 flg = 1;
                                 var newAirList = [];
                                 for (var x of airList) {
                                     newAirList.push([x[0], x[1] + 1]);
-                                }board.paint();
+                                }
+                                board.paint();
                                 board.air(newAirList);
                             }
-                            console.log("1:" + flg+ ", " + airList.length);
+                            if (flg == 0 && blockP.toString() == airList[airList.length - 1].toString() &&
+                                mode != -1) {
+                                flg = 1;
+                                var newAirList = [];
+                                for (var x of airList) {
+                                    newAirList.push([x[0], x[1] + 1]);
+                                }
+                                board.paint();
+                                board.air(newAirList);
+                            }
                         }
                     });
                 } else if (j == 8) {
@@ -343,7 +404,7 @@
             var deleteList = [];
             deleteList.push([i, j]);
             this.collect(i, j, -1, -1, color, deleteList);
-            if (deleteList.length > 2) {
+            if (deleteList.length > 2 && mode != -1) {
                 board.delete(deleteList, 0);
             }
         }
@@ -351,7 +412,6 @@
         collect(i, j, previousI, previousJ, color, deleteList) {
             if (i < 9 && Math.floor(this.array[i + 1][j] / 10) == color && i + 1 != previousI) {
                 deleteList.push([i + 1, j]);
-                console.log("debug");
                 this.collect(i + 1, j, i, j, color, deleteList);
             }
             if (i > 0 && Math.floor(this.array[i - 1][j] / 10) == color && i - 1 != previousI) {
@@ -426,17 +486,6 @@
                                 }
                                 airList.push([blockI, y]);
                             }
-                            var airDeleteList = board.collectAir().filter(function (element) {
-                                var count = 0;
-                                for (var e of allAirList) {
-                                    if (e.toString() == element.toString()) {
-                                        count++;
-                                    }
-                                }
-                                if (count == 0) {
-                                    return element;
-                                }
-                            });
                             board.air(airList);
                         }
                         anime.set(this.animatables[0].target, {
