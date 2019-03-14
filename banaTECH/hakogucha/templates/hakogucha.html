@@ -320,7 +320,7 @@
                             });
                             var num = Number(this.animatables[0].target.id.slice(2));
                             var p = [Math.floor(num / 9), Math.floor(num) % 9];
-                            if (flg != 0) {
+                            if (flg == 0) {
                                 flg = 1;
                                 var newAirList = [];
                                 for (var x of airList) {
@@ -351,6 +351,7 @@
         collect(i, j, previousI, previousJ, color, deleteList) {
             if (i < 9 && Math.floor(this.array[i + 1][j] / 10) == color && i + 1 != previousI) {
                 deleteList.push([i + 1, j]);
+                console.log("debug");
                 this.collect(i + 1, j, i, j, color, deleteList);
             }
             if (i > 0 && Math.floor(this.array[i - 1][j] / 10) == color && i - 1 != previousI) {
