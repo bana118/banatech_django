@@ -75,8 +75,8 @@
     <p>制作記事：</p>
     <p>操作方法（キーボード）</p>
     <p>操作方法（ボタン）</p>
-    <p>効果音：</p>
-    <p>BGM：</p>
+    <p>効果音：魔王魂様、効果音ラボ様</p>
+    <p>BGM：魔王魂様</p>
 </div>
 <script>
     var board;
@@ -87,6 +87,12 @@
     var mode; //ゲームをスタートしているかどうか 3: ブロック消滅時の硬直 2:行動後の硬直 1:ゲーム中 0:ゲーム開始前 -1:ゲームオーバー
     const size = 40; //ブロックのサイズ
     const backgroundSize = size * 10;
+    var pushSoundEffect;
+    var moveSoundEffect;
+    var deleteSoundEffect;
+    var punchSoundEffect;
+    var startSoundEffect;
+    var BGM;
 
     onload = function () {
         board = new Board();
@@ -135,6 +141,28 @@
             ctx.font = "30px 'ＭＳ Ｐゴシック'";
             ctx.fillText("Ready...", 120, 160);
             setTimeout(Go, 1000);
+            pushSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/push.mp3' %}"]
+            });
+            moveSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/move.mp3' %}"]
+            });
+            deleteSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/delete.mp3' %}"]
+            });
+            punchSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/punch.mp3' %}"]
+            });
+            startSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/gamestart.mp3' %}"]
+            });
+            overSoundEffect = new Howl({
+                src: ["{% static 'hakogucha/music/gameover.mp3' %}"]
+            });
+            BGM = new Howl({
+                src: ["{% static 'hakogucha/music/BGM.mp3' %}"],
+                loop: true
+            });
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             mode = 0;
             reset();
@@ -151,11 +179,13 @@
         ctx.fillText("Go!!", 120, 160);
         mode = 1;
         board.random_generate(0);
+        startSoundEffect.play();
         countDown();
         setTimeout(function () {
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+            BGM.play();
         }, 500);
     }
 
@@ -167,6 +197,7 @@
         ctx.fillStyle = "red";
         ctx.font = "30px 'ＭＳ Ｐゴシック'";
         ctx.fillText("GAME OVER", 120, 160);
+        overSoundEffect.play();
         anime({
             targets: player.player,
             translateY: [0, 20],
@@ -457,6 +488,7 @@
                 }
             }
             if (airFlg == 0) {
+                deleteSoundEffect.play();
                 var airDeleteList = board.collectAir().filter(function (element) {
                     var count = 0;
                     for (var e of allAirList) {
@@ -558,10 +590,12 @@
                 this.x = this.x + 1;
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+                moveSoundEffect.play();
             } else if (this.x < 8 && board.array[this.x + 1][this.y] != 0 && board.array[this.x + 2][this.y] == 0) {
                 var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
                 board.array[this.x + 2][this.y] = board.array[this.x + 1][this.y];
                 board.array[this.x + 1][this.y] = 0;
+                pushSoundEffect.play();
                 anime({
                     targets: block,
                     translateX: [0, 40],
@@ -598,10 +632,12 @@
                 this.x = this.x - 1;
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+                moveSoundEffect.play();
             } else if (this.x > 1 && board.array[this.x - 1][this.y] != 0 && board.array[this.x - 2][this.y] == 0) {
                 var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
                 board.array[this.x - 2][this.y] = board.array[this.x - 1][this.y];
                 board.array[this.x - 1][this.y] = 0;
+                pushSoundEffect.play();
                 anime({
                     targets: block,
                     translateX: [0, -40],
@@ -640,6 +676,7 @@
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+            moveSoundEffect.play();
         }
 
         moveDown() {
@@ -649,6 +686,7 @@
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+            moveSoundEffect.play();
         }
 
         punch() {
@@ -656,6 +694,7 @@
                 var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
                 board.array[this.x + 1][this.y] = 0;
+                punchSoundEffect.play();
                 anime({
                     targets: block,
                     scale: [1, 5],
@@ -689,6 +728,7 @@
                 var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
                 board.array[this.x - 1][this.y] = 0;
+                punchSoundEffect.play();
                 anime({
                     targets: block,
                     scale: [1, 5],
@@ -721,6 +761,7 @@
                 var block = document.getElementById("b-" + (this.x * 9 + this.y + 1));
                 var ctx = block.getContext('2d');
                 board.array[this.x][this.y + 1] = 0;
+                punchSoundEffect.play();
                 anime({
                     targets: block,
                     scale: [1, 5],
