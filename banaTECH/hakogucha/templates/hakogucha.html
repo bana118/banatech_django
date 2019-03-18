@@ -98,6 +98,28 @@
         board = new Board();
         player = new Player();
         reset();
+        pushSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/push.mp3' %}"]
+        });
+        moveSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/move.mp3' %}"]
+        });
+        deleteSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/delete.mp3' %}"]
+        });
+        punchSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/punch.mp3' %}"]
+        });
+        startSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/gamestart.mp3' %}"]
+        });
+        overSoundEffect = new Howl({
+            src: ["{% static 'hakogucha/music/gameover.mp3' %}"]
+        });
+        BGM = new Howl({
+            src: ["{% static 'hakogucha/music/BGM.mp3' %}"],
+            loop: true
+        });
     };
 
     document.onkeydown = keydown;
@@ -141,28 +163,6 @@
             ctx.font = "30px 'ＭＳ Ｐゴシック'";
             ctx.fillText("Ready...", 120, 160);
             setTimeout(Go, 1000);
-            pushSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/push.mp3' %}"]
-            });
-            moveSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/move.mp3' %}"]
-            });
-            deleteSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/delete.mp3' %}"]
-            });
-            punchSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/punch.mp3' %}"]
-            });
-            startSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/gamestart.mp3' %}"]
-            });
-            overSoundEffect = new Howl({
-                src: ["{% static 'hakogucha/music/gameover.mp3' %}"]
-            });
-            BGM = new Howl({
-                src: ["{% static 'hakogucha/music/BGM.mp3' %}"],
-                loop: true
-            });
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             mode = 0;
             reset();
@@ -198,6 +198,7 @@
         ctx.font = "30px 'ＭＳ Ｐゴシック'";
         ctx.fillText("GAME OVER", 120, 160);
         overSoundEffect.play();
+        BGM.stop();
         anime({
             targets: player.player,
             translateY: [0, 20],
@@ -233,6 +234,12 @@
         } else {
             gameOver();
         }
+    }
+
+    //音量変更
+    function setVolume(value) {
+        var volume = value / 100;
+        Howler.volume(volume);
     }
 
     function ladderSet() {
