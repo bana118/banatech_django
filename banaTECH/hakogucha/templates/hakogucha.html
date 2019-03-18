@@ -131,14 +131,32 @@
             var screen = document.getElementById("screen");
             var ctx = screen.getContext("2d");
             ctx.clearRect(0, 0, backgroundSize, backgroundSize);
-            mode = 1;
-            board.random_generate(0);
-            countDown();
+            ctx.fillStyle = "red";
+            ctx.font = "30px 'ＭＳ Ｐゴシック'";
+            ctx.fillText("Ready...", 120, 160);
+            setTimeout(Go, 1000);
         } else if (mode == -1) { //ゲームオーバー画面から初期画面への移動
             mode = 0;
             reset();
             initScreen();
         }
+    }
+
+    function Go() {
+        var screen = document.getElementById("screen");
+        var ctx = screen.getContext("2d");
+        ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+        ctx.fillStyle = "red";
+        ctx.font = "30px 'ＭＳ Ｐゴシック'";
+        ctx.fillText("Go!!", 120, 160);
+        mode = 1;
+        board.random_generate(0);
+        countDown();
+        setTimeout(function () {
+            var screen = document.getElementById("screen");
+            var ctx = screen.getContext("2d");
+            ctx.clearRect(0, 0, backgroundSize, backgroundSize);
+        }, 500);
     }
 
     //ゲームオーバー処理
@@ -177,20 +195,12 @@
 
     //ゲームの制限時間をはかる
     function countDown() {
-        /*var timer = setInterval(function () {
-            time--;
-            document.getElementById("time").innerHTML = "time: " + time;
-            if (time < 1) {
-                clearInterval(timer);
-                gameOver();
-            }
-        }, 1000);*/
         time--;
         document.getElementById("time").innerHTML = "time: " + time;
         if (time > -1 && mode != -1) {
             setTimeout(countDown, 1000);
         } else {
-            mode = -1;
+            gameOver();
         }
     }
 
