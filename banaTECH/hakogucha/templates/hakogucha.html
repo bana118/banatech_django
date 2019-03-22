@@ -120,6 +120,7 @@
             src: ["{% static 'hakogucha/music/BGM.mp3' %}"],
             loop: true
         });
+        document.getElementById("outputVolume").innerHTML = 100;
     };
 
     document.onkeydown = keydown;
@@ -240,6 +241,7 @@
     function setVolume(value) {
         var volume = value / 100;
         Howler.volume(volume);
+        document.getElementById("outputVolume").innerHTML = value;
     }
 
     function ladderSet() {
