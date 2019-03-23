@@ -48,7 +48,8 @@
                 {% endfor %}
             </div>
             <img id="player" src="" width="40px" height="40px" style="position: absolute; top: 80px; left: 0px;">
-            <canvas id="screen" width="400px" height="360px" style="position: absolute;" onClick="gameStart();"></canvas>
+            <canvas id="screen" width="400px" height="360px" style="position: absolute;"
+                onClick="gameStart();"></canvas>
         </div>
         <div class="row">
             <div class="col-2"></div>
@@ -464,7 +465,8 @@
                                 board.paint();
                                 board.air(newAirList);
                             }
-                            if (flg == 0 && blockP.toString() == airList[airList.length - 1].toString() &&
+                            if (flg == 0 && blockP.toString() == airList[airList.length - 1]
+                                .toString() &&
                                 mode != -1) {
                                 flg = 1;
                                 var newAirList = [];
@@ -593,12 +595,18 @@
                     } else if (Math.floor(this.array[i][j] / 10) == 3) {
                         fillGreen(block);
                     } else if (Math.floor(this.array[i][j] / 10) == 4) {
-                        fillGray1(block);
+                        fillGray(block);
                     } else if (this.array[i][j] == 0) {
                         fillClear(block);
                     }
                     if (this.array[i][j] != 0 && this.array[i][j] % 10 == 0) {
                         strokeCross(block);
+                    }
+                    if (this.array[i][j] == 42) {
+                        strokeCrack1(block);
+                    }
+                    if (this.array[i][j] == 43) {
+                        strokeCrack2(block);
                     }
                 }
             }
@@ -610,7 +618,9 @@
         constructor() {
             this.x = 0;
             this.y = 2;
-            this.duration = 200; //行動時移動不能時間
+            this.punchDuration = 500; //移動不能時間
+            this.moveDuration = 100;
+            this.pushDuration = 300;
             this.state = 0; //向いている方向 0:右 1:左 2:下
             this.player = document.getElementById('player');
             this.position();
@@ -634,6 +644,7 @@
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
                 moveSoundEffect.play();
+                this.moveStop()
             } else if (this.x < 8 && board.array[this.x + 1][this.y] != 0 && board.array[this.x + 2][this.y] == 0) {
                 var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
                 board.array[this.x + 2][this.y] = board.array[this.x + 1][this.y];
@@ -642,7 +653,7 @@
                 anime({
                     targets: block,
                     translateX: [0, 40],
-                    duration: player.duration,
+                    duration: player.pushDuration,
                     begin: function (anim) {
                         mode = 2;
                         player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
@@ -676,6 +687,7 @@
                 this.player.style.left = this.x * size + "px";
                 this.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
                 moveSoundEffect.play();
+                this.moveStop()
             } else if (this.x > 1 && board.array[this.x - 1][this.y] != 0 && board.array[this.x - 2][this.y] == 0) {
                 var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
                 board.array[this.x - 2][this.y] = board.array[this.x - 1][this.y];
@@ -684,7 +696,7 @@
                 anime({
                     targets: block,
                     translateX: [0, -40],
-                    duration: player.duration,
+                    duration: player.pushDuration,
                     begin: function (anim) {
                         mode = 2;
                         player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
@@ -716,6 +728,7 @@
             if (this.y > 2 && board.array[this.x][this.y - 1] == 0) {
                 this.y = this.y - 1;
                 this.player.style.top = this.y * size + "px";
+                this.moveStop()
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
@@ -726,106 +739,171 @@
             if (this.y < 8 && board.array[this.x][this.y + 1] == 0) {
                 this.y = this.y + 1;
                 this.player.style.top = this.y * size + "px";
+                this.moveStop()
             }
             this.state = 2;
             this.player.src = "{% static 'hakogucha/player/ladder.png' %}";
             moveSoundEffect.play();
         }
 
+        moveStop() { //移動時の硬直
+            mode = 2;
+            setTimeout(function () {
+                mode = 1;
+            }, this.moveDuration);
+        }
+
         punch() {
-            if (this.x < 9 && this.state == 0 && board.array[this.x + 1][this.y] != 0) {
+            if (this.x < 9 && this.state == 0 && board.array[this.x + 1][this.y] % 10 != 0) {
                 var block = document.getElementById("b-" + ((this.x + 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
-                board.array[this.x + 1][this.y] = 0;
-                punchSoundEffect.play();
-                anime({
-                    targets: block,
-                    scale: [1, 5],
-                    rotate: [0, 90],
-                    duration: player.duration,
-                    begin: function (anim) {
-                        mode = 2;
-                        player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
-                        ctx.clearRect(5, 0, size - 10, size);
-                        ctx.clearRect(0, 5, size, size - 10);
-                    },
-                    complete: function (anim) {
-                        mode = 1;
-                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
-                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
-                        player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
-                        anime.set(this.animatables[0].target, {
-                            scale: 1,
-                            rotate: 0,
-                        });
-                        board.paint();
-                        var airList = [];
-                        for (var y = 0; y < blockJ; y++) {
-                            airList.push([blockI, y]);
+                if (Math.floor(board.array[this.x + 1][this.y] / 10) == 4 && board.array[this.x + 1][this.y] !=
+                    43) {
+                    board.array[this.x + 1][this.y]++;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+                            board.paint();
                         }
-                        board.air(airList);
-                    }
-                });
+                    });
+                } else {
+                    board.array[this.x + 1][this.y] = 0;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        scale: [1, 5],
+                        rotate: [0, 90],
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/rightpush.png' %}";
+                            ctx.clearRect(5, 0, size - 10, size);
+                            ctx.clearRect(0, 5, size, size - 10);
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                            var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
+                            player.player.src = "{% static 'hakogucha/player/rightwalk.png' %}";
+                            anime.set(this.animatables[0].target, {
+                                scale: 1,
+                                rotate: 0,
+                            });
+                            board.paint();
+                            var airList = [];
+                            for (var y = 0; y < blockJ; y++) {
+                                airList.push([blockI, y]);
+                            }
+                            board.air(airList);
+                        }
+                    });
+                }
 
-            } else if (this.x > 0 && this.state == 1 && board.array[this.x - 1][this.y] != 0) {
+            } else if (this.x > 0 && this.state == 1 && board.array[this.x - 1][this.y] % 10 != 0) {
                 var block = document.getElementById("b-" + ((this.x - 1) * 9 + this.y));
                 var ctx = block.getContext('2d');
-                board.array[this.x - 1][this.y] = 0;
-                punchSoundEffect.play();
-                anime({
-                    targets: block,
-                    scale: [1, 5],
-                    rotate: [0, 90],
-                    duration: player.duration,
-                    begin: function (anim) {
-                        mode = 2;
-                        player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
-                        ctx.clearRect(5, 0, size - 10, size);
-                        ctx.clearRect(0, 5, size, size - 10);
-                    },
-                    complete: function (anim) {
-                        mode = 1;
-                        var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
-                        var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
-                        player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
-                        anime.set(this.animatables[0].target, {
-                            scale: 1,
-                            rotate: 0,
-                        });
-                        board.paint();
-                        var airList = [];
-                        for (var y = 0; y < blockJ; y++) {
-                            airList.push([blockI, y]);
+                if ((Math.floor(board.array[this.x - 1][this.y] / 10) == 4 && board.array[this.x - 1][this.y] !=
+                        43)) {
+                    board.array[this.x - 1][this.y]++;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+                            board.paint();
                         }
-                        board.air(airList);
-                    }
-                });
-            } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] != 0) {
+                    });
+                } else {
+                    board.array[this.x - 1][this.y] = 0;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        scale: [1, 5],
+                        rotate: [0, 90],
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/leftpush.png' %}";
+                            ctx.clearRect(5, 0, size - 10, size);
+                            ctx.clearRect(0, 5, size, size - 10);
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            var blockI = Math.floor(Number(this.animatables[0].target.id.slice(2)) / 9);
+                            var blockJ = Number(this.animatables[0].target.id.slice(2)) % 9;
+                            player.player.src = "{% static 'hakogucha/player/leftwalk.png' %}";
+                            anime.set(this.animatables[0].target, {
+                                scale: 1,
+                                rotate: 0,
+                            });
+                            board.paint();
+                            var airList = [];
+                            for (var y = 0; y < blockJ; y++) {
+                                airList.push([blockI, y]);
+                            }
+                            board.air(airList);
+                        }
+                    });
+                }
+            } else if (this.y < 8 && this.state == 2 && board.array[this.x][this.y + 1] % 10 != 0) {
                 var block = document.getElementById("b-" + (this.x * 9 + this.y + 1));
                 var ctx = block.getContext('2d');
-                board.array[this.x][this.y + 1] = 0;
-                punchSoundEffect.play();
-                anime({
-                    targets: block,
-                    scale: [1, 5],
-                    rotate: [0, 90],
-                    duration: player.duration,
-                    begin: function (anim) {
-                        mode = 2;
-                        player.player.src = "{% static 'hakogucha/player/punch2.png' %}";
-                        ctx.clearRect(5, 0, size - 10, size);
-                        ctx.clearRect(0, 5, size, size - 10);
-                    },
-                    complete: function (anim) {
-                        mode = 1;
-                        player.player.src = "{% static 'hakogucha/player/ladder.png' %}";
-                        anime.set(this.animatables[0].target, {
-                            scale: 1,
-                            rotate: 0,
-                        });
-                        board.paint();
-                    }
-                });
+                if ((Math.floor(board.array[this.x][this.y + 1] / 10) == 4 && board.array[this.x - 1][this.y + 1] !=
+                        43)) {
+                    board.array[this.x][this.y + 1]++;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/punch2.png' %}";
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            player.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+                            board.paint();
+                        }
+                    });
+                } else {
+                    board.array[this.x][this.y + 1] = 0;
+                    punchSoundEffect.play();
+                    anime({
+                        targets: block,
+                        scale: [1, 5],
+                        rotate: [0, 90],
+                        duration: player.punchDuration,
+                        begin: function (anim) {
+                            mode = 2;
+                            player.player.src = "{% static 'hakogucha/player/punch2.png' %}";
+                            ctx.clearRect(5, 0, size - 10, size);
+                            ctx.clearRect(0, 5, size, size - 10);
+                        },
+                        complete: function (anim) {
+                            mode = 1;
+                            player.player.src = "{% static 'hakogucha/player/ladder.png' %}";
+                            anime.set(this.animatables[0].target, {
+                                scale: 1,
+                                rotate: 0,
+                            });
+                            board.paint();
+                        }
+                    });
+                }
             }
         }
     }
@@ -847,6 +925,34 @@
         ctx.lineTo(20, 15);
         ctx.fillStyle = 'black';
         ctx.fill();
+    }
+
+    function strokeCrack1(block) {
+        var ctx = block.getContext('2d');
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(20, 0);
+        ctx.lineTo(10, 5);
+        ctx.lineTo(15, 10);
+        ctx.lineTo(0, 20);
+        ctx.stroke();
+    }
+
+    function strokeCrack2(block) {
+        var ctx = block.getContext('2d');
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(20, 0);
+        ctx.lineTo(10, 5);
+        ctx.lineTo(15, 10);
+        ctx.lineTo(0, 20);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(40, 20);
+        ctx.lineTo(30, 25);
+        ctx.lineTo(35, 30);
+        ctx.lineTo(20, 40);
+        ctx.stroke();
     }
 
     function fillClear(block) {
@@ -887,27 +993,7 @@
         ctx.fillRect(0, 0, size, size);
     }
 
-    function fillGray1(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'gray';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillGray2(block) {
-        if (!block || !block.getContext) {
-            return false;
-        }
-        var ctx = block.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = 'gray';
-        ctx.fillRect(0, 0, size, size);
-    }
-
-    function fillGray3(block) {
+    function fillGray(block) {
         if (!block || !block.getContext) {
             return false;
         }
