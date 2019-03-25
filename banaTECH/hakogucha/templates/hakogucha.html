@@ -77,10 +77,19 @@
     <p class="text-center">音量：<span id="outputVolume"></span></p>
     <br>
     <h1>ハコグチャ</h1>
-    <p>ルール：</p>
-    <p>制作記事：</p>
+    <p>ルール：ハコを壊したり押したりして降ってくるブロックを避けよう！　つぶされたらゲームオーバー！　上まで積みあがったり時間切れになってもゲームオーバー！　同じ色のブロックを3つ以上つなげると消えるぞ！　続けて消すとコンボになり得点加算！</p>
     <p>操作方法（キーボード）</p>
+    <pre>       wキー：上移動</pre>
+    <pre>       aキー：左移動</pre>
+    <pre>       sキー：下移動</pre>
+    <pre>       dキー：右移動</pre>
+    <pre>       エンターキー：向いている方向のブロックを破壊(バツ印は破壊不可、灰色ブロックは3回殴る必要あり)</pre>
     <p>操作方法（ボタン）</p>
+    <pre>       上ボタン：上移動</pre>
+    <pre>       左ボタン：左移動</pre>
+    <pre>       下ボタン：下移動</pre>
+    <pre>       右ボタン：右移動</pre>
+    <pre>       拳ボタン：向いている方向のブロックを破壊(バツ印は破壊不可、灰色ブロックは3回殴る必要あり)</pre>
     <p>効果音：魔王魂様、効果音ラボ様</p>
     <p>BGM：魔王魂様</p>
 </div>
@@ -188,7 +197,7 @@
         var screen = document.getElementById("screen");
         var ctx = screen.getContext("2d");
         var img = new Image();
-        img.src = "{% static 'kurukuru/images/gamestart.png' %}"; //仮
+        img.src = "{% static 'hakogucha/images/hakogucha.png' %}"; //仮
         img.onload = function () {
             ctx.drawImage(img, 0, 0, backgroundSize, backgroundSize);
         }
