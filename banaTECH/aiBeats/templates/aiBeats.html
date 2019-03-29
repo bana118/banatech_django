@@ -7,12 +7,21 @@ ai-beats
 <meta name="description" content="">
 <!--本番時はmin版にする-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+<script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 {% load static %}
 
 {% endblock %}
 
 {% block content %}
-<canvas id="myCanvas"></canvas>
+<div class="container" style="touch-action: manipulation;">
+    <div id="wrap" style="position: relative;">
+        <canvas id="myCanvas" style="width: 960px; height: 540px;position: absolute;"></canvas>
+        <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
+            onClick="fullScreen();"></button>
+        <button type="button" class="btn btn-primary"
+            style="display: block;position: absolute;top:480px; left: 270px;">Play</button>
+    </div>
+</div>
 <script>
     // ページの読み込みを待つ
     window.addEventListener('load', init);
@@ -37,20 +46,64 @@ ai-beats
         const camera = new THREE.PerspectiveCamera(45, width / height);
         camera.position.set(0, 0, +1000);
 
-        // 箱を作成
-        const geometry = new THREE.BoxGeometry(400, 400, 400);
-        const material = new THREE.MeshNormalMaterial();
-        const box = new THREE.Mesh(geometry, material);
-        scene.add(box);
 
-        tick();
+    }
 
-        // 毎フレーム時に実行されるループイベントです
-        function tick() {
-            box.rotation.y += 0.01;
-            renderer.render(scene, camera); // レンダリング
+    //フルスクリーン化
+    function ElementRequestFullscreen(element) {
+        var list = [
+            "requestFullscreen",
+            "webkitRequestFullScreen",
+            "mozRequestFullScreen",
+            "msRequestFullscreen"
+        ];
+        var i;
+        var num = list.length;
+        for (i = 0; i < num; i++) {
+            if (element[list[i]]) {
+                element[list[i]]();
+                return true;
+            }
+        }
+        return false;
+    }
 
-            requestAnimationFrame(tick);
+    //フルスクリーン要素取得
+    function DocumentGetFullscreenElement(document_obj) {
+        return (
+            document_obj.fullscreenElement ||
+            document_obj.webkitFullscreenElement ||
+            document_obj.mozFullScreenElement ||
+            document_obj.msFullscreenElement ||
+            null
+        );
+    }
+
+    //フルスクリーン解除
+    function DocumentExitFullscreen(document_obj) {
+        var list = [
+            "exitFullscreen",
+            "webkitExitFullscreen",
+            "mozCancelFullScreen",
+            "msExitFullscreen"
+        ];
+        var i;
+        var num = list.length;
+        for (i = 0; i < num; i++) {
+            if (document_obj[list[i]]) {
+                document_obj[list[i]]();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function fullScreen() {
+        if (DocumentGetFullscreenElement(document) == null) {
+            var element = document.getElementById("wrap");
+            ElementRequestFullscreen(element);
+        }else{
+            DocumentExitFullscreen(document);
         }
     }
 </script>
