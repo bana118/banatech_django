@@ -14,41 +14,63 @@ ai-beats
 
 {% block content %}
 <div class="container" style="touch-action: manipulation;">
-    <div id="wrap" style="position: relative;">
+    <div id="wrap" style="position: relative;width: 960px; height: 540px">
         <canvas id="myCanvas" style="width: 960px; height: 540px;position: absolute;"></canvas>
         <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
             onClick="fullScreen();"></button>
-        <button type="button" class="btn btn-primary"
-            style="display: block;position: absolute;top:480px; left: 270px;">Play</button>
+        <button type="button" class="btn fas fa-pause"
+            style="display: block;position: absolute;right: 0px;color: white;"></button>
+        <button id="play_button" type="button" class="btn btn-primary"
+            style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
     </div>
 </div>
 <script>
-    // ページの読み込みを待つ
-    window.addEventListener('load', init);
-
-    function init() {
-
-        // サイズを指定
-        const width = 960;
-        const height = 540;
-
-        // レンダラーを作成
-        const renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector('#myCanvas')
-        });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(width, height);
-
-        // シーンを作成
-        const scene = new THREE.Scene();
-
-        // カメラを作成
-        const camera = new THREE.PerspectiveCamera(45, width / height);
-        camera.position.set(0, 0, +1000);
-
-
+    var sound, backGround;
+    onload = function () {
+        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
+        backGround = new BackGround(960, 540);
     }
 
+    class BackGround {
+        constructor(width, height) {
+            this.width = width;
+            this.height = height;
+            this.renderer = new THREE.WebGLRenderer({
+                canvas: document.querySelector('#myCanvas')
+            });
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            this.renderer.setSize(this.width, this.height);
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(45, this.width / this.height);
+            this.camera.position.set(0, 0, +1000);
+            var material = new THREE.LineBasicMaterial({
+                color: 0xff0000
+            });
+            var geometry = new THREE.Geometry();
+            this.splineObject = new THREE.Line(geometry, material);
+            this.splineObject.position.x = -700;
+            this.splineObject.position.y = -700;
+            this.scene.add(this.splineObject);
+        }
+
+        lineDraw(array) {
+            var pointArray = [];
+            for (var i = 0; i < sound.FFTSIZE / 2; i++) {
+                var freqData = sound.freqByteData[i];
+                if (!freqData) {
+                    freqData = 0;
+                } else {
+                    freqData /= 1024;
+                }
+                pointArray.push(new THREE.Vector2(i * 50, freqData * 4000));
+            }
+            var curve = new THREE.SplineCurve(pointArray);
+            var points = curve.getPoints(500);
+            var geometry = new THREE.BufferGeometry().setFromPoints(points);
+            this.splineObject.geometry = geometry;
+            this.renderer.render(this.scene, this.camera); // レンダリング
+        }
+    }
     //フルスクリーン化
     function ElementRequestFullscreen(element) {
         var list = [
@@ -102,9 +124,53 @@ ai-beats
         if (DocumentGetFullscreenElement(document) == null) {
             var element = document.getElementById("wrap");
             ElementRequestFullscreen(element);
-        }else{
+        } else {
             DocumentExitFullscreen(document);
         }
+    }
+
+    class Sound {
+        constructor(SOUND_ID, SOUND_PATH) {
+            this.SOUND_ID = SOUND_ID;
+            this.src = SOUND_PATH;
+            createjs.Sound.registerSound({
+                id: SOUND_ID,
+                src: SOUND_PATH
+            });
+            this.FFTSIZE = 64;
+            this.freqByteData = new Uint8Array(this.FFTSIZE / 2);
+            this.plugin = new createjs.WebAudioPlugin();
+            this.context = this.plugin.context;
+            this.analyserNode = this.context.createAnalyser();
+            this.analyserNode.connect(this.context.destination);
+            this.dynamicsNode = this.plugin.dynamicsCompressorNode;
+            this.dynamicsNode.disconnect();
+            this.dynamicsNode.connect(this.analyserNode);
+
+        }
+
+        play() {
+            // 無限ループで再生
+            createjs.Sound.play(this.SOUND_ID, {
+                loop: -1
+            });
+            tick();
+
+            // 毎フレーム時に実行されるループイベント
+            function tick() {
+                sound.analyserNode.getByteFrequencyData(sound.freqByteData);
+                backGround.lineDraw(sound.freqByteData);
+                //renderer.render(scene, camera); // レンダリング
+
+                requestAnimationFrame(tick);
+            }
+        }
+    }
+
+    function sound_play() {
+        var button = document.getElementById("play_button");
+        button.style.display = "none";
+        sound.play();
     }
 </script>
 {% endblock %}
