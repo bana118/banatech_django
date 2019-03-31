@@ -36,6 +36,16 @@ ai-beats
         window.addEventListener('resize', onResize);
     }
 
+    document.onkeydown = keydown;
+
+    function keydown(event) {
+        if (event.key == "f") {
+            backGround.leftTouch();
+        }else if(event.key == "j") {
+            backGround.rightTouch();
+        }
+    }
+
     function onResize() {
         // サイズを取得
         const width = window.innerWidth;
@@ -52,6 +62,8 @@ ai-beats
 
         backGround.splineObject.position.x = -backGround.width / 2;
         backGround.splineObject.position.y = -backGround.height / 2;
+        backGround.leftMesh.position.x = -backGround.width / 4;
+        backGround.rightMesh.position.x = backGround.width / 4;
     }
 
     class BackGround {
@@ -67,14 +79,30 @@ ai-beats
             this.scene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(45, this.width / this.height);
             this.camera.position.set(0, 0, +1000);
-            var material = new THREE.LineBasicMaterial({
+            var leftMeshGeometry = new THREE.BoxBufferGeometry(this.width / 2, this.height, 1);
+            var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+            this.leftMesh = new THREE.Mesh(leftMeshGeometry, blackMaterial);
+            this.leftMesh.position.x = -this.width / 4;
+            this.leftMesh.position.z = -10;
+            this.scene.add(this.leftMesh);
+            var rightMeshGeometry = new THREE.BoxBufferGeometry(this.width / 2, this.height, 1);
+            this.rightMesh = new THREE.Mesh(rightMeshGeometry, blackMaterial);
+            this.rightMesh.position.x = this.width / 4;
+            this.rightMesh.position.z = -10;
+            this.scene.add(this.rightMesh);
+
+            var splineMaterial = new THREE.LineBasicMaterial({
                 color: 0xffffff
             });
-            var geometry = new THREE.Geometry();
-            this.splineObject = new THREE.Line(geometry, material);
+            var splineGeometry = new THREE.Geometry();
+            this.splineObject = new THREE.Line(splineGeometry, splineMaterial);
             this.splineObject.position.x = -this.width / 2;
             this.splineObject.position.y = -this.height / 2;
             this.scene.add(this.splineObject);
+
+            this.renderer.render(this.scene, this.camera); // レンダリング
         }
 
         lineDraw(array) {
@@ -92,7 +120,36 @@ ai-beats
             var points = curve.getPoints(500);
             var geometry = new THREE.BufferGeometry().setFromPoints(points);
             this.splineObject.geometry = geometry;
-            this.renderer.render(this.scene, this.camera); // レンダリング
+            this.renderer.render(this.scene, this.camera);
+        }
+
+        leftTouch() {
+            var leftMeshMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff0000
+            });
+            this.leftMesh.material = leftMeshMaterial;
+            this.renderer.render(this.scene, this.camera);
+            setTimeout(function () {
+                var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+                backGround.leftMesh.material = blackMaterial;
+                backGround.renderer.render(backGround.scene, backGround.camera);
+            }, 50);
+        }
+        rightTouch() {
+            var rightMeshMaterial = new THREE.MeshBasicMaterial({
+                color: 0x0000ff
+            });
+            this.rightMesh.material = rightMeshMaterial;
+            this.renderer.render(this.scene, this.camera);
+            setTimeout(function () {
+                var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+                backGround.rightMesh.material = blackMaterial;
+                backGround.renderer.render(backGround.scene, backGround.camera);
+            }, 50);
         }
     }
     //フルスクリーン化
