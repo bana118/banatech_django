@@ -117,6 +117,12 @@ ai-beats
             var line = new THREE.Line(lineGeometry, lineMaterial);
             this.scene.add(line);
 
+            var torusGeometry = new THREE.TorusGeometry(50, 5, 64, 128);
+            var torusMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff});
+            this.torus = new THREE.Mesh(torusGeometry, torusMaterial);
+            this.torus.position.y = -this.height/4;
+            this.scene.add(this.torus);
+
             var splineMaterial = new THREE.LineBasicMaterial({
                 color: 0xffffff
             });
