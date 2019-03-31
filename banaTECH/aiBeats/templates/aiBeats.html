@@ -29,7 +29,7 @@ ai-beats
         style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
 <script>
-    var sound, backGround;
+    var sound, backGround, tja;
     onload = function () {
         sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
         backGround = new BackGround();
@@ -45,6 +45,7 @@ ai-beats
                 backGround.rightTouch();
             }
         }, false);
+        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
     }
 
     document.onkeydown = keydown;
@@ -78,6 +79,23 @@ ai-beats
         var MeshGeometry = new THREE.BoxBufferGeometry(backGround.width / 2, backGround.height, 1);
         backGround.leftMesh.geometry = MeshGeometry;
         backGround.rightMesh.geometry = MeshGeometry;
+
+        backGround.torus.position.y = -backGround.height / 4;
+    }
+
+    class TJA {
+        constructor(src) {
+            this.src = src;
+            $.ajax({
+                url: this.src,
+                success: function (data) {
+                    this.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
+                    this.offset = data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, "");
+                    this.bpm = data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, "");
+                    console.log(this.title, this.offset, this.bpm);
+                }
+            });
+        }
     }
 
     class BackGround {
@@ -118,9 +136,11 @@ ai-beats
             this.scene.add(line);
 
             var torusGeometry = new THREE.TorusGeometry(50, 5, 64, 128);
-            var torusMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff});
+            var torusMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff
+            });
             this.torus = new THREE.Mesh(torusGeometry, torusMaterial);
-            this.torus.position.y = -this.height/4;
+            this.torus.position.y = -this.height / 4;
             this.scene.add(this.torus);
 
             var splineMaterial = new THREE.LineBasicMaterial({
