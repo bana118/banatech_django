@@ -8,33 +8,57 @@ ai-beats
 <!--本番時はmin版にする-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
 <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+</style>
 {% load static %}
 
 {% endblock %}
 
 {% block content %}
-<div class="container" style="touch-action: manipulation;">
-    <div id="wrap" style="position: relative;width: 960px; height: 540px">
-        <canvas id="myCanvas" style="width: 960px; height: 540px;position: absolute;"></canvas>
-        <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
-            onClick="fullScreen();"></button>
-        <button type="button" class="btn fas fa-pause"
-            style="display: block;position: absolute;right: 0px;color: white;"></button>
-        <button id="play_button" type="button" class="btn btn-primary"
-            style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
-    </div>
+<div id="wrap" style="position: relative;touch-action: manipulation;">
+    <canvas id="myCanvas" style="position: absolute;"></canvas>
+    <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
+        onClick="fullScreen();"></button>
+    <button type="button" class="btn fas fa-pause"
+        style="display: block;position: absolute;right: 0px;color: white;"></button>
+    <button id="play_button" type="button" class="btn btn-primary"
+        style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
 <script>
     var sound, backGround;
     onload = function () {
         sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
-        backGround = new BackGround(960, 540);
+        backGround = new BackGround();
+        window.addEventListener('resize', onResize);
+    }
+
+    function onResize() {
+        // サイズを取得
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        backGround.width = width;
+        backGround.height = height;
+        // レンダラーのサイズを調整する
+        backGround.renderer.setPixelRatio(window.devicePixelRatio);
+        backGround.renderer.setSize(width, height);
+
+        // カメラのアスペクト比を正す
+        backGround.camera.aspect = width / height;
+        backGround.camera.updateProjectionMatrix();
+
+        backGround.splineObject.position.x = -backGround.width / 2;
+        backGround.splineObject.position.y = -backGround.height / 2;
     }
 
     class BackGround {
-        constructor(width, height) {
-            this.width = width;
-            this.height = height;
+        constructor() {
+            //初期化
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
             this.renderer = new THREE.WebGLRenderer({
                 canvas: document.querySelector('#myCanvas')
             });
@@ -48,8 +72,8 @@ ai-beats
             });
             var geometry = new THREE.Geometry();
             this.splineObject = new THREE.Line(geometry, material);
-            this.splineObject.position.x = -700;
-            this.splineObject.position.y = -700;
+            this.splineObject.position.x = -this.width / 2;
+            this.splineObject.position.y = -this.height / 2;
             this.scene.add(this.splineObject);
         }
 
@@ -60,9 +84,9 @@ ai-beats
                 if (!freqData) {
                     freqData = 0;
                 } else {
-                    freqData /= 1024;
+                    freqData /= 512;
                 }
-                pointArray.push(new THREE.Vector2(i * 50, freqData * 4000));
+                pointArray.push(new THREE.Vector2(i * this.width / (sound.FFTSIZE / 2), freqData * this.height));
             }
             var curve = new THREE.SplineCurve(pointArray);
             var points = curve.getPoints(500);
