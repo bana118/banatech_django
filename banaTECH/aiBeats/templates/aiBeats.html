@@ -34,6 +34,17 @@ ai-beats
         sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
         backGround = new BackGround();
         window.addEventListener('resize', onResize);
+        var canvas = document.querySelector('#myCanvas');
+        canvas.addEventListener('click', function (e) {
+            var button = e.target.getBoundingClientRect();
+            var mouseX = e.clientX - button.left;
+            var mouseY = e.clientY - button.top;
+            if(mouseX < backGround.width /2){
+                backGround.leftTouch();
+            }else{
+                backGround.rightTouch();
+            }
+        }, false);
     }
 
     document.onkeydown = keydown;
@@ -41,7 +52,7 @@ ai-beats
     function keydown(event) {
         if (event.key == "f") {
             backGround.leftTouch();
-        }else if(event.key == "j") {
+        } else if (event.key == "j") {
             backGround.rightTouch();
         }
     }
@@ -64,6 +75,9 @@ ai-beats
         backGround.splineObject.position.y = -backGround.height / 2;
         backGround.leftMesh.position.x = -backGround.width / 4;
         backGround.rightMesh.position.x = backGround.width / 4;
+        var MeshGeometry = new THREE.BoxBufferGeometry(backGround.width / 2, backGround.height, 1);
+        backGround.leftMesh.geometry = MeshGeometry;
+        backGround.rightMesh.geometry = MeshGeometry;
     }
 
     class BackGround {
@@ -79,16 +93,15 @@ ai-beats
             this.scene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(45, this.width / this.height);
             this.camera.position.set(0, 0, +1000);
-            var leftMeshGeometry = new THREE.BoxBufferGeometry(this.width / 2, this.height, 1);
+            var MeshGeometry = new THREE.BoxBufferGeometry(this.width / 2, this.height, 1);
             var blackMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x000000
-                });
-            this.leftMesh = new THREE.Mesh(leftMeshGeometry, blackMaterial);
+                color: 0x000000
+            });
+            this.leftMesh = new THREE.Mesh(MeshGeometry, blackMaterial);
             this.leftMesh.position.x = -this.width / 4;
             this.leftMesh.position.z = -10;
             this.scene.add(this.leftMesh);
-            var rightMeshGeometry = new THREE.BoxBufferGeometry(this.width / 2, this.height, 1);
-            this.rightMesh = new THREE.Mesh(rightMeshGeometry, blackMaterial);
+            this.rightMesh = new THREE.Mesh(MeshGeometry, blackMaterial);
             this.rightMesh.position.x = this.width / 4;
             this.rightMesh.position.z = -10;
             this.scene.add(this.rightMesh);
