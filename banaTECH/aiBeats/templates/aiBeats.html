@@ -31,7 +31,7 @@ ai-beats
 <script>
     var sound, backGround, tja;
     onload = function () {
-        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
+        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.ogg' %}");
         backGround = new BackGround();
         tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
         window.addEventListener('resize', onResize);
@@ -116,6 +116,7 @@ ai-beats
                             flg = 1;
                         }
                     }
+                    var numOfBar = 0;
                     for (var i = 0; i < tja.score.length; i++) {
                         if (!tja.score[i].match(/#.*/)) {
                             var bar = tja.score[i].split("");
@@ -126,7 +127,8 @@ ai-beats
                                         color: 0xff0000
                                     });
                                     var circle = new THREE.Mesh(circleGeometry, redMaterial);
-                                    circle.position.y = i * backGround.height + (j / bar.length) *
+                                    circle.position.y = numOfBar * backGround.height + (j / bar
+                                            .length) *
                                         backGround.height;
                                     backGround.scoreGroup.add(circle);
                                 } else if (bar[j] == "2" || bar[j] == "4") {
@@ -135,11 +137,13 @@ ai-beats
                                         color: 0x0000ff
                                     });
                                     var circle = new THREE.Mesh(circleGeometry, blueMaterial);
-                                    circle.position.y = i * backGround.height + (j / bar.length) *
+                                    circle.position.y = numOfBar * backGround.height + (j / bar
+                                            .length) *
                                         backGround.height;
                                     backGround.scoreGroup.add(circle);
                                 }
                             }
+                            numOfBar++;
                         }
                     }
                 }
@@ -202,7 +206,7 @@ ai-beats
             this.scene.add(this.splineObject);
 
             this.scoreGroup = new THREE.Object3D();
-            //this.scoreGroup.position.y = -this.height / 2;
+            this.scoreGroup.position.y = this.height / 2;
             this.scene.add(this.scoreGroup);
 
 
@@ -227,7 +231,9 @@ ai-beats
         }
 
         scoreDraw(time) { //time:曲の現在の時間
-            backGround.scoreGroup.position.y = -(time / 1000 * (tja.bpm / 60)) * this.height / 4
+            backGround.scoreGroup.position.y = -((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) * this
+                .height / 4 - this.height / 2 + this.height / 4;
+            console.log(time / 1000 * (tja.bpm / 60) / 4);
         }
 
         leftTouch() {
