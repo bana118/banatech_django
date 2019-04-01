@@ -33,6 +33,7 @@ ai-beats
     onload = function () {
         sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.mp3' %}");
         backGround = new BackGround();
+        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -45,7 +46,6 @@ ai-beats
                 backGround.rightTouch();
             }
         }, false);
-        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
     }
 
     document.onkeydown = keydown;
@@ -89,26 +89,26 @@ ai-beats
             $.ajax({
                 url: this.src,
                 success: function (data) {
-                    this.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
-                    this.offset = data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, "");
-                    this.bpm = data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, "");
+                    tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
+                    tja.offset = data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, "");
+                    tja.bpm = data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, "");
                     var lines = data.split(/\r?\n/);
-                    this.score = [];
+                    tja.score = [];
                     var flg = 0;
                     for (var i = 0; i < lines.length; i++) {
-                        if (lines[i] == "") {
+                        if (lines[i] == "" && !lines[i].match(/\/\/.*/)) {
 
                         } else if (flg == 1) {
                             if (lines[i] == "#END") {
                                 flg = 0;
                                 break;
                             } else if (lines[i].match(/#.*/)) {
-                                this.score.push(lines[i]);
+                                tja.score.push(lines[i].split("//")[0]);
                             } else {
                                 var nums = lines[i].split(",");
                                 for (var j = 0; j < nums.length; j++) {
-                                    if(nums[j] != ""){
-                                        this.score.push(nums[j]);
+                                    if (nums[j] != "" && !nums[j].match(/\/\/.*/)) {
+                                        tja.score.push(nums[j]);
                                     }
                                 }
                             }
@@ -116,7 +116,32 @@ ai-beats
                             flg = 1;
                         }
                     }
-                    console.log(this.score);
+                    for (var i = 0; i < tja.score.length; i++) {
+                        if (!tja.score[i].match(/#.*/)) {
+                            var bar = tja.score[i].split("");
+                            for (var j = 0; j < bar.length; j++) {
+                                if (bar[j] == "1" || bar[j] == "3") {
+                                    var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                    var redMaterial = new THREE.MeshBasicMaterial({
+                                        color: 0xff0000
+                                    });
+                                    var circle = new THREE.Mesh(circleGeometry, redMaterial);
+                                    circle.position.y = i * backGround.height + (j / bar.length) *
+                                        backGround.height;
+                                    backGround.scoreGroup.add(circle);
+                                } else if (bar[j] == "2" || bar[j] == "4") {
+                                    var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                    var blueMaterial = new THREE.MeshBasicMaterial({
+                                        color: 0x0000ff
+                                    });
+                                    var circle = new THREE.Mesh(circleGeometry, blueMaterial);
+                                    circle.position.y = i * backGround.height + (j / bar.length) *
+                                        backGround.height;
+                                    backGround.scoreGroup.add(circle);
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -176,6 +201,11 @@ ai-beats
             this.splineObject.position.y = -this.height / 2;
             this.scene.add(this.splineObject);
 
+            this.scoreGroup = new THREE.Object3D();
+            //this.scoreGroup.position.y = -this.height / 2;
+            this.scene.add(this.scoreGroup);
+
+
             this.renderer.render(this.scene, this.camera); // レンダリング
         }
 
@@ -194,7 +224,10 @@ ai-beats
             var points = curve.getPoints(500);
             var geometry = new THREE.BufferGeometry().setFromPoints(points);
             this.splineObject.geometry = geometry;
-            this.renderer.render(this.scene, this.camera);
+        }
+
+        scoreDraw(time) { //time:曲の現在の時間
+            backGround.scoreGroup.position.y = -(time / 1000 * (tja.bpm / 60)) * this.height / 4
         }
 
         leftTouch() {
@@ -313,10 +346,10 @@ ai-beats
 
             // 毎フレーム時に実行されるループイベント
             function tick() {
-                //console.log(sound.instance.position);
                 sound.analyserNode.getByteFrequencyData(sound.freqByteData);
                 backGround.lineDraw(sound.freqByteData);
-                //renderer.render(scene, camera); // レンダリング
+                backGround.scoreDraw(sound.instance.position);
+                backGround.renderer.render(backGround.scene, backGround.camera); // レンダリング
 
                 requestAnimationFrame(tick);
             }
