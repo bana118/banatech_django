@@ -92,7 +92,31 @@ ai-beats
                     this.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
                     this.offset = data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, "");
                     this.bpm = data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, "");
-                    console.log(this.title, this.offset, this.bpm);
+                    var lines = data.split(/\r?\n/);
+                    this.score = [];
+                    var flg = 0;
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] == "") {
+
+                        } else if (flg == 1) {
+                            if (lines[i] == "#END") {
+                                flg = 0;
+                                break;
+                            } else if (lines[i].match(/#.*/)) {
+                                this.score.push(lines[i]);
+                            } else {
+                                var nums = lines[i].split(",");
+                                for (var j = 0; j < nums.length; j++) {
+                                    if(nums[j] != ""){
+                                        this.score.push(nums[j]);
+                                    }
+                                }
+                            }
+                        } else if (lines[i] == "#START") {
+                            flg = 1;
+                        }
+                    }
+                    console.log(this.score);
                 }
             });
         }
@@ -282,13 +306,14 @@ ai-beats
 
         play() {
             // 無限ループで再生
-            createjs.Sound.play(this.SOUND_ID, {
-                loop: -1
+            this.instance = createjs.Sound.play(this.SOUND_ID, {
+                loop: 0
             });
             tick();
 
             // 毎フレーム時に実行されるループイベント
             function tick() {
+                //console.log(sound.instance.position);
                 sound.analyserNode.getByteFrequencyData(sound.freqByteData);
                 backGround.lineDraw(sound.freqByteData);
                 //renderer.render(scene, camera); // レンダリング
