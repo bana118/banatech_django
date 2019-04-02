@@ -96,60 +96,52 @@ ai-beats
                     tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
                     tja.offset = Number(data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, ""));
                     tja.bpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
-                    var lines = data.split(/\r?\n/);
+                    var allScore = data.match(/#START[\s\S]*#END/)[0].slice(6).slice(0, -4).split(",");
                     tja.score = [];
-                    var flg = 0;
-                    for (var i = 0; i < lines.length; i++) {
-                        if (lines[i] == "" && !lines[i].match(/\/\/.*/)) {
-
-                        } else if (flg == 1) {
-                            if (lines[i] == "#END") {
-                                flg = 0;
-                                break;
-                            } else if (lines[i].match(/#.*/)) {
-                                tja.score.push(lines[i].split("//")[0]);
-                            } else {
-                                var nums = lines[i].split(",");
-                                for (var j = 0; j < nums.length; j++) {
-                                    if (nums[j] != "" && !nums[j].match(/\/\/.*/)) {
-                                        tja.score.push(nums[j]);
+                    var orders;
+                    var order;
+                    for (var i = 0; i < allScore.length; i++) {
+                        if (allScore[i].match(/./)) {
+                            if (allScore[i].match(/.*#.*/)) {
+                                orders = allScore[i].match(/(?:\r?\n)*#.*(?:\r?\n)+/g);
+                                tja.score.push(allScore[i].replace(/(\r?\n)*#.*(\r?\n)+/g, "").replace(
+                                    /\r?\n/g, ""));
+                                for (var j = 0; j < orders.length; j++) {
+                                    order = orders[j].replace(/(\r?\n)/g, "");
+                                    console.log(order);
+                                    if (order.match(/#MEASURE/)) {
+                                        tja.beat.push([i, Number(order.slice(9, 10))]);
                                     }
                                 }
+                            } else {
+                                tja.score.push(allScore[i].replace(/\r?\n/g, ""));
                             }
-                        } else if (lines[i] == "#START") {
-                            flg = 1;
                         }
                     }
-                    var numOfBar = 0;
                     for (var i = 0; i < tja.score.length; i++) {
-                        if (!tja.score[i].match(/#.*/)) {
-                            var bar = tja.score[i].split("");
-                            for (var j = 0; j < bar.length; j++) {
-                                if (bar[j] == "1" || bar[j] == "3") {
-                                    var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
-                                    var redMaterial = new THREE.MeshBasicMaterial({
-                                        color: 0xff0000
-                                    });
-                                    var circle = new THREE.Mesh(circleGeometry, redMaterial);
-                                    circle.position.y = numOfBar * backGround.height + (j / bar
-                                            .length) *
-                                        backGround.height;
-                                    backGround.scoreGroup.add(circle);
-                                } else if (bar[j] == "2" || bar[j] == "4") {
-                                    var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
-                                    var blueMaterial = new THREE.MeshBasicMaterial({
-                                        color: 0x0000ff
-                                    });
-                                    var circle = new THREE.Mesh(circleGeometry, blueMaterial);
-                                    circle.position.y = numOfBar * backGround.height + (j / bar
-                                            .length) *
-                                        backGround.height;
-                                    backGround.scoreGroup.add(circle);
-                                }
+                        var bar = tja.score[i].split("");
+                        for (var j = 0; j < bar.length; j++) {
+                            if (bar[j] == "1" || bar[j] == "3") {
+                                var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                var redMaterial = new THREE.MeshBasicMaterial({
+                                    color: 0xff0000
+                                });
+                                var circle = new THREE.Mesh(circleGeometry, redMaterial);
+                                circle.position.y = i * backGround.height + (j / bar
+                                        .length) *
+                                    backGround.height;
+                                backGround.scoreGroup.add(circle);
+                            } else if (bar[j] == "2" || bar[j] == "4") {
+                                var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                var blueMaterial = new THREE.MeshBasicMaterial({
+                                    color: 0x0000ff
+                                });
+                                var circle = new THREE.Mesh(circleGeometry, blueMaterial);
+                                circle.position.y = i * backGround.height + (j / bar
+                                        .length) *
+                                    backGround.height;
+                                backGround.scoreGroup.add(circle);
                             }
-                            numOfBar++;
-                        } else if (tja.score[i].match(/#MEASURE.*/)) {
-                            tja.beat.push([numOfBar, Number(tja.score[i].slice(9, 10))]);
                         }
                     }
                 }
