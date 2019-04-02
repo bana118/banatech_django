@@ -86,12 +86,16 @@ ai-beats
     class TJA {
         constructor(src) {
             this.src = src;
+            this.currentBar = 0;
+            this.beat = [
+                [-10, 4]
+            ]; //拍子。[小節, 4分の何拍子か]
             $.ajax({
                 url: this.src,
                 success: function (data) {
                     tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
-                    tja.offset = data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, "");
-                    tja.bpm = data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, "");
+                    tja.offset = Number(data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, ""));
+                    tja.bpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
                     var lines = data.split(/\r?\n/);
                     tja.score = [];
                     var flg = 0;
@@ -144,6 +148,8 @@ ai-beats
                                 }
                             }
                             numOfBar++;
+                        } else if (tja.score[i].match(/#MEASURE.*/)) {
+                            tja.beat.push([numOfBar, Number(tja.score[i].slice(9, 10))]);
                         }
                     }
                 }
@@ -206,9 +212,10 @@ ai-beats
             this.scene.add(this.splineObject);
 
             this.scoreGroup = new THREE.Object3D();
-            this.scoreGroup.position.y = this.height / 2;
+            this.scoreGroup.position.y = -this.height / 4;
             this.scene.add(this.scoreGroup);
 
+            this.time = 0; //再生時間記録用
 
             this.renderer.render(this.scene, this.camera); // レンダリング
         }
@@ -231,11 +238,20 @@ ai-beats
         }
 
         scoreDraw(time) { //time:曲の現在の時間
-            backGround.scoreGroup.position.y = -((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) * this
-                .height / 4 - this.height / 2 + this.height / 4;
-            console.log(time / 1000 * (tja.bpm / 60) / 4);
+            var bar = 0;
+            for (var i = 0; i < tja.beat.length; i++) {
+                if (tja.currentBar > tja.beat[i][0]) {
+                    bar = i;
+                }
+            }
+            //tja.currentBar = ((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) / tja.beat[bar][1];
+            console.log(tja.currentBar);
+            tja.currentBar = tja.currentBar + (((time - this.time) / 1000) * (tja.bpm / 60) / tja.beat[bar][1]);
+            //this.scoreGroup.position.y = -(((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) / tja.beat[bar][1])* this.height - (this.height / 2 - this.height /4);
+            this.scoreGroup.position.y = this.scoreGroup.position.y - ((((time - this.time) /
+                1000 * (tja.bpm / 60)) / tja.beat[bar][1]) * this.height);
+            this.time = time;
         }
-
         leftTouch() {
             var leftMeshMaterial = new THREE.MeshBasicMaterial({
                 color: 0xff0000
@@ -344,10 +360,13 @@ ai-beats
         }
 
         play() {
-            // 無限ループで再生
+            // 音楽再生
             this.instance = createjs.Sound.play(this.SOUND_ID, {
                 loop: 0
             });
+            //オフセット処理
+            backGround.time = -tja.offset * 1000;
+            tja.currentBar = tja.offset * (tja.bpm / 60) / 4 + 1;
             tick();
 
             // 毎フレーム時に実行されるループイベント
