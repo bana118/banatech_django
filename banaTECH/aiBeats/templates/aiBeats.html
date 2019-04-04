@@ -31,9 +31,9 @@ ai-beats
 <script>
     var sound, backGround, tja;
     onload = function () {
-        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.ogg' %}");
+        sound = new Sound("sound", "{% static 'aiBeats/music/幽玄ノ乱.ogg' %}");
         backGround = new BackGround();
-        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
+        tja = new TJA("{% static 'aiBeats/tja/幽玄ノ乱.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -59,9 +59,12 @@ ai-beats
     }
 
     function onResize() {
+        var preWidth = backGround.width;
+        var preHeight = backGround.height;
         // サイズを取得
         const width = window.innerWidth;
         const height = window.innerHeight;
+        console.log(width, height);
         backGround.width = width;
         backGround.height = height;
         // レンダラーのサイズを調整する
@@ -72,6 +75,7 @@ ai-beats
         backGround.camera.aspect = width / height;
         backGround.camera.updateProjectionMatrix();
 
+
         backGround.splineObject.position.x = -backGround.width / 2;
         backGround.splineObject.position.y = -backGround.height / 2;
         backGround.leftMesh.position.x = -backGround.width / 4;
@@ -81,6 +85,10 @@ ai-beats
         backGround.rightMesh.geometry = MeshGeometry;
 
         backGround.torus.position.y = -backGround.height / 4;
+
+        backGround.scoreGroup.position.y *= backGround.height / preHeight;
+
+        backGround.renderer.render(backGround.scene, backGround.camera);
     }
 
     class TJA {
@@ -88,14 +96,16 @@ ai-beats
             this.src = src;
             this.currentBar = 0;
             this.beat = [
-                [-10, 4]
+                [-100, 4]
             ]; //拍子。[小節, 4分の何拍子か]
+            this.bpm = [];
             $.ajax({
                 url: this.src,
                 success: function (data) {
                     tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
                     tja.offset = Number(data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, ""));
-                    tja.bpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
+                    var firstBpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
+                    tja.bpm.push([-100, firstBpm]);
                     var allScore = data.match(/#START[\s\S]*#END/)[0].slice(6).slice(0, -4).split(",");
                     tja.score = [];
                     var orders;
@@ -111,6 +121,8 @@ ai-beats
                                     console.log(order);
                                     if (order.match(/#MEASURE/)) {
                                         tja.beat.push([i, Number(order.slice(9, 10))]);
+                                    }else if(order.match(/#BPMCHANGE/)) {
+                                        tja.bpm.push([i, Number(order.slice(11))]);
                                     }
                                 }
                             } else {
@@ -127,9 +139,9 @@ ai-beats
                                     color: 0xff0000
                                 });
                                 var circle = new THREE.Mesh(circleGeometry, redMaterial);
-                                circle.position.y = i * backGround.height + (j / bar
+                                circle.position.y = i * backGround.speed + (j / bar
                                         .length) *
-                                    backGround.height;
+                                    backGround.speed;
                                 backGround.scoreGroup.add(circle);
                             } else if (bar[j] == "2" || bar[j] == "4") {
                                 var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
@@ -137,9 +149,9 @@ ai-beats
                                     color: 0x0000ff
                                 });
                                 var circle = new THREE.Mesh(circleGeometry, blueMaterial);
-                                circle.position.y = i * backGround.height + (j / bar
+                                circle.position.y = i * backGround.speed + (j / bar
                                         .length) *
-                                    backGround.height;
+                                    backGround.speed;
                                 backGround.scoreGroup.add(circle);
                             }
                         }
@@ -154,6 +166,7 @@ ai-beats
             //初期化
             this.width = window.innerWidth;
             this.height = window.innerHeight;
+            this.speed = this.height; //譜面のスピードの基準
             this.renderer = new THREE.WebGLRenderer({
                 canvas: document.querySelector('#myCanvas')
             });
@@ -230,18 +243,22 @@ ai-beats
         }
 
         scoreDraw(time) { //time:曲の現在の時間
-            var bar = 0;
+            var beatBar = 0;
             for (var i = 0; i < tja.beat.length; i++) {
                 if (tja.currentBar > tja.beat[i][0]) {
-                    bar = i;
+                    beatBar = i;
                 }
             }
-            //tja.currentBar = ((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) / tja.beat[bar][1];
+            var bpmBar = 0;
+            for (var j = 0; j < tja.bpm.length; j++) {
+                if (tja.currentBar > tja.bpm[j][0]) {
+                    bpmBar = j;
+                }
+            }
+            tja.currentBar = tja.currentBar + (((time - this.time) / 1000) * (tja.bpm[bpmBar][1] / 60) / tja.beat[beatBar][1]);
             console.log(tja.currentBar);
-            tja.currentBar = tja.currentBar + (((time - this.time) / 1000) * (tja.bpm / 60) / tja.beat[bar][1]);
-            //this.scoreGroup.position.y = -(((time + tja.offset * 1000) / 1000 * (tja.bpm / 60)) / tja.beat[bar][1])* this.height - (this.height / 2 - this.height /4);
             this.scoreGroup.position.y = this.scoreGroup.position.y - ((((time - this.time) /
-                1000 * (tja.bpm / 60)) / tja.beat[bar][1]) * this.height);
+                1000 * (tja.bpm[bpmBar][1] / 60)) / tja.beat[beatBar][1]) * this.speed);
             this.time = time;
         }
         leftTouch() {
@@ -358,7 +375,7 @@ ai-beats
             });
             //オフセット処理
             backGround.time = -tja.offset * 1000;
-            tja.currentBar = tja.offset * (tja.bpm / 60) / 4 + 1;
+            tja.currentBar = tja.offset * (tja.bpm[0][1] / 60) / 4 + 1;
             tick();
 
             // 毎フレーム時に実行されるループイベント
