@@ -31,9 +31,9 @@ ai-beats
 <script>
     var sound, backGround, tja;
     onload = function () {
-        sound = new Sound("sound", "{% static 'aiBeats/music/幽玄ノ乱.ogg' %}");
+        sound = new Sound("sound", "{% static 'aiBeats/music/ウミユリ海底譚.ogg' %}");
         backGround = new BackGround();
-        tja = new TJA("{% static 'aiBeats/tja/幽玄ノ乱.tja' %}");
+        tja = new TJA("{% static 'aiBeats/tja/ウミユリ海底譚.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -98,7 +98,8 @@ ai-beats
             this.beat = [
                 [-100, 4]
             ]; //拍子。[小節, 4分の何拍子か]
-            this.bpm = [];
+            this.bpm = []; 
+            this.delay = []; //遅延挿入。[小節, 遅延秒数, 未使用は1使用したら0,]
             $.ajax({
                 url: this.src,
                 success: function (data) {
@@ -123,6 +124,8 @@ ai-beats
                                         tja.beat.push([i, Number(order.slice(9, 10))]);
                                     }else if(order.match(/#BPMCHANGE/)) {
                                         tja.bpm.push([i, Number(order.slice(11))]);
+                                    }else if(order.match(/#DELAY/)){
+                                        tja.delay.push([i, Number(order.slice(7), 1)]);
                                     }
                                 }
                             } else {
@@ -250,14 +253,21 @@ ai-beats
                 }
             }
             var bpmBar = 0;
-            for (var j = 0; j < tja.bpm.length; j++) {
-                if (tja.currentBar > tja.bpm[j][0]) {
-                    bpmBar = j;
+            for (var i = 0; i < tja.bpm.length; i++) {
+                if (tja.currentBar > tja.bpm[i][0]) {
+                    bpmBar = i;
                 }
             }
-            tja.currentBar = tja.currentBar + (((time - this.time) / 1000) * (tja.bpm[bpmBar][1] / 60) / tja.beat[beatBar][1]);
-            console.log(tja.currentBar);
-            this.scoreGroup.position.y = this.scoreGroup.position.y - ((((time - this.time) /
+            var delay = 0;
+            for (var i = 0; i < tja.delay.length; i++) {
+                if (tja.currentBar > tja.delay[i][0] && tja.delay[i][2] != 0) {
+                    delay = tja.delay[i][1];
+                    tja.delay[i][2] = 0;
+                    console.log(delay);
+                }
+            }
+            tja.currentBar = tja.currentBar + (((time - this.time + delay * 1000) / 1000) * (tja.bpm[bpmBar][1] / 60) / tja.beat[beatBar][1]);
+            this.scoreGroup.position.y = this.scoreGroup.position.y - ((((time - this.time + delay * 1000) /
                 1000 * (tja.bpm[bpmBar][1] / 60)) / tja.beat[beatBar][1]) * this.speed);
             this.time = time;
         }
