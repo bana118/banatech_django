@@ -27,7 +27,7 @@ ai-beats
     <button type="button" class="fullScreen btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
     <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
-        <button type="button" class="dropleft btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
+        <button type="button" id="dropleft" class="dropleft btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false" style="color: white;" onClick="pause();"></button>
         <div class="dropdown-menu" x-placement="left-start"
             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-196px, 0px, 0px);">
@@ -398,10 +398,12 @@ ai-beats
     }
 
     function pause() {
-        if (sound.instance != null) {
+        if (sound.played == true) {
             if (sound.instance.paused == true) {
+                document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
                 sound.instance.paused = false
             } else {
+                document.getElementById("dropleft").className = "dropleft btn fas fa-play";
                 sound.instance.paused = true;
             }
         }
@@ -411,6 +413,7 @@ ai-beats
         if (sound.played == true) {
             sound.instance.stop();
             $('.dropleft').dropdown('hide');
+            document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
             setTimeout(function () {
                 sound.instance.play();
             }, 2000);
