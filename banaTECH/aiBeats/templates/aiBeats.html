@@ -23,8 +23,19 @@ ai-beats
     <canvas id="myCanvas" style="position: absolute;"></canvas>
     <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
-    <button type="button" class="btn fas fa-pause"
-        style="display: block;position: absolute;right: 0px;color: white;"></button>
+    <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
+        <button type="button" class="btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false" style="color: white;"
+            onClick="pause();"></button>
+        <div class="dropdown-menu" x-placement="left-start"
+            style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-196px, 0px, 0px);">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Separated link</a>
+        </div>
+    </div>
     <button id="play_button" type="button" class="btn btn-primary"
         style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
@@ -98,7 +109,7 @@ ai-beats
             this.beat = [
                 [-100, 4]
             ]; //拍子。[小節, 4分の何拍子か]
-            this.bpm = []; 
+            this.bpm = [];
             this.delay = []; //遅延挿入。[小節, 遅延秒数, 未使用は1使用したら0,]
             $.ajax({
                 url: this.src,
@@ -122,9 +133,9 @@ ai-beats
                                     console.log(order);
                                     if (order.match(/#MEASURE/)) {
                                         tja.beat.push([i, Number(order.slice(9, 10))]);
-                                    }else if(order.match(/#BPMCHANGE/)) {
+                                    } else if (order.match(/#BPMCHANGE/)) {
                                         tja.bpm.push([i, Number(order.slice(11))]);
-                                    }else if(order.match(/#DELAY/)){
+                                    } else if (order.match(/#DELAY/)) {
                                         tja.delay.push([i, Number(order.slice(7), 1)]);
                                     }
                                 }
@@ -266,7 +277,8 @@ ai-beats
                     console.log(delay);
                 }
             }
-            tja.currentBar = tja.currentBar + (((time - this.time + delay * 1000) / 1000) * (tja.bpm[bpmBar][1] / 60) / tja.beat[beatBar][1]);
+            tja.currentBar = tja.currentBar + (((time - this.time + delay * 1000) / 1000) * (tja.bpm[bpmBar][1] /
+                60) / tja.beat[beatBar][1]);
             this.scoreGroup.position.y = this.scoreGroup.position.y - ((((time - this.time + delay * 1000) /
                 1000 * (tja.bpm[bpmBar][1] / 60)) / tja.beat[beatBar][1]) * this.speed);
             this.time = time;
@@ -355,6 +367,16 @@ ai-beats
             ElementRequestFullscreen(element);
         } else {
             DocumentExitFullscreen(document);
+        }
+    }
+
+    function pause() {
+        if (sound.instance != null) {
+            if (sound.instance.paused == true) {
+                sound.instance.paused = false
+            } else {
+                sound.instance.paused = true;
+            }
         }
     }
 
