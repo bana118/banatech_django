@@ -27,8 +27,8 @@ ai-beats
     <button type="button" class="fullScreen btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
     <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
-        <button type="button" id="dropleft" class="dropleft btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false" style="color: white;" onClick="pause();"></button>
+        <button type="button" id="dropleft" class="dropleft btn fas fa-pause" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" style="color: white;" onClick="pause();"></button>
         <div class="dropdown-menu" x-placement="left-start"
             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-196px, 0px, 0px);">
             <a class="dropdown-item" href="#" onClick="restart();">Restart</a>
@@ -136,6 +136,7 @@ ai-beats
             ]; //拍子。[小節, 4分の何拍子か]
             this.bpm = [];
             this.delay = []; //遅延挿入。[小節, 遅延秒数, 未使用は1使用したら0,]
+            this.judgeList = []; //判定用のリスト。[何個目の円か, Three.Meshオブジェクト, 譜面上の数字, 秒数]
             $.ajax({
                 url: this.src,
                 success: function (data) {
@@ -155,7 +156,6 @@ ai-beats
                                     /\r?\n/g, ""));
                                 for (var j = 0; j < orders.length; j++) {
                                     order = orders[j].replace(/(\r?\n)/g, "");
-                                    console.log(order);
                                     if (order.match(/#MEASURE/)) {
                                         var denominator = Number(order.slice(11, 12));
                                         var numerator = Number(order.slice(9, 10));
@@ -171,8 +171,27 @@ ai-beats
                             }
                         }
                     }
+                    var time = -tja.offset * 1000;
+                    var beat = tja.beat[0][1];
+                    var bpm = tja.bpm[0][1];
                     for (var i = 0; i < tja.score.length; i++) {
                         var bar = tja.score[i].split("");
+                        for (var d = 0; d < tja.delay.length; d++) {
+                            if (tja.delay[d][2] == 1 && i > tja.delay[d][0]) {
+                                tja.delay[d][2] = 0;
+                                time += tja.delay[d][1] * 1000;
+                            }
+                        }
+                        for (var be = 0; be < tja.beat.length; be++) {
+                            if (i > tja.beat[be][0]) {
+                                beat = tja.beat[be][1];
+                            }
+                        }
+                        for (var bp = 0; bp < tja.bpm.length; bp++) {
+                            if (i > tja.bpm[bp][0]) {
+                                bpm = tja.bpm[bp][1];
+                            }
+                        }
                         for (var j = 0; j < bar.length; j++) {
                             if (bar[j] == "1" || bar[j] == "3") {
                                 var circleGeometry = new THREE.CircleBufferGeometry(30, 32);
@@ -184,6 +203,7 @@ ai-beats
                                         .length) *
                                     backGround.speed;
                                 backGround.scoreGroup.add(circle);
+                                tja.judgeList.push([tja.judgeList.length, circle, bar[j], time]);
                             } else if (bar[j] == "2" || bar[j] == "4") {
                                 var circleGeometry = new THREE.CircleBufferGeometry(30, 32);
                                 var blueMaterial = new THREE.MeshBasicMaterial({
@@ -194,8 +214,14 @@ ai-beats
                                         .length) *
                                     backGround.speed;
                                 backGround.scoreGroup.add(circle);
+                                tja.judgeList.push([tja.judgeList.length, circle, bar[j], time]);
                             }
+                            time += (60 / bpm) * beat / bar.length * 1000;
                         }
+                    }
+                    //tja.delayを戻す
+                    for (var d = 0; d < tja.delay.length; d++) {
+                        tja.delay[d][2] = 1;
                     }
                 }
             });
@@ -262,6 +288,7 @@ ai-beats
             this.scene.add(this.scoreGroup);
 
             this.time = 0; //再生時間記録用
+
 
             this.renderer.render(this.scene, this.camera); // レンダリング
         }
