@@ -67,9 +67,9 @@ ai-beats
         $(".fullScreen").on("click", function (e) { //ドロップダウンメニューが消えないようにする
             e.stopPropagation();
         });
-        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.ogg' %}");
+        sound = new Sound("sound", "{% static 'aiBeats/music/夏恋花火.ogg' %}");
         backGround = new BackGround();
-        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
+        tja = new TJA("{% static 'aiBeats/tja/夏恋花火.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -175,7 +175,7 @@ ai-beats
                         var bar = tja.score[i].split("");
                         for (var j = 0; j < bar.length; j++) {
                             if (bar[j] == "1" || bar[j] == "3") {
-                                var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                var circleGeometry = new THREE.CircleBufferGeometry(30, 32);
                                 var redMaterial = new THREE.MeshBasicMaterial({
                                     color: 0xff0000
                                 });
@@ -185,7 +185,7 @@ ai-beats
                                     backGround.speed;
                                 backGround.scoreGroup.add(circle);
                             } else if (bar[j] == "2" || bar[j] == "4") {
-                                var circleGeometry = new THREE.CircleBufferGeometry(20, 32);
+                                var circleGeometry = new THREE.CircleBufferGeometry(30, 32);
                                 var blueMaterial = new THREE.MeshBasicMaterial({
                                     color: 0x0000ff
                                 });
@@ -240,7 +240,7 @@ ai-beats
             var line = new THREE.Line(lineGeometry, lineMaterial);
             this.scene.add(line);
 
-            var torusGeometry = new THREE.TorusGeometry(50, 5, 64, 128);
+            var torusGeometry = new THREE.TorusGeometry(40, 5, 64, 128);
             var torusMaterial = new THREE.MeshBasicMaterial({
                 color: 0x00ffff
             });
@@ -411,10 +411,13 @@ ai-beats
 
     function restart() {
         if (sound.played == true) {
+            document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
+            sound.played = false;
             sound.instance.stop();
             $('.dropleft').dropdown('hide');
-            document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
             setTimeout(function () {
+                document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
+                sound.played = true;
                 sound.instance.play();
             }, 2000);
         }
