@@ -8,6 +8,9 @@ ai-beats
 <!--本番時はmin版にする-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
 <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+{% load static %}
+<script src="{% static 'aiBeats/JavaScript/jquery.knob.min.js' %}"></script>
+
 <style>
     body {
         margin: 0;
@@ -21,19 +24,20 @@ ai-beats
 {% block content %}
 <div id="wrap" style="position: relative;touch-action: manipulation;">
     <canvas id="myCanvas" style="position: absolute;"></canvas>
-    <button type="button" class="btn far fa-square" style="display: block;position: absolute;color: white;"
+    <button type="button" class="fullScreen btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
     <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
-        <button type="button" class="btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false" style="color: white;"
-            onClick="pause();"></button>
+        <button type="button" class="dropleft btn fas fa-pause" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false" style="color: white;" onClick="pause();"></button>
         <div class="dropdown-menu" x-placement="left-start"
             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-196px, 0px, 0px);">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" href="#" onClick="restart();">Restart</a>
+            <a class="dropdown-item" href="/ai-beats">Music Select</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
+            <div class="volume d-flex justify-content-center">
+                <p>Volume:</p>
+                <input type="text" class="volumeDial" value="100" />
+            </div>
         </div>
     </div>
     <button id="play_button" type="button" class="btn btn-primary"
@@ -42,9 +46,30 @@ ai-beats
 <script>
     var sound, backGround, tja;
     onload = function () {
-        sound = new Sound("sound", "{% static 'aiBeats/music/ウミユリ海底譚.ogg' %}");
+        $(".volumeDial").knob({ //音量調整ダイアルの設定
+            angleOffset: 240,
+            angleArc: 240,
+            width: 100,
+            height: 100,
+            release: function (v) {
+                sound.changeVolume(v);
+            }
+        });
+        $("#myCanvas").on("click", function (e) { //ドロップダウンメニューが消えないようにする
+            e.stopPropagation();
+        });
+        $(".navbar").on("click", function (e) { //ドロップダウンメニューが消えないようにする
+            e.stopPropagation();
+        });
+        $(".dropdown-menu").on("click", function (e) { //ドロップダウンメニューが消えないようにする
+            e.stopPropagation();
+        });
+        $(".fullScreen").on("click", function (e) { //ドロップダウンメニューが消えないようにする
+            e.stopPropagation();
+        });
+        sound = new Sound("sound", "{% static 'aiBeats/music/HIBANA.ogg' %}");
         backGround = new BackGround();
-        tja = new TJA("{% static 'aiBeats/tja/ウミユリ海底譚.tja' %}");
+        tja = new TJA("{% static 'aiBeats/tja/HIBANA.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -132,7 +157,9 @@ ai-beats
                                     order = orders[j].replace(/(\r?\n)/g, "");
                                     console.log(order);
                                     if (order.match(/#MEASURE/)) {
-                                        tja.beat.push([i, Number(order.slice(9, 10))]);
+                                        var denominator = Number(order.slice(11, 12));
+                                        var numerator = Number(order.slice(9, 10));
+                                        tja.beat.push([i, numerator / (denominator / 4)]);
                                     } else if (order.match(/#BPMCHANGE/)) {
                                         tja.bpm.push([i, Number(order.slice(11))]);
                                     } else if (order.match(/#DELAY/)) {
@@ -380,6 +407,16 @@ ai-beats
         }
     }
 
+    function restart() {
+        if (sound.played == true) {
+            sound.instance.stop();
+            $('.dropleft').dropdown('hide');
+            setTimeout(function () {
+                sound.instance.play();
+            }, 2000);
+        }
+    }
+
     class Sound {
         constructor(SOUND_ID, SOUND_PATH) {
             this.SOUND_ID = SOUND_ID;
@@ -397,14 +434,16 @@ ai-beats
             this.dynamicsNode = this.plugin.dynamicsCompressorNode;
             this.dynamicsNode.disconnect();
             this.dynamicsNode.connect(this.analyserNode);
-
+            this.instance = createjs.Sound.createInstance(this.SOUND_ID);
+            this.played = false; //再生開始したかどうか
         }
 
         play() {
             // 音楽再生
-            this.instance = createjs.Sound.play(this.SOUND_ID, {
+            this.instance.play({
                 loop: 0
             });
+            this.played = true;
             //オフセット処理
             backGround.time = -tja.offset * 1000;
             tja.currentBar = tja.offset * (tja.bpm[0][1] / 60) / 4 + 1;
@@ -419,6 +458,10 @@ ai-beats
 
                 requestAnimationFrame(tick);
             }
+        }
+
+        changeVolume(v) {
+            sound.instance.volume = v / 100;
         }
     }
 
