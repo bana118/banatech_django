@@ -44,7 +44,7 @@ ai-beats
         style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
 <script>
-    var sound, backGround, tja;
+    var sound, backGround, tja, leftSE, rightSE;
     onload = function () {
         $(".volumeDial").knob({ //音量調整ダイアルの設定
             angleOffset: 240,
@@ -53,6 +53,8 @@ ai-beats
             height: 100,
             release: function (v) {
                 sound.changeVolume(v);
+                leftSE.changeVolume(v);
+                rightSE.changeVolume(v);
             }
         });
         $("#myCanvas").on("click", function (e) { //ドロップダウンメニューが消えないようにする
@@ -68,6 +70,8 @@ ai-beats
             e.stopPropagation();
         });
         sound = new Sound("sound", "{% static 'aiBeats/music/夏恋花火.ogg' %}");
+        leftSE = new SE("left", "{% static 'aiBeats/SE/left2.ogg' %}"); //from 魔王魂様
+        rightSE = new SE("right", "{% static 'aiBeats/SE/right1.ogg' %}"); //from 魔王魂様
         backGround = new BackGround();
         tja = new TJA("{% static 'aiBeats/tja/夏恋花火.tja' %}");
         window.addEventListener('resize', onResize);
@@ -287,8 +291,34 @@ ai-beats
             this.scoreGroup.position.y = -this.height / 4;
             this.scene.add(this.scoreGroup);
 
+            var loader = new THREE.FontLoader();
+            loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
+                var textGeometry = new THREE.TextGeometry("", {
+                    font: font,
+                    size: 20,
+                    height: 5,
+                    curveSegments: 12
+                });
+                var materials = [
+                    new THREE.MeshBasicMaterial({
+                        color: 0x000000
+                    }),
+                    new THREE.MeshBasicMaterial({
+                        color: 0x000000
+                    })
+                ];
+                backGround.textMesh = new THREE.Mesh(textGeometry, materials);
+                backGround.scene.add(backGround.textMesh);
+            });
+
             this.time = 0; //再生時間記録用
 
+            //判定用の時間(±ミリ秒)
+            this.bestTime = 34;
+            this.goodTime = 117;
+            this.missTime = 150;
+
+            this.alreadyArray = []; //すでにたたいた音符
 
             this.renderer.render(this.scene, this.camera); // レンダリング
         }
@@ -350,6 +380,8 @@ ai-beats
                 backGround.leftMesh.material = blackMaterial;
                 backGround.renderer.render(backGround.scene, backGround.camera);
             }, 50);
+            leftSE.play();
+            this.judge(sound.instance.position, 1);
         }
         rightTouch() {
             var rightMeshMaterial = new THREE.MeshBasicMaterial({
@@ -364,6 +396,114 @@ ai-beats
                 backGround.rightMesh.material = blackMaterial;
                 backGround.renderer.render(backGround.scene, backGround.camera);
             }, 50);
+            rightSE.play();
+            this.judge(sound.instance.position, 2);
+        }
+
+        judge(time, num) {
+            var index = 0;
+            var diff = [];
+            $(tja.judgeList).each(function (i, val) {
+                diff[i] = Math.abs(time - val[3]);
+                index = (diff[index] < diff[i] || backGround.alreadyArray.includes(i)) ? index : i;
+            });
+            console.log(index, diff[index], this.alreadyArray);
+            if (diff[index] <= this.bestTime) {
+                this.alreadyArray.push(index);
+                var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+                tja.judgeList[index][1].material = blackMaterial;
+                var loader = new THREE.FontLoader();
+                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
+                    var textGeometry = new THREE.TextGeometry("Best!!", {
+                        font: font,
+                        size: 20,
+                        height: 5,
+                        curveSegments: 12
+                    });
+                    var materials = [
+                        new THREE.MeshBasicMaterial({
+                            color: 0xff0000
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            color: 0x000000
+                        })
+                    ];
+                    backGround.textMesh.geometry = textGeometry;
+                    backGround.textMesh.material = materials;
+                });
+            } else if (diff[index] <= this.goodTime && diff[index] > this.bestTime) {
+                this.alreadyArray.push(index);
+                var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+                tja.judgeList[index][1].material = blackMaterial;
+                var loader = new THREE.FontLoader();
+                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
+                    var textGeometry = new THREE.TextGeometry("Good!", {
+                        font: font,
+                        size: 20,
+                        height: 5,
+                        curveSegments: 12
+                    });
+                    var materials = [
+                        new THREE.MeshBasicMaterial({
+                            color: 0x00ff00
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            color: 0x000000
+                        })
+                    ];
+                    backGround.textMesh.geometry = textGeometry;
+                    backGround.textMesh.material = materials;
+                });
+            } else if (diff[index] <= this.missTime && diff[index] > this.goodTime) {
+                this.alreadyArray.push(index);
+                var blackMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x000000
+                });
+                tja.judgeList[index][1].material = blackMaterial;
+                var loader = new THREE.FontLoader();
+                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
+                    var textGeometry = new THREE.TextGeometry("Miss", {
+                        font: font,
+                        size: 20,
+                        height: 5,
+                        curveSegments: 12
+                    });
+                    var materials = [
+                        new THREE.MeshBasicMaterial({
+                            color: 0x0000ff
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            color: 0x000000
+                        })
+                    ];
+                    backGround.textMesh.geometry = textGeometry;
+                    backGround.textMesh.material = materials;
+                });
+            } else {
+                var loader = new THREE.FontLoader();
+                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
+                    var textGeometry = new THREE.TextGeometry("", {
+                        font: font,
+                        size: 20,
+                        height: 5,
+                        curveSegments: 12
+                    });
+                    var materials = [
+                        new THREE.MeshBasicMaterial({
+                            color: 0x000000
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            color: 0x000000
+                        })
+                    ];
+                    backGround.textMesh.geometry = textGeometry;
+                    backGround.textMesh.material = materials;
+                });
+            }
         }
     }
     //フルスクリーン化
@@ -441,12 +581,51 @@ ai-beats
             document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
             sound.played = false;
             sound.instance.stop();
+            backGround.alreadyArray = [];
+            var redMaterial = new THREE.MeshBasicMaterial ({
+                color: 0xff0000
+            });
+            var blueMaterial = new THREE.MeshBasicMaterial({
+                color: 0x0000ff
+            });
+            for (var i = 0; i < tja.judgeList.length; i++) {
+                if (tja.judgeList[i][2] == "1" || tja.judgeList[i][2] == "3") {
+                    tja.judgeList[i][1].material = redMaterial;
+                }else if(tja.judgeList[i][2] == "2" || tja.judgeList[i][2] == "4") {
+                    tja.judgeList[i][1].material = blueMaterial;
+                }
+            }
             $('.dropleft').dropdown('hide');
             setTimeout(function () {
                 document.getElementById("dropleft").className = "dropleft btn fas fa-pause";
                 sound.played = true;
                 sound.instance.play();
             }, 2000);
+        }
+    }
+
+    //効果音
+    class SE {
+        constructor(SOUND_ID, SOUND_PATH) {
+            this.SOUND_ID = SOUND_ID;
+            this.src = SOUND_PATH;
+            createjs.Sound.registerSound({
+                id: SOUND_ID,
+                src: SOUND_PATH
+            });
+            this.volume = 1;
+        }
+
+        play() {
+            var instance = createjs.Sound.createInstance(this.SOUND_ID);
+            instance.volume = this.volume;
+            instance.play({
+                loop: 0
+            });
+        }
+
+        changeVolume(v) {
+            this.volume = v / 100;
         }
     }
 
@@ -494,7 +673,7 @@ ai-beats
         }
 
         changeVolume(v) {
-            sound.instance.volume = v / 100;
+            this.instance.volume = v / 100;
         }
     }
 
