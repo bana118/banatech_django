@@ -69,11 +69,11 @@ ai-beats
         $(".fullScreen").on("click", function (e) { //ドロップダウンメニューが消えないようにする
             e.stopPropagation();
         });
-        sound = new Sound("sound", "{% static 'aiBeats/music/夏恋花火.ogg' %}");
+        sound = new Sound("sound", "{% static 'aiBeats/music/バンバード ～Piano Version～.ogg' %}");
         leftSE = new SE("left", "{% static 'aiBeats/SE/left2.ogg' %}"); //from 魔王魂様
         rightSE = new SE("right", "{% static 'aiBeats/SE/right1.ogg' %}"); //from 魔王魂様
         backGround = new BackGround();
-        tja = new TJA("{% static 'aiBeats/tja/夏恋花火.tja' %}");
+        tja = new TJA("{% static 'aiBeats/tja/バンバード ~Piano Version~.tja' %}");
         window.addEventListener('resize', onResize);
         var canvas = document.querySelector('#myCanvas');
         canvas.addEventListener('click', function (e) {
@@ -91,9 +91,9 @@ ai-beats
     document.onkeydown = keydown;
 
     function keydown(event) {
-        if (event.key == "f") {
+        if (event.key == "f" || event.key == "d" || event.key == "s" || event.key == "a") {
             backGround.leftTouch();
-        } else if (event.key == "j") {
+        } else if (event.key == "j" || event.key == "k" || event.key == "l" || event.key == ";") {
             backGround.rightTouch();
         }
     }
@@ -128,6 +128,12 @@ ai-beats
 
         backGround.scoreGroup.position.y *= backGround.height / preHeight;
 
+        backGround.textMesh.position.y = -backGround.height / 4;
+        backGround.textMesh.position.x = backGround.width / 20;
+
+        backGround.titleMesh.position.y = backGround.height / 3;
+        backGround.titleMesh.position.x = -backGround.width / 2 + backGround.width / 8;
+
         backGround.renderer.render(backGround.scene, backGround.camera);
     }
 
@@ -145,6 +151,30 @@ ai-beats
                 url: this.src,
                 success: function (data) {
                     tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
+                    var loader = new THREE.FontLoader();
+                    loader.load("{% static 'aiBeats/typeface/07YasashisaGothic_Regular.json' %}",
+                        function (font) {
+                            var titleGeometry = new THREE.TextGeometry(tja.title, {
+                                font: font,
+                                size: 12,
+                                height: 5,
+                                curveSegments: 12
+                            });
+                            var materials = [
+                                new THREE.MeshBasicMaterial({
+                                    color: 0xffffff
+                                }),
+                                new THREE.MeshBasicMaterial({
+                                    color: 0x000000
+                                })
+                            ];
+                            backGround.titleMesh = new THREE.Mesh(titleGeometry, materials);
+                            backGround.titleMesh.position.y = backGround.height / 3;
+                            backGround.titleMesh.position.x = -backGround.width / 2 + backGround
+                                .width / 20;
+                            backGround.scene.add(backGround.titleMesh);
+                        });
+
                     tja.offset = Number(data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, ""));
                     var firstBpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
                     tja.bpm.push([-100, firstBpm]);
@@ -308,8 +338,12 @@ ai-beats
                     })
                 ];
                 backGround.textMesh = new THREE.Mesh(textGeometry, materials);
+                backGround.textMesh.position.y = -backGround.height / 4;
+                backGround.textMesh.position.x = backGround.width / 20;
                 backGround.scene.add(backGround.textMesh);
             });
+
+            this.titleMesh = null; //初期化
 
             this.time = 0; //再生時間記録用
 
@@ -408,7 +442,14 @@ ai-beats
                 index = (diff[index] < diff[i] || backGround.alreadyArray.includes(i)) ? index : i;
             });
             console.log(index, diff[index], this.alreadyArray);
-            if (diff[index] <= this.bestTime) {
+            var judgeNum;
+            if (tja.judgeList[index][2] == "1" || tja.judgeList[index][2] == "3") {
+                judgeNum = 1;
+            } else if (tja.judgeList[index][2] == "2" || tja.judgeList[index][2] == "4") {
+                judgeNum = 2;
+            }
+
+            if (diff[index] <= this.bestTime && num == judgeNum) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
                     color: 0x000000
@@ -433,7 +474,7 @@ ai-beats
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
                 });
-            } else if (diff[index] <= this.goodTime && diff[index] > this.bestTime) {
+            } else if (diff[index] <= this.goodTime && diff[index] > this.bestTime && num == judgeNum) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
                     color: 0x000000
@@ -458,7 +499,7 @@ ai-beats
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
                 });
-            } else if (diff[index] <= this.missTime && diff[index] > this.goodTime) {
+            } else if (diff[index] <= this.missTime && (diff[index] > this.goodTime || num != judgeNum)) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
                     color: 0x000000
@@ -582,7 +623,7 @@ ai-beats
             sound.played = false;
             sound.instance.stop();
             backGround.alreadyArray = [];
-            var redMaterial = new THREE.MeshBasicMaterial ({
+            var redMaterial = new THREE.MeshBasicMaterial({
                 color: 0xff0000
             });
             var blueMaterial = new THREE.MeshBasicMaterial({
@@ -591,7 +632,7 @@ ai-beats
             for (var i = 0; i < tja.judgeList.length; i++) {
                 if (tja.judgeList[i][2] == "1" || tja.judgeList[i][2] == "3") {
                     tja.judgeList[i][1].material = redMaterial;
-                }else if(tja.judgeList[i][2] == "2" || tja.judgeList[i][2] == "4") {
+                } else if (tja.judgeList[i][2] == "2" || tja.judgeList[i][2] == "4") {
                     tja.judgeList[i][1].material = blueMaterial;
                 }
             }
