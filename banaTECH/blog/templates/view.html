@@ -7,8 +7,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
-<!--静的なコードをハイライトするなら-->
-<!--<script>hljs.initHighlightingOnLoad();</script>-->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": {
+        availableFonts: ["TeX"]
+      }
+    });
+</script>
+<script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 <style>
     #title {
         padding: 0.5em;
@@ -53,6 +68,10 @@
     <a href="/blog/delete/{{ article.id }}" onclick="return confirm('本当に削除しますか？')">記事削除(管理者用)</a>
 </div>
 <script>
+    //数式処理用
+    var formula = "";
+    var formulaMode = 0;
+
     $(document).ready(function () {
         var target = $("#markdown_content");
         var renderer = new marked.Renderer()
@@ -74,10 +93,16 @@
             return '<img src="/media/article/{{ article.id }}/image/' + fileName + '" alt="' + text +
                 '" class="img-fluid">';
         }
+
         marked.setOptions({
             renderer: renderer,
-            sanitize: true,
-            breaks: true
+            gfm: true,
+            tables: true,
+            breaks: true,
+            pedantic: false,
+            sanitize: false,
+            smartLists: false,
+            smartypants: false
         });
 
         $.ajax({
