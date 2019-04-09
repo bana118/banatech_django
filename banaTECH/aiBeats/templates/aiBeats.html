@@ -86,6 +86,17 @@ ai-beats
                 backGround.rightTouch();
             }
         }, false);
+        canvas.addEventListener('touchstart', function (e) {
+            e.preventDefault(); // デフォルトイベントをキャンセル
+            for (var i = 0; i < e.touches.length; i++) {
+                console.log(e.touches[i]);
+                if (e.touches[i].pageX < backGround.width / 2) {
+                    backGround.leftTouch();
+                } else {
+                    backGround.rightTouch();
+                }
+            }
+        }, false);
     }
 
     document.onkeydown = keydown;
