@@ -40,7 +40,7 @@ ai-beats
             </div>
         </div>
     </div>
-    <button id="play_button" type="button" class="btn btn-primary"
+    <button id="plaButton" type="button" class="btn btn-primary"
         style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
 <script>
@@ -75,7 +75,7 @@ ai-beats
         backGround = new BackGround();
         tja = new TJA("{% static 'aiBeats/tja/バンバード ~Piano Version~.tja' %}");
         window.addEventListener('resize', onResize);
-        var canvas = document.querySelector('#myCanvas');
+        var canvas = document.getElementById("myCanvas");
         canvas.addEventListener('click', function (e) {
             var button = e.target.getBoundingClientRect();
             var mouseX = e.clientX - button.left;
@@ -97,6 +97,7 @@ ai-beats
                 }
             }
         }, false);
+
     }
 
     document.onkeydown = keydown;
