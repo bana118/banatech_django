@@ -25,7 +25,8 @@ ai-beats
 <div id="wrap" style="position: relative;touch-action: manipulation;">
     <canvas id="myCanvas" style="position: absolute;"></canvas>
     <canvas id="judge" style="position: absolute;pointer-events: none;width:200px;height:100px;"></canvas>
-    <canvas id="info" style="position: absolute;pointer-events: none;width:100px;height:200px;left:0px;top:10px;"></canvas>
+    <canvas id="info"
+        style="position: absolute;pointer-events: none;width:300px;height:300px;right:0px;top:30px;"></canvas>
     <button type="button" class="fullScreen btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
     <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
@@ -102,6 +103,13 @@ ai-beats
         var judgeCanvas = document.getElementById("judge");
         judgeCanvas.style.top = backGround.height * 3 / 4 + "px";
         judgeCanvas.style.left = backGround.width / 2 + "px";
+
+        var infoCanvas = document.getElementById("info");
+        var infoCtx = infoCanvas.getContext("2d");
+        //infoCtx.clearRect(0, 0, 200, 100);
+        infoCtx.font = "20px 'ＭＳ Ｐゴシック'";
+        infoCtx.fillStyle = "white";
+        infoCtx.fillText("バンバード ～Piano Version～", 0, 20);
     }
 
     document.onkeydown = keydown;
@@ -124,6 +132,7 @@ ai-beats
         backGround.width = width;
         backGround.height = height;
 
+        var judgeCanvas = document.getElementById("judge");
         judgeCanvas.style.top = backGround.height * 3 / 4 + "px";
         judgeCanvas.style.left = backGround.width / 2 + "px";
 
