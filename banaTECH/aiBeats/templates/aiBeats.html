@@ -24,6 +24,7 @@ ai-beats
 {% block content %}
 <div id="wrap" style="position: relative;touch-action: manipulation;">
     <canvas id="myCanvas" style="position: absolute;"></canvas>
+    <canvas id="judge" style="position: absolute;pointer-events: none;width:200px;height:100px;"></canvas>
     <button type="button" class="fullScreen btn far fa-square" style="display: block;position: absolute;color: white;"
         onClick="fullScreen();"></button>
     <div class="btn-group dropleft" style="display: block;position: absolute;right: 0px;">
@@ -97,7 +98,9 @@ ai-beats
                 }
             }
         }, false);
-
+        var judgeCanvas = document.getElementById("judge");
+        judgeCanvas.style.top = backGround.height * 3 / 4 + "px";
+        judgeCanvas.style.left = backGround.width / 2 + "px";
     }
 
     document.onkeydown = keydown;
@@ -119,6 +122,10 @@ ai-beats
         console.log(width, height);
         backGround.width = width;
         backGround.height = height;
+
+        judgeCanvas.style.top = backGround.height * 3 / 4 + "px";
+        judgeCanvas.style.left = backGround.width / 2 + "px";
+
         // レンダラーのサイズを調整する
         backGround.renderer.setPixelRatio(window.devicePixelRatio);
         backGround.renderer.setSize(width, height);
@@ -467,7 +474,13 @@ ai-beats
                     color: 0x000000
                 });
                 tja.judgeList[index][1].material = blackMaterial;
-                var loader = new THREE.FontLoader();
+                var judgeCtx = document.getElementById("judge").getContext("2d");
+
+                judgeCtx.font = "40px 'ＭＳ Ｐゴシック'";
+                judgeCtx.clearRect(0, 0, 200, 100);
+                judgeCtx.fillStyle = "red";
+                judgeCtx.fillText("Best!!", 50, 50);
+                /*var loader = new THREE.FontLoader();
                 loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
                     var textGeometry = new THREE.TextGeometry("Best!!", {
                         font: font,
@@ -485,14 +498,20 @@ ai-beats
                     ];
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
-                });
+                });*/
             } else if (diff[index] <= this.goodTime && diff[index] > this.bestTime && num == judgeNum) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
                     color: 0x000000
                 });
                 tja.judgeList[index][1].material = blackMaterial;
-                var loader = new THREE.FontLoader();
+
+                var judgeCtx = document.getElementById("judge").getContext("2d");
+                judgeCtx.clearRect(0, 0, 200, 100);
+                judgeCtx.font = "40px 'ＭＳ Ｐゴシック'";
+                judgeCtx.fillStyle = "green";
+                judgeCtx.fillText("Good!", 50, 50);
+                /*var loader = new THREE.FontLoader();
                 loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
                     var textGeometry = new THREE.TextGeometry("Good!", {
                         font: font,
@@ -510,14 +529,20 @@ ai-beats
                     ];
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
-                });
+                });*/
             } else if (diff[index] <= this.missTime && (diff[index] > this.goodTime || num != judgeNum)) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
                     color: 0x000000
                 });
                 tja.judgeList[index][1].material = blackMaterial;
-                var loader = new THREE.FontLoader();
+
+                var judgeCtx = document.getElementById("judge").getContext("2d");
+                judgeCtx.clearRect(0, 0, 200, 100);
+                judgeCtx.font = "40px 'ＭＳ Ｐゴシック'";
+                judgeCtx.fillStyle = "blue";
+                judgeCtx.fillText("Miss", 50, 50);
+                /*var loader = new THREE.FontLoader();
                 loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
                     var textGeometry = new THREE.TextGeometry("Miss", {
                         font: font,
@@ -535,9 +560,11 @@ ai-beats
                     ];
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
-                });
+                });*/
             } else {
-                var loader = new THREE.FontLoader();
+                var judgeCtx = document.getElementById("judge").getContext("2d");
+                judgeCtx.clearRect(0, 0, 200, 100);
+                /*var loader = new THREE.FontLoader();
                 loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
                     var textGeometry = new THREE.TextGeometry("", {
                         font: font,
@@ -555,7 +582,7 @@ ai-beats
                     ];
                     backGround.textMesh.geometry = textGeometry;
                     backGround.textMesh.material = materials;
-                });
+                });*/
             }
         }
     }
