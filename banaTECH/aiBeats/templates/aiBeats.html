@@ -40,7 +40,7 @@ ai-beats
             </div>
         </div>
     </div>
-    <button id="plaButton" type="button" class="btn btn-primary"
+    <button id="playButton" type="button" class="btn btn-primary"
         style="display: block;position: absolute;top:480px; left: 270px;" onClick="sound_play();">Play</button>
 </div>
 <script>
@@ -731,7 +731,7 @@ ai-beats
     }
 
     function sound_play() {
-        var button = document.getElementById("play_button");
+        var button = document.getElementById("playButton");
         button.style.display = "none";
         sound.play();
     }
