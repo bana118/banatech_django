@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title%}
+令和(ひとりで)
+{% endblock %}
+
+{% block head %}
+<meta name="description" content="後で書く">
+<!-- anime.js -->
+{% load static %}
+<script src="{% static 'kurukuru/JavaScript/anime.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="touch-action: manipulation;">
+    <div class="d-frex start" style="position: relative;text-align:center;">
+        <img src="{% static 'reiwa/images/start.jpg' %}" style="max-width:100%;max-height:100%;">
+    </div>
+</div>
+<script>
+</script>
+{% endblock %}
