@@ -430,37 +430,42 @@ ai-beats
                 1000 * (tja.bpm[bpmBar][1] / 60)) / tja.beat[beatBar][1]) * this.speed);
             this.time = time;
         }
+
         leftTouch() {
-            var leftMeshMaterial = new THREE.MeshBasicMaterial({
-                color: 0xff0000
-            });
-            this.leftMesh.material = leftMeshMaterial;
-            this.renderer.render(this.scene, this.camera);
-            setTimeout(function () {
-                var blackMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x000000
+            if (sound.instance.paused == false) {
+                var leftMeshMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xff0000
                 });
-                backGround.leftMesh.material = blackMaterial;
-                backGround.renderer.render(backGround.scene, backGround.camera);
-            }, 50);
-            leftSE.play();
-            this.judge(sound.instance.position, 1);
+                this.leftMesh.material = leftMeshMaterial;
+                this.renderer.render(this.scene, this.camera);
+                setTimeout(function () {
+                    var blackMaterial = new THREE.MeshBasicMaterial({
+                        color: 0x000000
+                    });
+                    backGround.leftMesh.material = blackMaterial;
+                    backGround.renderer.render(backGround.scene, backGround.camera);
+                }, 50);
+                leftSE.play();
+                this.judge(sound.instance.position, 1);
+            }
         }
         rightTouch() {
-            var rightMeshMaterial = new THREE.MeshBasicMaterial({
-                color: 0x0000ff
-            });
-            this.rightMesh.material = rightMeshMaterial;
-            this.renderer.render(this.scene, this.camera);
-            setTimeout(function () {
-                var blackMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x000000
+            if (sound.instance.paused == false) {
+                var rightMeshMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x0000ff
                 });
-                backGround.rightMesh.material = blackMaterial;
-                backGround.renderer.render(backGround.scene, backGround.camera);
-            }, 50);
-            rightSE.play();
-            this.judge(sound.instance.position, 2);
+                this.rightMesh.material = rightMeshMaterial;
+                this.renderer.render(this.scene, this.camera);
+                setTimeout(function () {
+                    var blackMaterial = new THREE.MeshBasicMaterial({
+                        color: 0x000000
+                    });
+                    backGround.rightMesh.material = blackMaterial;
+                    backGround.renderer.render(backGround.scene, backGround.camera);
+                }, 50);
+                rightSE.play();
+                this.judge(sound.instance.position, 2);
+            }
         }
 
         judge(time, num) {
