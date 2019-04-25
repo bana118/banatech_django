@@ -5,3 +5,7 @@ from django.shortcuts import render
 def reiwa(request):
     return render(request, "reiwa.html")
     
+def solo(request):
+    return render(request, "solo.html")
+
+    
