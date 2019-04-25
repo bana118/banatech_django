@@ -157,12 +157,6 @@ ai-beats
 
         backGround.scoreGroup.position.y *= backGround.height / preHeight;
 
-        backGround.textMesh.position.y = -backGround.height / 4;
-        backGround.textMesh.position.x = backGround.width / 20;
-
-        backGround.titleMesh.position.y = backGround.height / 3;
-        backGround.titleMesh.position.x = -backGround.width / 2 + backGround.width / 8;
-
         backGround.renderer.render(backGround.scene, backGround.camera);
     }
 
@@ -180,29 +174,6 @@ ai-beats
                 url: this.src,
                 success: function (data) {
                     tja.title = data.match(/TITLE:.*\r?\n/)[0].slice(6).replace(/\r?\n/g, "");
-                    var loader = new THREE.FontLoader();
-                    loader.load("{% static 'aiBeats/typeface/07YasashisaGothic_Regular.json' %}",
-                        function (font) {
-                            var titleGeometry = new THREE.TextGeometry(tja.title, {
-                                font: font,
-                                size: 12,
-                                height: 5,
-                                curveSegments: 12
-                            });
-                            var materials = [
-                                new THREE.MeshBasicMaterial({
-                                    color: 0xffffff
-                                }),
-                                new THREE.MeshBasicMaterial({
-                                    color: 0x000000
-                                })
-                            ];
-                            backGround.titleMesh = new THREE.Mesh(titleGeometry, materials);
-                            backGround.titleMesh.position.y = backGround.height / 3;
-                            backGround.titleMesh.position.x = -backGround.width / 2 + backGround
-                                .width / 20;
-                            backGround.scene.add(backGround.titleMesh);
-                        });
 
                     tja.offset = Number(data.match(/OFFSET:.*\r?\n/)[0].slice(7).replace(/\r?\n/g, ""));
                     var firstBpm = Number(data.match(/BPM:.*\r?\n/)[0].slice(4).replace(/\r?\n/g, ""));
@@ -350,30 +321,6 @@ ai-beats
             this.scoreGroup.position.y = -this.height / 4;
             this.scene.add(this.scoreGroup);
 
-            var loader = new THREE.FontLoader();
-            loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
-                var textGeometry = new THREE.TextGeometry("", {
-                    font: font,
-                    size: 20,
-                    height: 5,
-                    curveSegments: 12
-                });
-                var materials = [
-                    new THREE.MeshBasicMaterial({
-                        color: 0x000000
-                    }),
-                    new THREE.MeshBasicMaterial({
-                        color: 0x000000
-                    })
-                ];
-                backGround.textMesh = new THREE.Mesh(textGeometry, materials);
-                backGround.textMesh.position.y = -backGround.height / 4;
-                backGround.textMesh.position.x = backGround.width / 20;
-                backGround.scene.add(backGround.textMesh);
-            });
-
-            this.titleMesh = null; //初期化
-
             this.time = 0; //再生時間記録用
 
             //判定用の時間(±ミリ秒)
@@ -495,25 +442,6 @@ ai-beats
                 judgeCtx.clearRect(0, 0, 200, 100);
                 judgeCtx.fillStyle = "red";
                 judgeCtx.fillText("Best!!", 50, 50);
-                /*var loader = new THREE.FontLoader();
-                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
-                    var textGeometry = new THREE.TextGeometry("Best!!", {
-                        font: font,
-                        size: 20,
-                        height: 5,
-                        curveSegments: 12
-                    });
-                    var materials = [
-                        new THREE.MeshBasicMaterial({
-                            color: 0xff0000
-                        }),
-                        new THREE.MeshBasicMaterial({
-                            color: 0x000000
-                        })
-                    ];
-                    backGround.textMesh.geometry = textGeometry;
-                    backGround.textMesh.material = materials;
-                });*/
             } else if (diff[index] <= this.goodTime && diff[index] > this.bestTime && num == judgeNum) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
@@ -526,25 +454,6 @@ ai-beats
                 judgeCtx.font = "40px 'ＭＳ Ｐゴシック'";
                 judgeCtx.fillStyle = "green";
                 judgeCtx.fillText("Good!", 50, 50);
-                /*var loader = new THREE.FontLoader();
-                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
-                    var textGeometry = new THREE.TextGeometry("Good!", {
-                        font: font,
-                        size: 20,
-                        height: 5,
-                        curveSegments: 12
-                    });
-                    var materials = [
-                        new THREE.MeshBasicMaterial({
-                            color: 0x00ff00
-                        }),
-                        new THREE.MeshBasicMaterial({
-                            color: 0x000000
-                        })
-                    ];
-                    backGround.textMesh.geometry = textGeometry;
-                    backGround.textMesh.material = materials;
-                });*/
             } else if (diff[index] <= this.missTime && (diff[index] > this.goodTime || num != judgeNum)) {
                 this.alreadyArray.push(index);
                 var blackMaterial = new THREE.MeshBasicMaterial({
@@ -557,47 +466,9 @@ ai-beats
                 judgeCtx.font = "40px 'ＭＳ Ｐゴシック'";
                 judgeCtx.fillStyle = "blue";
                 judgeCtx.fillText("Miss", 50, 50);
-                /*var loader = new THREE.FontLoader();
-                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
-                    var textGeometry = new THREE.TextGeometry("Miss", {
-                        font: font,
-                        size: 20,
-                        height: 5,
-                        curveSegments: 12
-                    });
-                    var materials = [
-                        new THREE.MeshBasicMaterial({
-                            color: 0x0000ff
-                        }),
-                        new THREE.MeshBasicMaterial({
-                            color: 0x000000
-                        })
-                    ];
-                    backGround.textMesh.geometry = textGeometry;
-                    backGround.textMesh.material = materials;
-                });*/
             } else {
                 var judgeCtx = document.getElementById("judge").getContext("2d");
                 judgeCtx.clearRect(0, 0, 200, 100);
-                /*var loader = new THREE.FontLoader();
-                loader.load("{% static 'aiBeats/typeface/helvetiker_regular.typeface.json' %}", function (font) {
-                    var textGeometry = new THREE.TextGeometry("", {
-                        font: font,
-                        size: 20,
-                        height: 5,
-                        curveSegments: 12
-                    });
-                    var materials = [
-                        new THREE.MeshBasicMaterial({
-                            color: 0x000000
-                        }),
-                        new THREE.MeshBasicMaterial({
-                            color: 0x000000
-                        })
-                    ];
-                    backGround.textMesh.geometry = textGeometry;
-                    backGround.textMesh.material = materials;
-                });*/
             }
         }
     }
