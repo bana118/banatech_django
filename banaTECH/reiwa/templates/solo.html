@@ -5,17 +5,124 @@
 
 {% block head %}
 <meta name="description" content="後で書く">
-<!-- anime.js -->
 {% load static %}
-<script src="{% static 'kurukuru/JavaScript/anime.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container" style="touch-action: manipulation;">
-    <div class="d-frex start" style="position: relative;text-align:center;">
-        <img src="{% static 'reiwa/images/start.jpg' %}" style="max-width:100%;max-height:100%;">
+    <div class="d-frex start" style="position:relative;text-align:center;background-color:#CC9966;">
+        <canvas id="can" width="128px" height="256px" style="max-width:100%;max-height:100%;margin:auto;"></canvas>
+        <button type="button" class="btn btn-primary" style="text-align:center;" onClick="submit();">提出</button>
+        <button type="button" class="btn btn-danger" style="text-align:center;" onClick="clearCan();">クリア</button>
     </div>
 </div>
 <script>
+    var can;
+    var wrap;
+    var ct;
+    var ox = 0,
+        oy = 0,
+        x = 0,
+        y = 0;
+    var mf = false;
+    onload = function () {
+        mam_draw_init();
+    }
+
+    function mam_draw_init() {
+        //初期設定
+        can = document.getElementById("can");
+        can.addEventListener("touchstart", onDown, false);
+        can.addEventListener("touchmove", onMove, false);
+        can.addEventListener("touchend", onUp, false);
+        can.addEventListener("mousedown", onMouseDown, false);
+        can.addEventListener("mousemove", onMouseMove, false);
+        can.addEventListener("mouseup", onMouseUp, false);
+        can.addEventListener("mouseleave", onMouseUp, false);
+        ct = can.getContext("2d");
+        ct.strokeStyle = "#000000";
+        ct.lineWidth = 8;
+        ct.lineJoin = "round";
+        ct.lineCap = "round";
+        clearCan();
+    }
+
+    function onDown(event) {
+        mf = true;
+        ox = event.touches[0].pageX - event.target.getBoundingClientRect().left;
+        oy = event.touches[0].pageY - event.target.getBoundingClientRect().top;
+        event.stopPropagation();
+    }
+
+    function onMove(event) {
+        if (mf) {
+            x = event.touches[0].pageX - event.target.getBoundingClientRect().left;
+            y = event.touches[0].pageY - event.target.getBoundingClientRect().top;
+            drawLine();
+            ox = x;
+            oy = y;
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
+    function onUp(event) {
+        mf = false;
+        event.stopPropagation();
+    }
+
+    function onMouseDown(event) {
+        ox = event.clientX - event.target.getBoundingClientRect().left;
+        oy = event.clientY - event.target.getBoundingClientRect().top;
+        mf = true;
+    }
+
+    function onMouseMove(event) {
+        if (mf) {
+            x = event.clientX - event.target.getBoundingClientRect().left;
+            y = event.clientY - event.target.getBoundingClientRect().top;
+            drawLine();
+            ox = x;
+            oy = y;
+        }
+    }
+
+    function onMouseUp(event) {
+        mf = false;
+    }
+
+    function drawLine() {
+        ct.beginPath();
+        ct.moveTo(ox, oy);
+        ct.lineTo(x, y);
+        ct.stroke();
+    }
+
+    function clearCan() {
+        ct.fillStyle = "rgb(255,255,255)";
+        ct.fillRect(0, 0, can.getBoundingClientRect().width, can.getBoundingClientRect().height);
+    }
+
+    function submit() {
+        var temp = document.createElement('canvas');
+        temp.width = can.width / 2;
+        temp.height = can.height / 2;
+        var tempCtx = temp.getContext('2d');
+        tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
+        var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
+        var normData = new Float32Array(imageData.data.length / 4);
+        for (var i = 0; i < imageData.data.length; i = i + 4) {
+            console.log((imageData.data[i / 4] + imageData.data[i / 4 + 1] + imageData.data[i / 4 + 2]) / 3 / 255);
+            normData[i / 4] = (imageData.data[i / 4] + imageData.data[i / 4 + 1] + imageData.data[i / 4 + 2]) / 3 / 255;
+        }
+        console.log(normData);
+        var tfObj = tf.tensor(normData);
+
+        let link = document.createElement("a");
+        link.href = temp.toDataURL("image/png");
+        link.download = "test.png";
+        link.click();
+    }
 </script>
 {% endblock %}
