@@ -122,7 +122,8 @@
 
         var inputTensor = tf.browser.fromPixels(imageData,1).toFloat();
         inputNormTensor = inputTensor.div(tf.scalar(255));
-        console.log(inputNormTensor.print(true));
+        var [reiTensor, waTensor] = tf.split(inputNormTensor, 2);
+        console.log(inputNormTensor,reiTensor, waTensor);
     }
 </script>
 {% endblock %}
