@@ -106,23 +106,21 @@
 
     function submit() {
         var temp = document.createElement('canvas');
-        temp.width = can.width / 2;
-        temp.height = can.height / 2;
+        temp.width = can.width / 4;
+        temp.height = can.height / 4;
         var tempCtx = temp.getContext('2d');
         tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
         var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
         var normData = new Float32Array(imageData.data.length / 4);
-        for (var i = 0; i < imageData.data.length; i = i + 4) {
-            console.log((imageData.data[i / 4] + imageData.data[i / 4 + 1] + imageData.data[i / 4 + 2]) / 3 / 255);
-            normData[i / 4] = (imageData.data[i / 4] + imageData.data[i / 4 + 1] + imageData.data[i / 4 + 2]) / 3 / 255;
+        for (var i = 0; i < imageData.data.length/4; i++) {
+            normData[i] = (imageData.data[i*4] + imageData.data[i*4+1] + imageData.data[i*4 + 2]) / 3 / 255;
+            //console.log(normData[i]);
         }
-        console.log(normData);
-        var tfObj = tf.tensor(normData);
+        var reiArray = normData.slice(0, 1024);
+        var waArray = normData.slice(1024,2048);
 
-        let link = document.createElement("a");
-        link.href = temp.toDataURL("image/png");
-        link.download = "test.png";
-        link.click();
+        var reiTensor = tf.Tensor(reiArray);
+        var waTensor = tf.Tensor(waArray);
     }
 </script>
 {% endblock %}
