@@ -111,19 +111,26 @@
         var tempCtx = temp.getContext('2d');
         tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
         var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
-        for (var i = 0; i < imageData.data.length/4; i++) {
-            var r = imageData.data[i*4];
-            var g = imageData.data[i*4+1];
-            var b = imageData.data[i*4+2];
-            imageData.data[i*4] = (r+g+b) / 3;
-            imageData.data[i*4+1] = (r+g+b) / 3;
-            imageData.data[i*4+2] = (r+g+b) / 3;
+        for (var i = 0; i < imageData.data.length / 4; i++) {
+            var r = imageData.data[i * 4];
+            var g = imageData.data[i * 4 + 1];
+            var b = imageData.data[i * 4 + 2];
+            imageData.data[i * 4] = (r + g + b) / 3;
+            imageData.data[i * 4 + 1] = (r + g + b) / 3;
+            imageData.data[i * 4 + 2] = (r + g + b) / 3;
         }
 
-        var inputTensor = tf.browser.fromPixels(imageData,1).toFloat();
+        var inputTensor = tf.browser.fromPixels(imageData, 3).toFloat();
         inputNormTensor = inputTensor.div(tf.scalar(255));
         var [reiTensor, waTensor] = tf.split(inputNormTensor, 2);
-        console.log(inputNormTensor,reiTensor, waTensor);
+        reiTensor = reiTensor.reshape([1, 32, 32, 3]);
+        waTensor = waTensor.reshape([1, 32, 32, 3]);
+        loadPretrainedModel(reiTensor, 0);
+        loadPretrainedModel(waTensor, 1);
+        async function loadPretrainedModel(tensor, char) { //char:0 なら令、char:1なら和
+            const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
+            const prediction = model.predict(tensor,{batchSize: 1}).print();
+        }
     }
 </script>
 {% endblock %}
