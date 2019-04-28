@@ -125,11 +125,19 @@
         var [reiTensor, waTensor] = tf.split(inputNormTensor, 2);
         reiTensor = reiTensor.reshape([1, 32, 32, 3]);
         waTensor = waTensor.reshape([1, 32, 32, 3]);
-        loadPretrainedModel(reiTensor, 0);
-        loadPretrainedModel(waTensor, 1);
-        async function loadPretrainedModel(tensor, char) { //char:0 なら令、char:1なら和
+        loadPretrainedModel();
+        async function loadPretrainedModel() {
             const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
-            const prediction = model.predict(tensor,{batchSize: 1}).print();
+            const reiPrediction = model.predict(reiTensor,{batchSize: 1});
+            const waPrediction = model.predict(waTensor,{batchSize: 1});
+            const rei1 = reiPrediction.arraySync()[0][0];
+            const rei2 = reiPrediction.arraySync()[0][1];
+            const wa = waPrediction.arraySync()[0][2];
+            if((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9){
+                console.log("correct", rei1, rei2, wa);
+            }else{
+                console.log("wrong", rei1, rei2, wa);
+            }
         }
     }
 </script>
