@@ -112,8 +112,10 @@
     }
 
     function clearCan() {
-        ct.fillStyle = "rgb(255,255,255)";
-        ct.fillRect(0, 0, can.getBoundingClientRect().width, can.getBoundingClientRect().height);
+        if (!sub) {
+            ct.fillStyle = "rgb(255,255,255)";
+            ct.fillRect(0, 0, can.getBoundingClientRect().width, can.getBoundingClientRect().height);
+        }
     }
 
     function strokeCircle(num) { //num:何文字目か
@@ -155,58 +157,60 @@
     }
 
     function submit() {
-        sub = true;
-        var temp = document.createElement('canvas');
-        temp.width = can.width / 4;
-        temp.height = can.height / 4;
-        var tempCtx = temp.getContext('2d');
-        tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
-        var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
-        for (var i = 0; i < imageData.data.length / 4; i++) {
-            var r = imageData.data[i * 4];
-            var g = imageData.data[i * 4 + 1];
-            var b = imageData.data[i * 4 + 2];
-            imageData.data[i * 4] = (r + g + b) / 3;
-            imageData.data[i * 4 + 1] = (r + g + b) / 3;
-            imageData.data[i * 4 + 2] = (r + g + b) / 3;
-        }
-        var inputTensor = tf.browser.fromPixels(imageData, 3).toFloat();
-        inputNormTensor = inputTensor.div(tf.scalar(255));
-        var [reiTensor, waTensor] = tf.split(inputNormTensor, 2);
-        reiTensor = reiTensor.reshape([1, 32, 32, 3]);
-        waTensor = waTensor.reshape([1, 32, 32, 3]);
-        loadPretrainedModel();
-        async function loadPretrainedModel() {
-            const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
-            const reiPrediction = model.predict(reiTensor, {
-                batchSize: 1
-            });
-            const waPrediction = model.predict(waTensor, {
-                batchSize: 1
-            });
-            const rei1 = reiPrediction.arraySync()[0][0];
-            const rei2 = reiPrediction.arraySync()[0][1];
-            const wa = waPrediction.arraySync()[0][2];
-            if ((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9) {
-                console.log("correct", rei1, rei2, wa);
-                strokeCircle(0);
-                strokeCircle(1);
-            } else {
-                if ((rei1 > 0.9 || rei2 > 0.9)) {
+        if (sub == false) {
+            sub = true;
+            var temp = document.createElement('canvas');
+            temp.width = can.width / 4;
+            temp.height = can.height / 4;
+            var tempCtx = temp.getContext('2d');
+            tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
+            var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
+            for (var i = 0; i < imageData.data.length / 4; i++) {
+                var r = imageData.data[i * 4];
+                var g = imageData.data[i * 4 + 1];
+                var b = imageData.data[i * 4 + 2];
+                imageData.data[i * 4] = (r + g + b) / 3;
+                imageData.data[i * 4 + 1] = (r + g + b) / 3;
+                imageData.data[i * 4 + 2] = (r + g + b) / 3;
+            }
+            var inputTensor = tf.browser.fromPixels(imageData, 3).toFloat();
+            inputNormTensor = inputTensor.div(tf.scalar(255));
+            var [reiTensor, waTensor] = tf.split(inputNormTensor, 2);
+            reiTensor = reiTensor.reshape([1, 32, 32, 3]);
+            waTensor = waTensor.reshape([1, 32, 32, 3]);
+            loadPretrainedModel();
+            async function loadPretrainedModel() {
+                const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
+                const reiPrediction = model.predict(reiTensor, {
+                    batchSize: 1
+                });
+                const waPrediction = model.predict(waTensor, {
+                    batchSize: 1
+                });
+                const rei1 = reiPrediction.arraySync()[0][0];
+                const rei2 = reiPrediction.arraySync()[0][1];
+                const wa = waPrediction.arraySync()[0][2];
+                if ((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9) {
+                    console.log("correct", rei1, rei2, wa);
                     strokeCircle(0);
-                } else {
-                    strokeCross(0);
-                }
-                if (wa > 0.9) {
                     strokeCircle(1);
                 } else {
-                    strokeCross(1);
+                    if ((rei1 > 0.9 || rei2 > 0.9)) {
+                        strokeCircle(0);
+                    } else {
+                        strokeCross(0);
+                    }
+                    if (wa > 0.9) {
+                        strokeCircle(1);
+                    } else {
+                        strokeCross(1);
+                    }
                 }
+                setTimeout(function () {
+                    sub = false;
+                    clearCan();
+                }, 2000);
             }
-            setTimeout(function () {
-                sub = false;
-                clearCan();
-            }, 2000);
         }
     }
 </script>
