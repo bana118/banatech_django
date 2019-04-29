@@ -38,6 +38,7 @@
     var mf = false;
     var sub = false; //提出状態かどうか
     var count = 0; //書いた数
+    var time = 100;
     var canW, canH;
     onload = function () {
         can = document.getElementById("can");
@@ -202,7 +203,8 @@
                 const rei2 = reiPrediction.arraySync()[0][1];
                 const wa = waPrediction.arraySync()[0][2];
                 if ((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9) {
-                    console.log("correct", rei1, rei2, wa);
+                    count += 1;
+                    document.getElementById("count").innerHTML = count;
                     strokeCircle(0);
                     strokeCircle(1);
                 } else {
