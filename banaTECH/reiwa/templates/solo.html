@@ -33,6 +33,7 @@
         x = 0,
         y = 0;
     var mf = false;
+    var sub = false; //提出状態かどうか
     onload = function () {
         mam_draw_init();
     }
@@ -56,10 +57,12 @@
     }
 
     function onDown(event) {
-        mf = true;
-        ox = event.touches[0].pageX - event.target.getBoundingClientRect().left;
-        oy = event.touches[0].pageY - event.target.getBoundingClientRect().top;
-        event.stopPropagation();
+        if (!sub) {
+            mf = true;
+            ox = event.touches[0].pageX - event.target.getBoundingClientRect().left;
+            oy = event.touches[0].pageY - event.target.getBoundingClientRect().top;
+            event.stopPropagation();
+        }
     }
 
     function onMove(event) {
@@ -80,9 +83,11 @@
     }
 
     function onMouseDown(event) {
-        ox = event.clientX - event.target.getBoundingClientRect().left;
-        oy = event.clientY - event.target.getBoundingClientRect().top;
-        mf = true;
+        if (!sub) {
+            ox = event.clientX - event.target.getBoundingClientRect().left;
+            oy = event.clientY - event.target.getBoundingClientRect().top;
+            mf = true;
+        }
     }
 
     function onMouseMove(event) {
@@ -150,6 +155,7 @@
     }
 
     function submit() {
+        sub = true;
         var temp = document.createElement('canvas');
         temp.width = can.width / 4;
         temp.height = can.height / 4;
@@ -198,6 +204,7 @@
                 }
             }
             setTimeout(function () {
+                sub = false;
                 clearCan();
             }, 2000);
         }
