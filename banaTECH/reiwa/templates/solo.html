@@ -21,14 +21,12 @@
             </div>
             <div class="col-4">
                 <ul class="list-group">
-                    <li class="list-group-item">あと<br><span id="time">100</span>秒</li>
-                    <li class="list-group-item">〇:<span id="correctCount">0</span>枚</li>
-                    <li class="list-group-item">×:<span id="wrongCount">0</span>枚</li>
+                    <li class="list-group-item"><span id="time">100</span>秒</li>
+                    <li class="list-group-item">〇:<span id="correctCount">0</span></li>
+                    <li class="list-group-item">×:<span id="wrongCount">0</span></li>
                 </ul>
                 <button id="submitButton" type="button" class="btn btn-primary" style="display:inline-block;"
                     onClick="submit();">提出</button>
-                <button id="clearButton" type="button" class="btn btn-danger" style="display:inline-block;"
-                    onClick="clearCan();">クリア</button>
                 <button id="backButton" type="button" class="btn btn-success" style="display:none;"
                     onclick="location.href='/reiwa'">戻る</button>
             </div>
@@ -135,7 +133,6 @@
         gameStartSE.play();
         bgm.stop();
         document.getElementById("submitButton").style.display = "none";
-        document.getElementById("clearButton").style.display = "none";
         document.getElementById("backButton").style.display = "inline-block";
         var finalScore = document.getElementById("finalScore");
         finalScore.innerHTML = "終了！\n正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
