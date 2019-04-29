@@ -18,17 +18,10 @@
             </div>
             <div class="col-4">
                 <button type="button" class="btn btn-primary" onClick="submit();">提出</button>
-                <button type="button" class="btn btn-danger" 　onClick="clearCan();">クリア</button>
+                <button type="button" class="btn btn-danger" onClick="clearCan();">クリア</button>
             </div>
         </div>
     </div>
-    <h1>令和～THE REIWA～</h1>
-    <p>ルール：</p>
-    <p>制作記事：</p>
-    <p>操作方法（キーボード）</p>
-    <p>操作方法（ボタン）</p>
-    <p>効果音：</p>
-    <p>BGM：</p>
 </div>
 <script>
     var can;
@@ -41,15 +34,13 @@
     var mf = false;
     var sub = false; //提出状態かどうか
     var count = 0; //書いた数
-    var containerW, canW, canH;
+    var canW, canH;
     onload = function () {
         can = document.getElementById("can");
-        containerW = document.getElementById("container").getBoundingClientRect().width;
-        console.log(containerW);
-        can.width = containerW/3;
-        can.height = containerW*2/3;
-        canW = can.width;
-        canH = can.height;
+        canH = window.innerHeight*2/3;
+        canW = canH/2;
+        can.width = canW;
+        can.height = canH;
         mam_draw_init();
     }
 
