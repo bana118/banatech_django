@@ -7,8 +7,9 @@
 {% load static %}
 <meta name="description" content="後で書く">
 <meta name="twitter:image" content={% static 'reiwa/images/ogp.png' %}>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.1.0/dist/tf.min.js"></script>
 <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+<script src="https://code.createjs.com/1.0.0/preloadjs.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -68,7 +69,7 @@
     var correctCount = 0; //正解した数
     var wrongCount = 0; //間違えた数
     var time = 100; //制限時間
-    var gameState = 0; //ゲームの状態。0:初期状態、1:ゲーム中、2:ゲームオーバー
+    var gameState = -1; //ゲームの状態。-1:ロード中:0:スタート待ち、1:ゲーム中、2:ゲームオーバー
     var canW, canH;
     var gameStartSE, correctSE, wrongSE, bgm; //BGM,SE
     onload = function () {
@@ -82,18 +83,49 @@
     }
 
     function music_init() {
-        gameStartSE = new Music("gamestart", "{% static 'reiwa/music/gamestart.mp3' %}");
-        bgm = new Music("bgm", "{% static 'reiwa/music/ariori.mp3' %}");
-        correctSE = new Music("correct", "{% static 'reiwa/music/correct.mp3' %}");
-        wrongSE = new Music("wrong", "{% static 'reiwa/music/wrong.mp3' %}");
+        ct.font = canW / 9 + "px 'ＭＳ Ｐゴシック'";
+        ct.fillStyle = "blue";
+        ct.fillText("ロード中...", 0, canH / 2);
+        var manifest = [{
+                src: "{% static 'reiwa/music/gamestart.mp3' %}"
+            },
+            {
+                src: "{% static 'reiwa/music/ariori.mp3' %}"
+            },
+            {
+                src: "{% static 'reiwa/music/correct.mp3' %}"
+            },
+            {
+                src: "{% static 'reiwa/music/wrong.mp3' %}"
+            }
+        ];
+        var loadQueue = new createjs.LoadQueue();
+        loadQueue.installPlugin(createjs.Sound);
+        loadQueue.on("complete", handleComplete, this);
+        // 読み込み開始
+        loadQueue.loadManifest(manifest);
+
+        function handleComplete() {
+            gameState = 0;
+            clearCan();
+            ct.font = canW / 9 + "px 'ＭＳ Ｐゴシック'";
+            ct.fillStyle = "blue";
+            ct.fillText("タッチでスタート！", 0, canH / 2);
+            gameStartSE = new Music("gamestart", manifest[0].src);
+            bgm = new Music("bgm", manifest[1].src);
+            correctSE = new Music("correct", manifest[2].src);
+            wrongSE = new Music("wrong", manifest[3].src);
+        }
     }
 
     function gameStart() {
-        clearCan();
-        gameState = 1;
-        correctCountDown();
-        gameStartSE.play();
-        bgm.play();
+        if (gameState == 0) {
+            clearCan();
+            gameState = 1;
+            correctCountDown();
+            gameStartSE.play();
+            bgm.play();
+        }
     }
 
     function gameOver() {
@@ -142,9 +174,6 @@
         ct.lineJoin = "round";
         ct.lineCap = "round";
         clearCan();
-        ct.font = canW / 9 + "px 'ＭＳ Ｐゴシック'";
-        ct.fillStyle = "blue";
-        ct.fillText("タッチでスタート！", 0, canH / 2);
     }
 
     function onDown(event) {
