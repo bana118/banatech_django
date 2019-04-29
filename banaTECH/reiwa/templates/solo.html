@@ -4,8 +4,9 @@
 {% endblock %}
 
 {% block head %}
-<meta name="description" content="後で書く">
 {% load static %}
+<meta name="description" content="後で書く">
+<meta name="twitter:image" content={% static 'reiwa/images/ogp.png' %}>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
 <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 {% endblock %}
@@ -32,8 +33,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="finishModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true">
+    <div class="modal fade" id="finishModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -45,8 +45,9 @@
                 <div id="finalScore" class="modal-body">
                 </div>
                 <div class="modal-footer">
+                    <a id="twitterLink" href="" rel="nofollow" target="_blank">ツイッターでシェア <i
+                            class="fab fa-lg fa-twitter"></i></a>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                    <button type="button" class="btn btn-primary">ツイッターに投稿</button>
                 </div>
             </div>
         </div>
@@ -102,7 +103,10 @@
         document.getElementById("clearButton").style.display = "none";
         document.getElementById("backButton").style.display = "inline-block";
         var finalScore = document.getElementById("finalScore");
-        finalScore.innerHTML = "正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
+        finalScore.innerHTML = "終了！\n正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
+        var twitterLink = document.getElementById("twitterLink");
+        twitterLink.href = "https://twitter.com/share?url=https://banateck.tk/reiwa&text=令和で書き初め！正解した数：" +
+            correctCount + "枚\n間違えた数：" + wrongCount + "枚\n&hashtags=令和で書き初め";
         $('#finishModal').modal({
             keyboard: false,
             backdrop: "static"
@@ -323,9 +327,8 @@
             this.instance = createjs.Sound.createInstance(this.SOUND_ID);
         }
         play() {
-            var instance = createjs.Sound.createInstance(this.SOUND_ID);
-            instance.volume = this.volume;
-            instance.play({
+            this.instance.volume = this.volume;
+            this.instance.play({
                 loop: 0
             });
         }
