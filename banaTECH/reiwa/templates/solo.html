@@ -7,25 +7,52 @@
 <meta name="description" content="後で書く">
 {% load static %}
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+<script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <div id="container" class="container" style="touch-action: manipulation;">
     <div class="d-frex" style="text-align:center;background-color:#CC9966;">
         <div class="row m-0">
-            <div class="col-8">
+            <div class="col-8" style="position:relative;">
                 <canvas id="can" width="128px" height="256px"></canvas>
             </div>
             <div class="col-4">
                 <ul class="list-group">
-                    <li class="list-group-item">あと<br><span id="deadline">100</span>秒</li>
-                    <li class="list-group-item"><span id="count">0</span>枚</li>
+                    <li class="list-group-item">あと<br><span id="time">100</span>秒</li>
+                    <li class="list-group-item">〇:<span id="correctcorrectCount">0</span>枚</li>
+                    <li class="list-group-item">×:<span id="wrongcorrectCount">0</span>枚</li>
                 </ul>
-                <button type="button" class="btn btn-primary" onClick="submit();">提出</button>
-                <button type="button" class="btn btn-danger" onClick="clearCan();">クリア</button>
+                <button id="submitButton" type="button" class="btn btn-primary" style="display:inline-block;"
+                    onClick="submit();">提出</button>
+                <button id="clearButton" type="button" class="btn btn-danger" style="display:inline-block;"
+                    onClick="clearCan();">クリア</button>
+                <button id="backButton" type="button" class="btn btn-success" style="display:none;"
+                    onclick="location.href='/reiwa'">戻る</button>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="finishModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">終了！</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="finalScore" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    <button type="button" class="btn btn-primary">ツイッターに投稿</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>効果音：<a href="https://maoudamashii.jokersounds.com/">魔王魂</a>様</p>
+    <p>BGM：<a href="http://www.rengoku-teien.com/index.html">煉獄庭園</a>様</p>
 </div>
 <script>
     var can;
@@ -37,9 +64,12 @@
         y = 0;
     var mf = false;
     var sub = false; //提出状態かどうか
-    var count = 0; //書いた数
-    var time = 100;
+    var correctCount = 0; //正解した数
+    var wrongCount = 0; //間違えた数
+    var time = 100; //制限時間
+    var gameState = 0; //ゲームの状態。0:初期状態、1:ゲーム中、2:ゲームオーバー
     var canW, canH;
+    var gameStartSE, correctSE, wrongSE, bgm; //BGM,SE
     onload = function () {
         can = document.getElementById("can");
         canH = window.innerHeight * 2 / 3;
@@ -47,6 +77,48 @@
         can.width = canW;
         can.height = canH;
         mam_draw_init();
+        music_init();
+    }
+
+    function music_init() {
+        gameStartSE = new Music("gamestart", "{% static 'reiwa/music/gamestart.mp3' %}");
+        bgm = new Music("bgm", "{% static 'reiwa/music/ariori.mp3' %}");
+        correctSE = new Music("correct", "{% static 'reiwa/music/correct.mp3' %}");
+        wrongSE = new Music("wrong", "{% static 'reiwa/music/wrong.mp3' %}");
+    }
+
+    function gameStart() {
+        clearCan();
+        gameState = 1;
+        correctCountDown();
+        gameStartSE.play();
+        bgm.play();
+    }
+
+    function gameOver() {
+        gameState = 2;
+        bgm.stop();
+        document.getElementById("submitButton").style.display = "none";
+        document.getElementById("clearButton").style.display = "none";
+        document.getElementById("backButton").style.display = "inline-block";
+        var finalScore = document.getElementById("finalScore");
+        finalScore.innerHTML = "正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
+        $('#finishModal').modal({
+            keyboard: false,
+            backdrop: "static"
+        });
+    }
+
+    //ゲームの制限時間をはかる
+    function correctCountDown() {
+        var timer = setInterval(function () {
+            time--;
+            document.getElementById("time").innerHTML = time;
+            if (time < 1) {
+                clearInterval(timer);
+                gameOver();
+            }
+        }, 1000);
     }
 
     function mam_draw_init() {
@@ -65,14 +137,19 @@
         ct.lineJoin = "round";
         ct.lineCap = "round";
         clearCan();
+        ct.font = canW / 9 + "px 'ＭＳ Ｐゴシック'";
+        ct.fillStyle = "blue";
+        ct.fillText("タッチでスタート！", 0, canH / 2);
     }
 
     function onDown(event) {
-        if (!sub) {
+        if (!sub && gameState == 1) {
             mf = true;
             ox = event.touches[0].pageX - event.target.getBoundingClientRect().left;
             oy = event.touches[0].pageY - event.target.getBoundingClientRect().top;
             event.stopPropagation();
+        } else if (gameState == 0) {
+            gameStart();
         }
     }
 
@@ -94,10 +171,12 @@
     }
 
     function onMouseDown(event) {
-        if (!sub) {
+        if (!sub && gameState == 1) {
             ox = event.clientX - event.target.getBoundingClientRect().left;
             oy = event.clientY - event.target.getBoundingClientRect().top;
             mf = true;
+        } else if (gameState == 0) {
+            gameStart();
         }
     }
 
@@ -169,7 +248,7 @@
     }
 
     function submit() {
-        if (sub == false) {
+        if (sub == false && gameState == 1) {
             sub = true;
             var temp = document.createElement('canvas');
             temp.width = 32;
@@ -203,11 +282,16 @@
                 const rei2 = reiPrediction.arraySync()[0][1];
                 const wa = waPrediction.arraySync()[0][2];
                 if ((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9) {
-                    count += 1;
-                    document.getElementById("count").innerHTML = count;
+                    correctSE.play();
+                    correctCount += 1;
+                    time += 3;
+                    document.getElementById("correctCount").innerHTML = correctCount;
                     strokeCircle(0);
                     strokeCircle(1);
                 } else {
+                    wrongSE.play();
+                    wrongCount += 1
+                    document.getElementById("wrongCount").innerHTML = wrongCount;
                     if ((rei1 > 0.9 || rei2 > 0.9)) {
                         strokeCircle(0);
                     } else {
@@ -224,6 +308,32 @@
                     clearCan();
                 }, 2000);
             }
+        }
+    }
+    //効果音
+    class Music {
+        constructor(SOUND_ID, SOUND_PATH) {
+            this.SOUND_ID = SOUND_ID;
+            this.src = SOUND_PATH;
+            createjs.Sound.registerSound({
+                id: SOUND_ID,
+                src: SOUND_PATH
+            });
+            this.volume = 1;
+            this.instance = createjs.Sound.createInstance(this.SOUND_ID);
+        }
+        play() {
+            var instance = createjs.Sound.createInstance(this.SOUND_ID);
+            instance.volume = this.volume;
+            instance.play({
+                loop: 0
+            });
+        }
+        changeVolume(v) {
+            this.volume = v / 100;
+        }
+        stop() {
+            this.instance.stop();
         }
     }
 </script>
