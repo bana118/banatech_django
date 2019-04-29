@@ -14,7 +14,7 @@
     <div class="d-frex" style="text-align:center;background-color:#CC9966;">
         <div class="row m-0">
             <div class="col-8">
-                <canvas id="can"></canvas>
+                <canvas id="can" width="128px" height="256px"></canvas>
             </div>
             <div class="col-4">
                 <button type="button" class="btn btn-primary" onClick="submit();">提出</button>
@@ -41,13 +41,15 @@
     var mf = false;
     var sub = false; //提出状態かどうか
     var count = 0; //書いた数
-    var canw, canh;
+    var containerW, canW, canH;
     onload = function () {
         can = document.getElementById("can");
-        var w = document.getElementById("container").getBoundingClientRect().width;
-        console.log(w);
-        can.style.width = w/3+"px";
-        can.style.height = w*2/3 + "px";
+        containerW = document.getElementById("container").getBoundingClientRect().width;
+        console.log(containerW);
+        can.width = containerW/3;
+        can.height = containerW*2/3;
+        canW = can.width;
+        canH = can.height;
         mam_draw_init();
     }
 
@@ -63,7 +65,7 @@
         can.addEventListener("mouseleave", onMouseUp, false);
         ct = can.getContext("2d");
         ct.strokeStyle = "#000000";
-        ct.lineWidth = 8;
+        ct.lineWidth = 7 * can.width/128;
         ct.lineJoin = "round";
         ct.lineCap = "round";
         clearCan();
@@ -136,10 +138,10 @@
         if (num == 0) {
             p = 0;
         } else {
-            p = 128;
+            p = canW;
         }
         ct.beginPath();
-        ct.arc(64, 64 + p, 48, 0, Math.PI * 2, false);
+        ct.arc(canW/2, canW/2 + p, canW*3/8, 0, Math.PI * 2, false);
         ct.strokeStyle = 'red';
         ct.stroke();
         ct.strokeStyle = 'black';
@@ -150,21 +152,22 @@
         if (num == 0) {
             p = 0;
         } else {
-            p = 128;
+            p = canW;
         }
+        var x = canW / 8;
         ct.beginPath();
-        ct.moveTo(32, 16 + p);
-        ct.lineTo(16, 32 + p);
-        ct.lineTo(48, 64 + p);
-        ct.lineTo(16, 96 + p);
-        ct.lineTo(32, 112 + p);
-        ct.lineTo(64, 80 + p);
-        ct.lineTo(96, 112 + p);
-        ct.lineTo(112, 96 + p);
-        ct.lineTo(80, 64 + p);
-        ct.lineTo(112, 32 + p);
-        ct.lineTo(96, 16 + p);
-        ct.lineTo(64, 48 + p);
+        ct.moveTo(x*2, x + p);
+        ct.lineTo(x, x*2 + p);
+        ct.lineTo(x*3, x*4 + p);
+        ct.lineTo(x, x*6 + p);
+        ct.lineTo(x*2, x*7 + p);
+        ct.lineTo(x*4, x*5 + p);
+        ct.lineTo(x*6, x*7 + p);
+        ct.lineTo(x*7, x*6 + p);
+        ct.lineTo(x*5, x*4 + p);
+        ct.lineTo(x*7, x*2 + p);
+        ct.lineTo(x*6, x + p);
+        ct.lineTo(x*4, x*3 + p);
         ct.fillStyle = 'blue';
         ct.fill();
     }
@@ -173,8 +176,8 @@
         if (sub == false) {
             sub = true;
             var temp = document.createElement('canvas');
-            temp.width = can.width / 4;
-            temp.height = can.height / 4;
+            temp.width = 32;
+            temp.height = 64;
             var tempCtx = temp.getContext('2d');
             tempCtx.drawImage(can, 0, 0, temp.width, temp.height);
             var imageData = tempCtx.getImageData(0, 0, temp.width, temp.height);
