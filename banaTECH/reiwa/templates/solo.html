@@ -16,6 +16,13 @@
         <button type="button" class="btn btn-primary" style="text-align:center;" onClick="submit();">提出</button>
         <button type="button" class="btn btn-danger" style="text-align:center;" onClick="clearCan();">クリア</button>
     </div>
+    <h1>令和～THE REIWA～</h1>
+    <p>ルール：</p>
+    <p>制作記事：</p>
+    <p>操作方法（キーボード）</p>
+    <p>操作方法（ボタン）</p>
+    <p>効果音：</p>
+    <p>BGM：</p>
 </div>
 <script>
     var can;
@@ -112,9 +119,10 @@
             p = 128;
         }
         ct.beginPath();
-        ct.arc(64, 64+p, 48, 0, Math.PI*2, false);
+        ct.arc(64, 64 + p, 48, 0, Math.PI * 2, false);
         ct.strokeStyle = 'red';
         ct.stroke();
+        ct.strokeStyle = 'black';
     }
 
     function strokeCross(num) { //num:何文字目か
@@ -125,18 +133,18 @@
             p = 128;
         }
         ct.beginPath();
-        ct.moveTo(32, 16+p);
-        ct.lineTo(16, 32+p);
-        ct.lineTo(48, 64+p);
-        ct.lineTo(16, 96+p);
-        ct.lineTo(32, 112+p);
-        ct.lineTo(64, 80+p);
-        ct.lineTo(96, 112+p);
-        ct.lineTo(112, 96+p);
-        ct.lineTo(80, 64+p);
-        ct.lineTo(112, 32+p);
-        ct.lineTo(96, 16+p);
-        ct.lineTo(64, 48+p);
+        ct.moveTo(32, 16 + p);
+        ct.lineTo(16, 32 + p);
+        ct.lineTo(48, 64 + p);
+        ct.lineTo(16, 96 + p);
+        ct.lineTo(32, 112 + p);
+        ct.lineTo(64, 80 + p);
+        ct.lineTo(96, 112 + p);
+        ct.lineTo(112, 96 + p);
+        ct.lineTo(80, 64 + p);
+        ct.lineTo(112, 32 + p);
+        ct.lineTo(96, 16 + p);
+        ct.lineTo(64, 48 + p);
         ct.fillStyle = 'blue';
         ct.fill();
     }
@@ -189,6 +197,9 @@
                     strokeCross(1);
                 }
             }
+            setTimeout(function () {
+                clearCan();
+            }, 2000);
         }
     }
 </script>
