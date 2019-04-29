@@ -10,11 +10,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="touch-action: manipulation;">
-    <div class="d-frex start" style="position:relative;text-align:center;background-color:#CC9966;">
-        <canvas id="can" width="128px" height="256px" style="max-width:100%;max-height:100%;margin:auto;"></canvas>
-        <button type="button" class="btn btn-primary" style="text-align:center;" onClick="submit();">提出</button>
-        <button type="button" class="btn btn-danger" style="text-align:center;" onClick="clearCan();">クリア</button>
+<div id="container" class="container" style="touch-action: manipulation;">
+    <div class="d-frex" style="text-align:center;background-color:#CC9966;">
+        <div class="row m-0">
+            <div class="col-8">
+                <canvas id="can"></canvas>
+            </div>
+            <div class="col-4">
+                <button type="button" class="btn btn-primary" onClick="submit();">提出</button>
+                <button type="button" class="btn btn-danger" 　onClick="clearCan();">クリア</button>
+            </div>
+        </div>
     </div>
     <h1>令和～THE REIWA～</h1>
     <p>ルール：</p>
@@ -34,7 +40,14 @@
         y = 0;
     var mf = false;
     var sub = false; //提出状態かどうか
+    var count = 0; //書いた数
+    var canw, canh;
     onload = function () {
+        can = document.getElementById("can");
+        var w = document.getElementById("container").getBoundingClientRect().width;
+        console.log(w);
+        can.style.width = w/3+"px";
+        can.style.height = w*2/3 + "px";
         mam_draw_init();
     }
 
