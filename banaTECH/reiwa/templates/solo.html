@@ -17,6 +17,10 @@
                 <canvas id="can" width="128px" height="256px"></canvas>
             </div>
             <div class="col-4">
+                <ul class="list-group">
+                    <li class="list-group-item">あと<br><span id="deadline">100</span>秒</li>
+                    <li class="list-group-item"><span id="count">0</span>枚</li>
+                </ul>
                 <button type="button" class="btn btn-primary" onClick="submit();">提出</button>
                 <button type="button" class="btn btn-danger" onClick="clearCan();">クリア</button>
             </div>
@@ -37,8 +41,8 @@
     var canW, canH;
     onload = function () {
         can = document.getElementById("can");
-        canH = window.innerHeight*2/3;
-        canW = canH/2;
+        canH = window.innerHeight * 2 / 3;
+        canW = canH / 2;
         can.width = canW;
         can.height = canH;
         mam_draw_init();
@@ -56,7 +60,7 @@
         can.addEventListener("mouseleave", onMouseUp, false);
         ct = can.getContext("2d");
         ct.strokeStyle = "#000000";
-        ct.lineWidth = 7 * can.width/128;
+        ct.lineWidth = 7 * can.width / 128;
         ct.lineJoin = "round";
         ct.lineCap = "round";
         clearCan();
@@ -132,7 +136,7 @@
             p = canW;
         }
         ct.beginPath();
-        ct.arc(canW/2, canW/2 + p, canW*3/8, 0, Math.PI * 2, false);
+        ct.arc(canW / 2, canW / 2 + p, canW * 3 / 8, 0, Math.PI * 2, false);
         ct.strokeStyle = 'red';
         ct.stroke();
         ct.strokeStyle = 'black';
@@ -147,18 +151,18 @@
         }
         var x = canW / 8;
         ct.beginPath();
-        ct.moveTo(x*2, x + p);
-        ct.lineTo(x, x*2 + p);
-        ct.lineTo(x*3, x*4 + p);
-        ct.lineTo(x, x*6 + p);
-        ct.lineTo(x*2, x*7 + p);
-        ct.lineTo(x*4, x*5 + p);
-        ct.lineTo(x*6, x*7 + p);
-        ct.lineTo(x*7, x*6 + p);
-        ct.lineTo(x*5, x*4 + p);
-        ct.lineTo(x*7, x*2 + p);
-        ct.lineTo(x*6, x + p);
-        ct.lineTo(x*4, x*3 + p);
+        ct.moveTo(x * 2, x + p);
+        ct.lineTo(x, x * 2 + p);
+        ct.lineTo(x * 3, x * 4 + p);
+        ct.lineTo(x, x * 6 + p);
+        ct.lineTo(x * 2, x * 7 + p);
+        ct.lineTo(x * 4, x * 5 + p);
+        ct.lineTo(x * 6, x * 7 + p);
+        ct.lineTo(x * 7, x * 6 + p);
+        ct.lineTo(x * 5, x * 4 + p);
+        ct.lineTo(x * 7, x * 2 + p);
+        ct.lineTo(x * 6, x + p);
+        ct.lineTo(x * 4, x * 3 + p);
         ct.fillStyle = 'blue';
         ct.fill();
     }
