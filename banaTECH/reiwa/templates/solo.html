@@ -21,8 +21,8 @@
             <div class="col-4">
                 <ul class="list-group">
                     <li class="list-group-item">あと<br><span id="time">100</span>秒</li>
-                    <li class="list-group-item">〇:<span id="correctcorrectCount">0</span>枚</li>
-                    <li class="list-group-item">×:<span id="wrongcorrectCount">0</span>枚</li>
+                    <li class="list-group-item">〇:<span id="correctCount">0</span>枚</li>
+                    <li class="list-group-item">×:<span id="wrongCount">0</span>枚</li>
                 </ul>
                 <button id="submitButton" type="button" class="btn btn-primary" style="display:inline-block;"
                     onClick="submit();">提出</button>
@@ -98,6 +98,7 @@
 
     function gameOver() {
         gameState = 2;
+        gameStartSE.play();
         bgm.stop();
         document.getElementById("submitButton").style.display = "none";
         document.getElementById("clearButton").style.display = "none";
