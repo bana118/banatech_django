@@ -12,7 +12,7 @@ generate_secretkey.py
 local_settings.py
 
 #article
-banaTECH/media/article/
+media/article/
 
 #sitemap
-banaTECH/static/sitemap/
+static/sitemap/
