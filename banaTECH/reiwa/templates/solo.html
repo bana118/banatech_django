@@ -6,7 +6,7 @@
 {% block head %}
 {% load static %}
 <meta name="description" content="「令和」を100秒以内に書きまくれ！手書き文字を人工知能が判定">
-<meta name="twitter:image" content={% static 'reiwa/images/ogp.png' %}>
+<meta name="twitter:image" content={% static 'reiwa/images/write1.png' %}>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.1.0/dist/tf.min.js"></script>
 <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 <script src="https://code.createjs.com/1.0.0/preloadjs.min.js"></script>
@@ -25,8 +25,14 @@
                     <li class="list-group-item p-0">〇:<span id="correctCount">0</span></li>
                     <li class="list-group-item p-0">×:<span id="wrongCount">0</span></li>
                 </ul>
+                <img id="write1" src="{% static 'reiwa/images/write1.png' %}" class="img-fluid" style="display:none;">
+                <img id="write2" src="{% static 'reiwa/images/write2.png' %}" class="img-fluid" style="display:none;">
+                <img id="correct" src="{% static 'reiwa/images/correct.png' %}" class="img-fluid" style="display:none;">
+                <img id="wrong" src="{% static 'reiwa/images/wrong.png' %}" class="img-fluid" style="display:none;">
                 <button id="submitButton" type="button" class="btn btn-primary" style="display:inline-block;"
                     onClick="submit();">提出</button>
+                <button id="clearButton" type="button" class="btn btn-danger" style="display:inline-block;"
+                    onClick="clearCan();">クリア</button>
                 <button id="backButton" type="button" class="btn btn-success" style="display:none;"
                     onclick="location.href='/reiwa'">戻る</button>
             </div>
@@ -72,7 +78,13 @@
     var gameState = -1; //ゲームの状態。-1:ロード中:0:スタート待ち、1:ゲーム中、2:ゲームオーバー
     var canW, canH;
     var gameStartSE, correctSE, wrongSE, bgm; //BGM,SE
+    var write1Img, write2Img, correctImg, wrongImg;
+    var writeImgState = 1; //書いている画像のどっちを出すか
     onload = function () {
+        write1Img = document.getElementById("write1");
+        write2Img = document.getElementById("write2");
+        correctImg = document.getElementById("correct");
+        wrongImg = document.getElementById("wrong");
         can = document.getElementById("can");
         canH = window.innerHeight * 2 / 3;
         canW = canH / 2;
@@ -102,8 +114,18 @@
         var loadQueue = new createjs.LoadQueue();
         loadQueue.installPlugin(createjs.Sound);
         loadQueue.on("complete", handleComplete, this);
+        loadQueue.on("progress", handleProgress, this);
         // 読み込み開始
         loadQueue.loadManifest(manifest);
+        var prog = 0;
+        function handleProgress(event) {
+            // 読み込み率を0.0~1.0で取得
+            var progress = event.progress;
+            if(progress > prog){
+                prog += 0.2;
+                writeImgChange();
+            }
+        }
 
         function handleComplete() {
             gameState = 0;
@@ -133,6 +155,7 @@
         gameStartSE.play();
         bgm.stop();
         document.getElementById("submitButton").style.display = "none";
+        document.getElementById("clearButton").style.display = "none";
         document.getElementById("backButton").style.display = "inline-block";
         var finalScore = document.getElementById("finalScore");
         finalScore.innerHTML = "終了！\n正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
@@ -175,13 +198,43 @@
         clearCan();
     }
 
+    function writeImgChange() {
+        correctImg.style.display = "none";
+        wrongImg.style.display = "none";
+        if (writeImgState == 1) {
+            writeImgState = 2;
+            write2Img.style.display = "none";
+            write1Img.style.display = "inline-block";
+        } else {
+            writeImgState = 1;
+            write1Img.style.display = "none";
+            write2Img.style.display = "inline-block";
+        }
+    }
+
+    function correctImgChange() {
+        write1Img.style.display = "none";
+        write2Img.style.display = "none";
+        wrongImg.style.display = "none";
+        correctImg.style.display = "inline-block";
+    }
+
+    function wrongImgChange() {
+        write1Img.style.display = "none";
+        write2Img.style.display = "none";
+        correctImg.style.display = "none";
+        wrongImg.style.display = "inline-block";
+    }
+
     function onDown(event) {
         if (!sub && gameState == 1) {
+            writeImgChange();
             mf = true;
             ox = event.touches[0].pageX - event.target.getBoundingClientRect().left;
             oy = event.touches[0].pageY - event.target.getBoundingClientRect().top;
             event.stopPropagation();
         } else if (gameState == 0) {
+            writeImgChange();
             gameStart();
         }
     }
@@ -199,16 +252,19 @@
     }
 
     function onUp(event) {
+        writeImgChange();
         mf = false;
         event.stopPropagation();
     }
 
     function onMouseDown(event) {
         if (!sub && gameState == 1) {
+            writeImgChange();
             ox = event.clientX - event.target.getBoundingClientRect().left;
             oy = event.clientY - event.target.getBoundingClientRect().top;
             mf = true;
         } else if (gameState == 0) {
+            writeImgChange();
             gameStart();
         }
     }
@@ -224,6 +280,7 @@
     }
 
     function onMouseUp(event) {
+        writeImgChange();
         mf = false;
     }
 
@@ -315,6 +372,7 @@
                 const rei2 = reiPrediction.arraySync()[0][1];
                 const wa = waPrediction.arraySync()[0][2];
                 if ((rei1 > 0.9 || rei2 > 0.9) && wa > 0.9) {
+                    correctImgChange();
                     correctSE.play();
                     correctCount += 1;
                     time += 3;
@@ -322,6 +380,7 @@
                     strokeCircle(0);
                     strokeCircle(1);
                 } else {
+                    wrongImgChange();
                     wrongSE.play();
                     wrongCount += 1
                     document.getElementById("wrongCount").innerHTML = wrongCount;
