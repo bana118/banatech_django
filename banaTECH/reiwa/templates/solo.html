@@ -59,6 +59,7 @@
     </div>
     <h1>令和で書き初め</h1>
     <p>ルール：100秒以内に「令和」を書きまくれ！マウスか指で書いた文字を人工知能が判定！</p>
+    <p>注意：IE, Edgeブラウザでは動作しません。Google Chrome, Opera, Firefox, sleipnirなどを推奨します。「令」の字は2つありますがどちらでも大丈夫です。</p>
     <p>効果音：<a href="https://maoudamashii.jokersounds.com/">魔王魂</a>様</p>
     <p>BGM：<a href="http://www.rengoku-teien.com/index.html">煉獄庭園</a>様</p>
 </div>
@@ -90,6 +91,14 @@
         canW = canH / 2;
         can.width = canW;
         can.height = canH;
+        var testTensor = tf.fill([1,32,32,3],0);
+        preloadModel();
+        async function preloadModel() {
+            const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
+            const pre = model.predict(testTensor, {
+                batchSize: 1
+            });
+        }
         mam_draw_init();
         music_init();
     }
@@ -118,11 +127,12 @@
         // 読み込み開始
         loadQueue.loadManifest(manifest);
         var prog = 0;
+
         function handleProgress(event) {
             // 読み込み率を0.0~1.0で取得
             var progress = event.progress;
-            if(progress > prog){
-                prog += 0.2;
+            if (progress > prog) {
+                prog += 0.05;
                 writeImgChange();
             }
         }
@@ -158,7 +168,7 @@
         document.getElementById("clearButton").style.display = "none";
         document.getElementById("backButton").style.display = "inline-block";
         var finalScore = document.getElementById("finalScore");
-        finalScore.innerHTML = "終了！\n正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
+        finalScore.innerHTML = "正解した数：" + correctCount + "\n間違えた数：" + wrongCount;
         var twitterLink = document.getElementById("twitterLink");
         twitterLink.href = "https://twitter.com/share?url=https://banateck.tk/reiwa&text=令和で書き初め！%0a正解した数：" +
             correctCount + "枚%0a間違えた数：" + wrongCount + "枚%0a&hashtags=令和で書き初め";
