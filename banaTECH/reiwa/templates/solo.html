@@ -38,7 +38,7 @@
                 <button id="submitButton" type="button" class="btn btn-primary" style="display:inline-block;"
                     onClick="submit();">提出</button>
                 <button id="clearButton" type="button" class="btn btn-danger" style="display:inline-block;"
-                    onClick="clearCan();">クリア</button>
+                    onClick="gameClearCan();">クリア</button>
                 <button id="backButton" type="button" class="btn btn-success" style="display:none;"
                     onclick="location.href='/reiwa'">戻る</button>
             </div>
@@ -312,6 +312,12 @@
         if (!sub) {
             ct.fillStyle = "rgb(255,255,255)";
             ct.fillRect(0, 0, can.getBoundingClientRect().width, can.getBoundingClientRect().height);
+        }
+    }
+
+    function gameClearCan() {
+        if(gameState==1){
+            clearCan();
         }
     }
 
