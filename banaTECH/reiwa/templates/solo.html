@@ -97,7 +97,7 @@
         canW = canH / 2;
         can.width = canW;
         can.height = canH;
-        var testTensor = tf.fill([1,32,32,3],0);
+        var testTensor = tf.fill([1, 32, 32, 3], 0);
         preloadModel();
         async function preloadModel() {
             const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
@@ -149,6 +149,7 @@
             ct.font = canW / 9 + "px 'ＭＳ Ｐゴシック'";
             ct.fillStyle = "blue";
             ct.fillText("タッチでスタート！", 0, canH / 2);
+            ct.fillText("(音量注意！)", 0, (canH / 2) + (canW / 9));
             gameStartSE = new Music("gamestart", manifest[0].src);
             bgm = new Music("bgm", manifest[1].src);
             correctSE = new Music("correct", manifest[2].src);
