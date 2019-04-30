@@ -7,6 +7,10 @@ __pycache__/
 #鍵
 *.pem
 
+#generate_secret_key
+generate_secretkey.py
+local_settings.py
+
 #article
 banaTECH/media/article/
 
