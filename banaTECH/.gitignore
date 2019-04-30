@@ -4,9 +4,15 @@ __pycache__/
 #DB
 *.sqlite3
 
+#鍵
+*.pem
+
+#generate_secret_key
+generate_secretkey.py
+local_settings.py
+
 #article
-media/article/
+banaTECH/media/article/
 
 #sitemap
-
-static/sitemap/
+banaTECH/static/sitemap/

@@ -90,6 +90,14 @@
         canW = canH / 2;
         can.width = canW;
         can.height = canH;
+        var testTensor = tf.fill([1,32,32,3],0);
+        preloadModel();
+        async function preloadModel() {
+            const model = await tf.loadLayersModel("{% static 'reiwa/model/model.json' %}");
+            const pre = model.predict(testTensor, {
+                batchSize: 1
+            });
+        }
         mam_draw_init();
         music_init();
     }
@@ -118,10 +126,11 @@
         // 読み込み開始
         loadQueue.loadManifest(manifest);
         var prog = 0;
+
         function handleProgress(event) {
             // 読み込み率を0.0~1.0で取得
             var progress = event.progress;
-            if(progress > prog){
+            if (progress > prog) {
                 prog += 0.2;
                 writeImgChange();
             }
