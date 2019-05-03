@@ -4,7 +4,6 @@
 <head lang="ja">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="プログラミングに関するブログ">
     <meta name="author" content="bana">
     <!--fabiconを後で設定-->
     <link rel="icon" href="">
@@ -12,25 +11,37 @@
         {% block title %}
         {% endblock %}
     </title>
-    {% block head %}
-    {% endblock %}
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
     <!--Bootstrap JS-->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <style>
+        body {
+            background-color: #EEEEEE;
+            /*ページ全体の背景色*/
+        }
+
+        .container {
+            background-color: white;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
 </head>
 
-<body style="padding-top: 70px;">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <a class="navbar-brand" href="/">banaTECH</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,18 +56,52 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/blog">ブログ</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/privacy_policy">プライバシーポリシー</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#profile" aria-hidden="true" data-toggle="popover" data-placement="bottom"
+                        data-content_div_id="profile_content">
+                        プロフィール
+                    </a>
+                </li>
             </ul>
+            <div id="profile_content" style="display:none;">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">ばな</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">某工業大学生</h6>
+                        <p class="card-text">学んだことをアウトプットする場所が欲しかったのでブログ開設しました。プログラミングや技術系のことを書いていく。</p>
+                        <a href="https://twitter.com/bana_tech">
+                            <i class="fab fa-twitter fa-lg fa-fw" style="color: white;"></i>
+                        </a>
+                        <a href="https://github.com/bana118">
+                            <i class="fab fa-github fa-lg fa-fw" style="color: white;"></i>
+                        </a>
+                    </div>
+                </div>
 
-            <a href="https://twitter.com/bana_tech">
-                <i class="fab fa-twitter fa-lg fa-fw" style="color: white;"></i>
-            </a>
-            <a href="https://github.com/bana118">
-                <i class="fab fa-github fa-lg fa-fw" style="color: white;"></i>
-            </a>
+            </div>
         </div>
     </nav>
     {% block content %}
     {% endblock %}
+    <div style="text-align:center">
+        <!-- admax -->
+        <script src="//adm.shinobi.jp/o/e753664d54a3754f8115fe67e776c3e9"></script>
+        <!-- admax -->
+    </div>
+    <script>
+        $("[data-toggle=popover]").popover({
+            html: true,
+            container: 'body',
+            content: function () {
+                var contentDivId = '#' + $(this).data('content_div_id');
+                return $(contentDivId).html();
+            },
+            trigger: 'click',
+        });
+    </script>
 </body>
 
 </html>

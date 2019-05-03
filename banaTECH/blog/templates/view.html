@@ -1,18 +1,54 @@
 {% extends "base.html" %}
 {% block title%}
-{{ article.title }}--banaTECH--
+{{ article.title }} | ばなてっく
 {% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
-<!--静的なコードをハイライトするなら-->
-<!--<script>hljs.initHighlightingOnLoad();</script>-->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": {
+        availableFonts: ["TeX"]
+      }
+    });
+</script>
+<script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<style>
+    #title {
+        padding: 0.5em;
+        /*文字周りの余白*/
+        color: #010101;
+        /*文字色*/
+        background: #eaf3ff;
+        /*背景色*/
+        border-bottom: solid 3px #516ab6;
+        /*下線*/
+    }
+
+    #markdown_content h1 {
+        font-size: 2em;
+        background: linear-gradient(transparent 70%, #a7d6ff 70%);
+    }
+
+    h3 {
+        border-bottom: double 5px #FFC778;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>{{ article.title }}</h1>
+    <h1 id="title">{{ article.title }}</h1>
     <h4>{{ article.post_date }}</h4>
     <p>
         カテゴリー：
@@ -22,10 +58,20 @@
     </p>
     <a href="/blog/view_md/{{ article.id }}">markdownファイル</a>
     <div id="markdown_content" src="{{article.article.url}}"></div>
+    <h3>関連記事</h3>
+    {% for relatedArticle in relatedArticles %}
+    <a href="/blog/{{relatedArticle.id}}">{{ relatedArticle.title }}</a>
     <br>
+    {% endfor %}
+    <br>
+    <a href="/blog/edit/{{ article.id }}">記事編集(管理者用)</a>
     <a href="/blog/delete/{{ article.id }}" onclick="return confirm('本当に削除しますか？')">記事削除(管理者用)</a>
 </div>
 <script>
+    //数式処理用
+    var formula = "";
+    var formulaMode = 0;
+
     $(document).ready(function () {
         var target = $("#markdown_content");
         var renderer = new marked.Renderer()
@@ -47,10 +93,16 @@
             return '<img src="/media/article/{{ article.id }}/image/' + fileName + '" alt="' + text +
                 '" class="img-fluid">';
         }
+
         marked.setOptions({
             renderer: renderer,
-            sanitize: true,
-            breaks: true
+            gfm: true,
+            tables: true,
+            breaks: true,
+            pedantic: false,
+            sanitize: false,
+            smartLists: false,
+            smartypants: false
         });
 
         $.ajax({

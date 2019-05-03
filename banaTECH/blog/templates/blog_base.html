@@ -2,6 +2,10 @@
 {% block title%}
 {% endblock %}
 
+{% block head %}
+<meta name="description" content="某工業大学生によるプログラミングやガジェットに関するブログ">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+{% endblock%}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -20,17 +24,38 @@
     <div class="card">
         {% block cardbody%}
         {% endblock %}
+        <ul class="pagination justify-content-center"></ul>
         <ul class="list-group list-group-flush">
             {% for article in articles %}
+            <div id="{{ article.id }}" style="display: none;">
             <li class="list-group-item">
-                <a href="/blog/{{article.pk}}">{{ article.title }}</a>
+                <a href="/blog/{{article.id}}">{{ article.title }}</a>
                 <br>
                 {% for category in article.category.all %}
                 <a class="btn btn-primary p-1" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
                 {% endfor %}
             </li>
+            </div>
             {% endfor %}
         </ul>
     </div>
 </div>
+<script>
+//1ページ当たりの記事数
+var articlesInPage = 20;
+
+var idList = "{{ articles }}".match(/\d+/g);
+$('.pagination').twbsPagination({
+        totalPages: {{ articles|length }} / articlesInPage + 1,
+        onPageClick: function (evt, page) {
+            for(var i = 0; i < idList.length; i++){
+                if(i >= (page-1)*articlesInPage && i < page * articlesInPage){
+                    document.getElementById(idList[i]).style.display="block";
+                }else{
+                    document.getElementById(idList[i]).style.display="none";
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
