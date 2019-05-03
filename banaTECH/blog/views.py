@@ -10,6 +10,8 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 import datetime
+from xml.dom import minidom
+import re
 # Create your views here.
 
 
@@ -17,6 +19,13 @@ def blog(request):
     articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
 
+#xmlフォーマット用
+def prettify(elem):
+    rough_string = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    pretty = re.sub(r"[\t ]+\n", "", reparsed.toprettyxml(indent="\t"))
+    pretty = pretty.replace(">\n\n\t<",">\n\t<")
+    return pretty
 
 @login_required
 def post(request):
@@ -50,17 +59,18 @@ def posted(request):
 
         # sitemap.xmlへの追加
         xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+        ET.register_namespace('', 'http://www.sitemaps.org/schemas/sitemap/0.9')
         root = xmlTree.getroot()
-        url = ET.SubElement(root, "ns0:url")
-        loc = ET.SubElement(url, "ns0:loc")
-        lastmod = ET.SubElement(url, "ns0:lastmod")
-        priority = ET.SubElement(url, "ns0:priority")
+        url = ET.SubElement(root, "url")
+        loc = ET.SubElement(url, "loc")
+        lastmod = ET.SubElement(url, "lastmod")
+        priority = ET.SubElement(url, "priority")
         loc.text = "https://banatech.tk/blog/" + str(article.id)
         dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
         lastmod.text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         priority.text = "0.64"
-        xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
-
+        with open(settings.BASE_DIR + "/static/sitemap/sitemap.xml",mode='w') as f:
+            f.write(prettify(root))
         articles = Article.objects.all().order_by("post_date").reverse()
         return render(request, "blog.html", {"articles": articles})
 
@@ -99,13 +109,13 @@ def delete(request, article_id):
 
     # sitemap.xmlからの削除
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
-    ns0 = {"ns0": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     root = xmlTree.getroot()
-    for url in root.findall("ns0:url", ns0):
-        deleteURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("ns0:loc", ns0).text == deleteURL:
+    deleteURL = "https://banatech.tk/blog/" + str(article_id)
+    for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
+        if url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text == deleteURL:
             root.remove(url)
-    xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+    with open(settings.BASE_DIR + "/static/sitemap/sitemap.xml",mode='w') as f:
+        f.write(prettify(root))
 
     articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
@@ -162,13 +172,13 @@ def edited(request, article_id):
     # sitemap.xmlの更新
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
     root = xmlTree.getroot()
-    ns0 = {"ns0": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    for url in root.findall("ns0:url", ns0):
+    for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
         editURL = "https://banatech.tk/blog/" + str(article_id)
-        if url.find("ns0:loc", ns0).text == editURL:
+        if url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text == editURL:
             dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
-            url.find("ns0:lastmod", ns0).text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-    xmlTree.write(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
+            url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    with open(settings.BASE_DIR + "/static/sitemap/sitemap.xml",mode='w') as f:
+        f.write(prettify(root))
 
     articles = Article.objects.all().order_by("post_date").reverse()
     return render(request, "blog.html", {"articles": articles})
