@@ -101,13 +101,14 @@ LaTeXEditor
 
         function saveTex() {
             var tex = editor.getValue();
-            postForm("/reiwa/saveImg", {
+            postForm("/LaTeXEditor/saveTex", {
                 "tex": tex
             });
         }
 
         function exportToPDF() {
             var tex = editor.getValue();
+            console.log(tex);
             postForm("/LaTeXEditor/exportToPDF", {
                 "tex": tex
             });
