@@ -1,5 +1,5 @@
 ﻿#必要なパッケージ
-Django == 2.1.4
+Django >= 2.1.6
 
 #blog
 Pillow == 5.2.0
