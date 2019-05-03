@@ -108,6 +108,7 @@ LaTeXEditor
 
         function exportToPDF() {
             var tex = editor.getValue();
+            console.log(tex);
             postForm("/LaTeXEditor/exportToPDF", {
                 "tex": tex
             });
