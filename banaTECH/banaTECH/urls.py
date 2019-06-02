@@ -26,5 +26,6 @@ urlpatterns = [
     path('CSSFrameworks/', include('CSSFrameworks.urls')),
     path('LaTeXEditor/', include('LaTeXEditor.urls')),
     path('kurukuru/', include('kurukuru.urls')),
+    path('hakogucha/', include('hakogucha.urls')),
     path('reiwa/', include('reiwa.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
