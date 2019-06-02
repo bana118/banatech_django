@@ -4,6 +4,14 @@
 {% endblock %}
 
 {% block head %}
+<meta property="og:url" content="https://banatech.tk/blog/{{ article.id }}" />
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="ばなてっく" />
+<meta property="og:description" content="{{ article.title }}" />
+<meta property="og:image" content="https://banatech.tk/static/favicon/android-chrome-256x256.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@theoria118" />
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/vs2015.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
