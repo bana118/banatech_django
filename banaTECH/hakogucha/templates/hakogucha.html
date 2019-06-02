@@ -92,6 +92,7 @@
     <pre>       拳ボタン：向いている方向のブロックを破壊(バツ印は破壊不可、灰色ブロックは3回殴る必要あり)</pre>
     <p>効果音：魔王魂様、効果音ラボ様</p>
     <p>BGM：魔王魂様</p>
+    <p>イラスト：kwb様</p>
 </div>
 <script>
     var board;
@@ -529,19 +530,19 @@
         }
 
         collect(i, j, previousI, previousJ, color, deleteList) {
-            if (i < 9 && Math.floor(this.array[i + 1][j] / 10) == color && i + 1 != previousI) {
+            if (i < 9 && Math.floor(this.array[i + 1][j] / 10) == color && i + 1 != previousI && deleteList.length < 70) { //苦肉の策
                 deleteList.push([i + 1, j]);
                 this.collect(i + 1, j, i, j, color, deleteList);
             }
-            if (i > 0 && Math.floor(this.array[i - 1][j] / 10) == color && i - 1 != previousI) {
+            if (i > 0 && Math.floor(this.array[i - 1][j] / 10) == color && i - 1 != previousI && deleteList.length < 70) {
                 deleteList.push([i - 1, j]);
                 this.collect(i - 1, j, i, j, color, deleteList);
             }
-            if (j < 8 && Math.floor(this.array[i][j + 1] / 10) == color && j + 1 != previousJ) {
+            if (j < 8 && Math.floor(this.array[i][j + 1] / 10) == color && j + 1 != previousJ && deleteList.length < 70) {
                 deleteList.push([i, j + 1]);
                 this.collect(i, j + 1, i, j, color, deleteList);
             }
-            if (j > 0 && Math.floor(this.array[i][j - 1] / 10) == color && j - 1 != previousJ) {
+            if (j > 0 && Math.floor(this.array[i][j - 1] / 10) == color && j - 1 != previousJ && deleteList.length < 70) {
                 deleteList.push([i, j - 1]);
                 this.collect(i, j - 1, i, j, color, deleteList);
             }
