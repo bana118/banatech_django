@@ -64,7 +64,7 @@
         <a class="btn btn-primary" href="/blog/category/{{ category.name }}">{{ category.name }}</a>
         {% endfor %}
     </p>
-    <a href="/blog/view_md/{{ article.id }}">markdownファイル</a>
+    <!--<a href="/blog/view_md/{{ article.id }}">markdownファイル</a>-->
     <div id="markdown_content" src="{{article.article.url}}"></div>
     <h3>関連記事</h3>
     {% for relatedArticle in relatedArticles %}

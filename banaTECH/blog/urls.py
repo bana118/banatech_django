@@ -11,5 +11,5 @@ urlpatterns = [
     path('delete/<int:article_id>', blog.views.delete),
     path('edit/<int:article_id>', blog.views.edit),
     path('edited/<int:article_id>', blog.views.edited),
-    path('view_md/<int:article_id>', blog.views.view_md),
+    #path('view_md/<int:article_id>', blog.views.view_md),
 ]
