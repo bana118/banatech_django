@@ -16,3 +16,6 @@ banaTECH/media/article/
 
 #sitemap
 banaTECH/static/sitemap/
+
+#pyenv-virtualenv
+.python-version
