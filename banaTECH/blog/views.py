@@ -65,7 +65,7 @@ def posted(request):
         loc = ET.SubElement(url, "loc")
         lastmod = ET.SubElement(url, "lastmod")
         priority = ET.SubElement(url, "priority")
-        loc.text = "https://banatech.tk/blog/" + str(article.id)
+        loc.text = "https://banatech.dip.jp/blog/" + str(article.id)
         dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
         lastmod.text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         priority.text = "0.64"
@@ -110,7 +110,7 @@ def delete(request, article_id):
     # sitemap.xmlからの削除
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
     root = xmlTree.getroot()
-    deleteURL = "https://banatech.tk/blog/" + str(article_id)
+    deleteURL = "https://banatech.dip.jp/blog/" + str(article_id)
     for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
         if url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text == deleteURL:
             root.remove(url)
@@ -173,7 +173,7 @@ def edited(request, article_id):
     xmlTree = ET.parse(settings.BASE_DIR + "/static/sitemap/sitemap.xml")
     root = xmlTree.getroot()
     for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
-        editURL = "https://banatech.tk/blog/" + str(article_id)
+        editURL = "https://banatech.dip.jp/blog/" + str(article_id)
         if url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text == editURL:
             dt = datetime.datetime.strptime(str(timezone.datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
             url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod").text = dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")

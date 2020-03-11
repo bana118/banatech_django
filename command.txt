@@ -4,7 +4,7 @@ sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/home/docker/code -v
 sudo docker exec -i -t コンテナid bash
 apt-get update
 apt-get install certbot
-sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.tk
+sudo certbot certonly --webroot -w /home/docker/code/banaTECH/static -d banatech.dip.jp
 sudo rm -rf code/*
 sudo cp -pR banaTECH/* docker/code
 sudo certbot renew --force-renew --dry-run --webroot-path /home/docker/code/banaTECH/static --post-hook "sudo docker restart 18d6743981c0"
