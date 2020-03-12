@@ -12,10 +12,10 @@ generate_secretkey.py
 local_settings.py
 
 #article
-banaTECH/media/article/
+banatech/media/article/
 
 #sitemap
-banaTECH/static/sitemap/
+banatech/static/sitemap/
 
 #pyenv-virtualenv
 .python-version

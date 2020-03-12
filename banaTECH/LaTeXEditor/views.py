@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, HttpResponseBadRequest
 from latex import build_pdf
-import banaTECH.settings as settings
+import banatech.settings as settings
 import os
 import shutil
 # Create your views here.
