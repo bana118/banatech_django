@@ -36,49 +36,67 @@ URL:https://banatech.dip.jp
 > git checkout deploy-https
 ```
 
-2. nginx-app.confをletsencrypt認証用にする
+2. SEACRET_KEY設定
+banatech/banatech/local_settings.pyにSEACRET_KEYを設定
+
+```python:local_settings.py
+SECRET_KEY = 自分で設定
+```
+
+ランダム生成用プログラム
+
+```python
+from django.core.management.utils import get_random_secret_key
+
+secret_key = get_random_secret_key()
+text = 'SECRET_KEY = \'{0}\''.format(secret_key)
+print(text)
+```
+
+3. nginx-app.confをletsencrypt認証用にする
 
 ```
 > mv nginx-app.conf nginx-app.conf.prod
 > mv nginx-app.conf.tmp nginx-app.conf
 ```
 
-3. デプロイ
+4. デプロイ
 
 ```
 > sudo docker build -t django-https .
 > sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/> home/docker/code -v /etc/letsencrypt:/etc/letsencrypt django-https
 ```
 
-4. letsencrypt認証
+5. letsencrypt認証
 
 ```
 > apt-get install certbot
 > sudo certbot certonly --webroot -w /home/docker/code/banatech/static -d banatech.dip.jp
 ```
 
-5. nginx-app.confを本番用にする
+6. nginx-app.confを本番用にする
 
 ```
 > mv nginx-app.conf nginx-app.conf.temp
 > mv nginx-app.conf.prod nginx-app.conf
 ```
 
-6. 再度デプロイ
+7. 再度デプロイ
 
 ```
+> sudo docker stop ${container_id}
 > sudo docker rm ${exist_container_id}
 > sudo docker build -t django-https .
 > sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/> home/docker/code -v /etc/letsencrypt:/etc/letsencrypt django-https
 ```
 
-7. letsencrypt更新確認
+8. letsencrypt更新確認
 
 ```
 > sudo certbot renew --force-renew --dry-run --webroot-path /home/docker/code/banatech/static
 ```
 
-8. letsencrypt自動更新
+9. letsencrypt自動更新
 
 ```
 > crontab -e
@@ -94,8 +112,8 @@ crontabに以下追記
 ```
 > sudo git pull
 > cd ..
-> sudo rm -rf code/*
-> sudo cp -pR banatech/* docker/code
+> sudo rm -rf docker/code/*
+> sudo cp -pR banatech_django/* docker/code
 > sudo docker restart ${container_id}
 ```
 
