@@ -19,20 +19,20 @@ upstream django {
      client_max_body_size 75M;   # adjust to taste
      #letsencrypt認証用
      location /.well-known {
-         root /home/docker/code/banaTECH/static;
+         root /home/docker/code/banatech/static;
      }
      # Django media
      location /media  {
-         alias /home/docker/code/banaTECH/media;  # your Django project's media files - amend as required
+         alias /home/docker/code/banatech/media;  # your Django project's media files - amend as required
      }
      location /static {
-         alias /home/docker/code/banaTECH/static; # your Django project's static files - amend as required
+         alias /home/docker/code/banatech/static; # your Django project's static files - amend as required
      }
      # Finally, send all non-media requests to the Django server.
      location / {
          uwsgi_pass  django;
          include     /home/docker/code/uwsgi_params; # the uwsgi_params file you installed
-         root /home/docker/code/banaTECH/frame/templates;
+         root /home/docker/code/banatech/frame/templates;
          index topPage.html;
      }
  }
@@ -45,20 +45,20 @@ upstream django {
      client_max_body_size 75M;   # adjust to taste
      #letsencrypt認証用
      location /.well-known {
-       root /home/docker/code/banaTECH/static;
+       root /home/docker/code/banatech/static;
      }
      # Django media
      location /media  {
-         alias /home/docker/code/banaTECH/media;  # your Django project's media files - amend as required
+         alias /home/docker/code/banatech/media;  # your Django project's media files - amend as required
      }
      location /static {
-         alias /home/docker/code/banaTECH/static; # your Django project's static files - amend as required
+         alias /home/docker/code/banatech/static; # your Django project's static files - amend as required
      }
      # Finally, send all non-media requests to the Django server.
      location / {
          uwsgi_pass  django;
          include     /home/docker/code/uwsgi_params; # the uwsgi_params file you installed
-         root /home/docker/code/banaTECH/frame/templates;
+         root /home/docker/code/banatech/frame/templates;
          index topPage.html;
      }
  }

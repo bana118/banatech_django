@@ -5,7 +5,7 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 #Author
-MAINTAINER banaTECH
+MAINTAINER banatech
 
 CMD echo "now running..."
 
@@ -55,11 +55,11 @@ EXPOSE 443
 CMD ["supervisord", "-n"]
 
 #今はmakemigrations, migrate, createsuperuserは手動で行うことにする
-#RUN python3 /home/docker/code/banaTECH/manage.py collectstatic
+#RUN python3 /home/docker/code/banatech/manage.py collectstatic
 #RUN apt-get update
 #RUN apt-get install language-pack-ja
 #RUN update-locale LANG=ja_JP.UTF-8
 #RUN export LANG=ja_JP.UTF-8
-#RUN python3 /home/docker/code/banaTECH/manage.py makemigrations
-#RUN python3 /home/docker/code/banaTECH/manage.py migrate
-#RUN python3 /home/docker/code/banaTECH/manage.py createsuperuser
+#RUN python3 /home/docker/code/banatech/manage.py makemigrations
+#RUN python3 /home/docker/code/banatech/manage.py migrate
+#RUN python3 /home/docker/code/banatech/manage.py createsuperuser
