@@ -98,3 +98,9 @@ crontabに以下追記
 > sudo cp -pR banatech/* docker/code
 > sudo docker restart ${container_id}
 ```
+
+## docker内確認
+
+```
+sudo docker exec -i -t ${container_id} bash
+```
