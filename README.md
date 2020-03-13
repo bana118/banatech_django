@@ -88,3 +88,13 @@ crontabに以下追記
 ```
 0 4 1 * * sudo certbot renew && sudo docker restart ${container_id}
 ```
+
+## 更新
+
+```
+> sudo git pull
+> cd ..
+> sudo rm -rf code/*
+> sudo cp -pR banaTECH/* docker/code
+> sudo docker restart ${container_id}
+```
