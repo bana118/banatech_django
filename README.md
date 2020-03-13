@@ -75,7 +75,7 @@ URL:https://banatech.dip.jp
 7. letsencrypt更新確認
 
 ```
-> sudo certbot renew --force-renew --dry-run --webroot-path /home/docker/code/banaTECH/static
+> sudo certbot renew --force-renew --dry-run --webroot-path /home/docker/code/banatech/static
 ```
 
 8. letsencrypt自動更新
@@ -95,6 +95,6 @@ crontabに以下追記
 > sudo git pull
 > cd ..
 > sudo rm -rf code/*
-> sudo cp -pR banaTECH/* docker/code
+> sudo cp -pR banatech/* docker/code
 > sudo docker restart ${container_id}
 ```
