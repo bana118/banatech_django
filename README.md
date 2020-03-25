@@ -64,7 +64,7 @@ print(text)
 
 ```
 > sudo docker build -t django-https .
-> sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/> home/docker/code -v /etc/letsencrypt:/etc/letsencrypt django-https
+> sudo docker run -d -p 80:80 -p 443:443 -v /home/docker/code:/home/docker/code -v /etc/letsencrypt:/etc/letsencrypt django-https
 ```
 
 5. letsencrypt認証
