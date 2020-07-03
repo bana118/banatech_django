@@ -1,7 +1,7 @@
 # banaTECH
 Djangoを用いたWebサイトbanaTECHのソースコード
 Webアプリやプログラミングやガジェットに関するブログを掲載
-URL:https://banatech.dip.jp
+現在はLaraveに移行->(https://github.com/bana118/banatech_laravel)
 
 ## ローカルでの実行
 　
