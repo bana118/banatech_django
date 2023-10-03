@@ -1,8 +1,8 @@
-﻿#必要なパッケージ
+#必要なパッケージ
 Django >= 2.1.6
 
 #blog
-Pillow == 6.2.0
+Pillow == 10.0.1
 
 #LaTeXEditor
 latex == 0.7.0
